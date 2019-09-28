@@ -25,6 +25,33 @@
     <Filter Include="ヘッダー ファイル\OpenGL\MyGL">
       <UniqueIdentifier>{2e90dbc0-abc1-4571-b1bf-2725e8abb154}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\SceneManager">
+      <UniqueIdentifier>{396307f4-aa15-40fd-bdeb-18c532cec01f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\SceneManager">
+      <UniqueIdentifier>{ded9221c-5066-43e4-a0d1-089dd0321e4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\SceneManager\BaseScene">
+      <UniqueIdentifier>{da853715-0ad9-4e76-a44a-05204a0d32cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\SceneManager\TitleScene">
+      <UniqueIdentifier>{9d19638c-b25d-431e-a723-f88d2e74e05b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\SceneManager\TitleScene">
+      <UniqueIdentifier>{8d5c138b-9b01-4bf8-a1e9-f5b4b6230e60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\SceneManager\GameScene">
+      <UniqueIdentifier>{0aefeebb-144b-4ea8-b1d2-9699d79f4670}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\SceneManager\GameScene">
+      <UniqueIdentifier>{fd2fc33f-6a70-40b2-bc35-c8c9f404434f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\SceneManager\ResultScene">
+      <UniqueIdentifier>{aae7fa99-f0cc-4f97-800d-9819b18a1ac6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\SceneManager\ResultScene">
+      <UniqueIdentifier>{df83f4f6-452d-466d-b754-85df661e8cef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -33,6 +60,18 @@
     <ClCompile Include="MyLibrary\MyGL\MyGL.cpp">
       <Filter>ソース ファイル\OpenGL\MyGL</Filter>
     </ClCompile>
+    <ClCompile Include="MyLibrary\SceneManager\TitleScene\TitleScene.cpp">
+      <Filter>ソース ファイル\SceneManager\TitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLibrary\SceneManager\GameScene\GameScene.cpp">
+      <Filter>ソース ファイル\SceneManager\GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLibrary\SceneManager\ResultScene\ResultScene.cpp">
+      <Filter>ソース ファイル\SceneManager\ResultScene</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLibrary\SceneManager\SceneManager.cpp">
+      <Filter>ソース ファイル\SceneManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -40,6 +79,21 @@
   <ItemGroup>
     <ClInclude Include="MyLibrary\MyGL\MyGL.hpp">
       <Filter>ヘッダー ファイル\OpenGL\MyGL</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\SceneManager\BaseScene\BaseScene.hpp">
+      <Filter>ヘッダー ファイル\SceneManager\BaseScene</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\SceneManager\TitleScene\TitleScene.hpp">
+      <Filter>ヘッダー ファイル\SceneManager\TitleScene</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\SceneManager\GameScene\GameScene.hpp">
+      <Filter>ヘッダー ファイル\SceneManager\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\SceneManager\ResultScene\ResultScene.hpp">
+      <Filter>ヘッダー ファイル\SceneManager\ResultScene</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\SceneManager\SceneManager.hpp">
+      <Filter>ヘッダー ファイル\SceneManager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

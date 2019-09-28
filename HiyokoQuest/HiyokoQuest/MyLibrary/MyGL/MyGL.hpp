@@ -10,6 +10,8 @@
 /* Callback関数の設定は, 静的メンバ関数で対応. */
 /* 苦肉の策なので, より良い方法が見つかれば変更したい. */
 
+/* 基本プログラム: (https://)github.com/Lambda1/my_library/tree/master/OpenGL/MyGL */
+
 class MyGL
 {
 	/* Timer関係 */
@@ -54,6 +56,7 @@ class MyGL
 	inline unsigned char GetKeyUp(){ return n_key_up; };
 	inline int GetSpKey(){ return sp_key; };
 	inline int GetSpKeyUp(){ return sp_key_up; };
+	inline void ResetKey() { n_key = n_key_up = sp_key = sp_key_up = 0; }
 };
 
 #endif

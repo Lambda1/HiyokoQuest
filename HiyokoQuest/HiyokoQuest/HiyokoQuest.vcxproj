@@ -125,12 +125,21 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyLibrary\MyGL\MyGL.cpp" />
+    <ClCompile Include="MyLibrary\SceneManager\GameScene\GameScene.cpp" />
+    <ClCompile Include="MyLibrary\SceneManager\ResultScene\ResultScene.cpp" />
+    <ClCompile Include="MyLibrary\SceneManager\SceneManager.cpp" />
+    <ClCompile Include="MyLibrary\SceneManager\TitleScene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyLibrary\MyGL\MyGL.hpp" />
+    <ClInclude Include="MyLibrary\SceneManager\BaseScene\BaseScene.hpp" />
+    <ClInclude Include="MyLibrary\SceneManager\GameScene\GameScene.hpp" />
+    <ClInclude Include="MyLibrary\SceneManager\ResultScene\ResultScene.hpp" />
+    <ClInclude Include="MyLibrary\SceneManager\SceneManager.hpp" />
+    <ClInclude Include="MyLibrary\SceneManager\TitleScene\TitleScene.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

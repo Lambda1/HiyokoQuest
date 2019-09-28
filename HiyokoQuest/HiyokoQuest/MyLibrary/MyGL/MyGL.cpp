@@ -51,6 +51,11 @@ void MyGL::Init(std::string name,int width,int height,int argc,char **argv)
 	glutInitDisplayMode(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH);
 	glutCreateWindow(name.c_str());
 	glewInit();
+
+	/* Ç±Ç±Ç©ÇÁ: ì¡âªèàóù */
+	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+	glEnable(GL_DEPTH_TEST);
+	/* Ç±Ç±Ç‹Ç≈: ì¡âªèàóù */
 }
 
 void MyGL::EntryCallBack(const bool timer_flag)
