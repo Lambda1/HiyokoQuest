@@ -52,6 +52,12 @@
     <Filter Include="ヘッダー ファイル\SceneManager\ResultScene">
       <UniqueIdentifier>{df83f4f6-452d-466d-b754-85df661e8cef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\OpenGL\PrintString">
+      <UniqueIdentifier>{bdff7320-154f-483c-819c-d5dcc194ab1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\OpenGL\PrintString">
+      <UniqueIdentifier>{c917fd79-667d-40ab-9adf-62def6f0d6e2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -71,6 +77,9 @@
     </ClCompile>
     <ClCompile Include="MyLibrary\SceneManager\SceneManager.cpp">
       <Filter>ソース ファイル\SceneManager</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLibrary\PrintString\PrintString.cpp">
+      <Filter>ソース ファイル\OpenGL\PrintString</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +103,9 @@
     </ClInclude>
     <ClInclude Include="MyLibrary\SceneManager\SceneManager.hpp">
       <Filter>ヘッダー ファイル\SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\PrintString\PrintString.hpp">
+      <Filter>ヘッダー ファイル\OpenGL\PrintString</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

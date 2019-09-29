@@ -27,7 +27,6 @@ int main(int argc, char* argv[])
 		scene_manager.Update();    /* シーン更新 */
 		scene_manager.Draw();      /* シーン描画 */
 
-		opengl_manager.Display();  /* 画面更新 */
 		opengl_manager.ResetKey(); /* キーリセット */
 	}
 

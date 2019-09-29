@@ -1,5 +1,5 @@
 #include "./MyGL.hpp"
-
+#include <iostream>
 constexpr unsigned int MyGL::msecs;
 constexpr int MyGL::timer_value;
 unsigned int MyGL::deltaTime = 0;
@@ -13,7 +13,7 @@ void MyGL::Resize(int width,int height)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(30,(double)width/height,1.0,100.0);
+	gluPerspective(30,static_cast<double>(width/height),1.0,100.0);
 
 	glMatrixMode(GL_MODELVIEW);
 }
@@ -53,7 +53,7 @@ void MyGL::Init(std::string name,int width,int height,int argc,char **argv)
 	glewInit();
 
 	/* Ç±Ç±Ç©ÇÁ: ì¡âªèàóù */
-	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glEnable(GL_DEPTH_TEST);
 	/* Ç±Ç±Ç‹Ç≈: ì¡âªèàóù */
 }

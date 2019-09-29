@@ -125,6 +125,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyLibrary\MyGL\MyGL.cpp" />
+    <ClCompile Include="MyLibrary\PrintString\PrintString.cpp" />
     <ClCompile Include="MyLibrary\SceneManager\GameScene\GameScene.cpp" />
     <ClCompile Include="MyLibrary\SceneManager\ResultScene\ResultScene.cpp" />
     <ClCompile Include="MyLibrary\SceneManager\SceneManager.cpp" />
@@ -135,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyLibrary\MyGL\MyGL.hpp" />
+    <ClInclude Include="MyLibrary\PrintString\PrintString.hpp" />
     <ClInclude Include="MyLibrary\SceneManager\BaseScene\BaseScene.hpp" />
     <ClInclude Include="MyLibrary\SceneManager\GameScene\GameScene.hpp" />
     <ClInclude Include="MyLibrary\SceneManager\ResultScene\ResultScene.hpp" />
