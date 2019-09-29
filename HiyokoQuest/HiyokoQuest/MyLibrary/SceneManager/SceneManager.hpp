@@ -6,13 +6,14 @@
 #include "./GameScene/GameScene.hpp"
 #include "./ResultScene/ResultScene.hpp"
 
-/* 基本プログラム: (https://)github.com/Lambda1/my_library/tree/master/Game/SceneManager */
+#include "./Scene.hpp"
 
-enum class SCENE : int { TITLE, GAME, RESULT };
+/* 基本プログラム: (https://)github.com/Lambda1/my_library/tree/master/Game/SceneManager */
 
 class SceneManager
 {
 	BaseScene* m_scene; /* シーン管理 */
+	SCENE now_scene;    /* 現在のシーン */
 
 	/* キー入力管理 */
 	/* 今と前を比較することで, 押された・離されたを判定 */
@@ -43,6 +44,12 @@ class SceneManager
 			if (diff < 0 || diff > alphabet) return;
 			key_buffer[diff] = false;
 		}
+
+		/* シーン遷移処理 */
+		void TransScene();
+
+		/* ゲーム終了処理 */
+		inline bool GameQuite() { return m_scene->GetQuit(); }
 };
 
 #endif

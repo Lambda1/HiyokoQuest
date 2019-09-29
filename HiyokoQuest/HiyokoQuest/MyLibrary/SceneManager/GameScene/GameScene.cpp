@@ -4,6 +4,7 @@
 
 GameScene::GameScene()
 {
+	scene_number = SCENE::GAME;
 	std::cout << "GAME CON" << std::endl;
 }
 

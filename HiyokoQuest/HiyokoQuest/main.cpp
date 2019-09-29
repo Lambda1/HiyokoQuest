@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 	/* シーン管理の初期化処理 */
 	scene_manager.ChangeScene(SCENE::TITLE);
 
-	while (true)
+	while (!scene_manager.GameQuite())
 	{
 		opengl_manager.MainLoop(); /* OpenGLのループ処理 */
 
@@ -28,6 +28,8 @@ int main(int argc, char* argv[])
 		scene_manager.Draw();      /* シーン描画 */
 
 		opengl_manager.ResetKey(); /* キーリセット */
+
+		scene_manager.TransScene(); /* シーン遷移処理 */
 	}
 
 	return 0;

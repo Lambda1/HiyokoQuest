@@ -3,6 +3,8 @@
 
 #include "../BaseScene/BaseScene.hpp"
 
+/* Šî–{ƒvƒƒOƒ‰ƒ€: (https://)github.com/Lambda1/my_library/tree/master/Game/GameScene */
+
 class GameScene : public BaseScene
 {
 	public:

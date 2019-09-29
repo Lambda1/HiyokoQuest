@@ -1,7 +1,7 @@
 #include "./SceneManager.hpp"
 
 SceneManager::SceneManager() :
-	m_scene(nullptr),
+	m_scene(nullptr), now_scene(SCENE::TITLE),
 	key_buffer(nullptr), key_buffer_prev(nullptr)
 {
 	key_buffer = new bool[alphabet];
@@ -49,4 +49,13 @@ void SceneManager::KeyInput(const unsigned char key_on, const unsigned char key_
 	for (int i = 0; i < alphabet; i++) key_buffer_prev[i] = key_buffer[i];
 	KeyOn(key_on);
 	KeyOff(key_up);
+}
+
+void SceneManager::TransScene()
+{
+	if (m_scene->GetScene() != now_scene)
+	{
+		now_scene = m_scene->GetScene();
+		ChangeScene(now_scene);
+	}
 }

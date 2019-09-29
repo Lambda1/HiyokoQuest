@@ -107,5 +107,8 @@
     <ClInclude Include="MyLibrary\PrintString\PrintString.hpp">
       <Filter>ヘッダー ファイル\OpenGL\PrintString</Filter>
     </ClInclude>
+    <ClInclude Include="MyLibrary\SceneManager\Scene.hpp">
+      <Filter>ヘッダー ファイル\SceneManager</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

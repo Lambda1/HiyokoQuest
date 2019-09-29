@@ -5,6 +5,7 @@
 TitleScene::TitleScene() :
 	key_pos(BUTTON::NONE)
 {
+	scene_number = SCENE::TITLE;
 	std::cout << "TITLE CON" << std::endl;
 }
 
@@ -78,11 +79,35 @@ void TitleScene::StartMenu()
 	glPopMatrix();
 }
 
+void TitleScene::IsSceneTrans()
+{
+	if (key_pos == BUTTON::OK)
+	{
+		switch (static_cast<MENU>(cursor_location))
+		{
+		case MENU::START:
+			scene_number = SCENE::GAME; break;
+		case MENU::PLAYER2:
+			break;
+		case MENU::NETWORK:
+			break;
+		case MENU::QUIT:
+			game_quite = true; break;
+		default:
+			break;
+		}
+	}
+}
+
 void TitleScene::DrawMenu()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
+	/* 2Dメニュー表示 */
 	View2D();
 	StartMenu();
+
+	/* シーン遷移処理 */
+	IsSceneTrans();
 }

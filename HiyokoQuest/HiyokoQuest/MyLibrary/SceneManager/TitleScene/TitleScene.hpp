@@ -4,6 +4,8 @@
 #include "../BaseScene/BaseScene.hpp"
 #include "..//..//PrintString/PrintString.hpp"
 
+#include "..//Scene.hpp"
+
 /* 基本プログラム: (https://)github.com/Lambda1/my_library/tree/master/Game/TitleScene */
 
 class TitleScene : public BaseScene
@@ -35,9 +37,10 @@ class TitleScene : public BaseScene
 
 	int cursor_location = static_cast<int>(MENU::START); /* カーソル位置 */
 
-	void DrawMenu();
-	void View2D();    /* 正射影モード */
-	void StartMenu(); /* スタートメニュー表示 */
+	void DrawMenu();     /* メニュー画面表示処理 */
+	void View2D();       /* 正射影モード */
+	void StartMenu();    /* スタートメニュー表示 */
+	void IsSceneTrans(); /* シーン遷移判定 */
 
 	public:
 		TitleScene();
