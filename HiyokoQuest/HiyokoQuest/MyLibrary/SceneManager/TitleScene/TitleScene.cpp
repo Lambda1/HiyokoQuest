@@ -51,6 +51,13 @@ void TitleScene::View2D()
 	glLoadIdentity();
 	gluLookAt(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 }
+void TitleScene::View3D()
+{
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(30, static_cast<double>(width / height), 1.0, 100.0);
+	glMatrixMode(GL_MODELVIEW);
+}
 void TitleScene::StartMenu()
 {
 	/* 文字メニュー表示 */
@@ -101,12 +108,15 @@ void TitleScene::IsSceneTrans()
 
 void TitleScene::DrawMenu()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	/* 2Dメニュー表示 */
 	View2D();
 	StartMenu();
+
+	/* 3D表示 */
+	View3D();
 
 	/* シーン遷移処理 */
 	IsSceneTrans();

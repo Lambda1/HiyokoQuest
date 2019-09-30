@@ -58,6 +58,33 @@
     <Filter Include="ヘッダー ファイル\OpenGL\PrintString">
       <UniqueIdentifier>{c917fd79-667d-40ab-9adf-62def6f0d6e2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\GameMaster">
+      <UniqueIdentifier>{df759cc0-d960-4e3d-8e39-eaffbb2a9ba0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\GameMaster">
+      <UniqueIdentifier>{7209c7c7-ee5b-4f25-8934-d835fba450db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\GameMaster\RougeLike">
+      <UniqueIdentifier>{d59bfdee-4926-429f-8f3a-e968d2b32f6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Mathematics">
+      <UniqueIdentifier>{ab9f12e8-1dfa-4583-a879-f2afca697662}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Mathematics\MyVector">
+      <UniqueIdentifier>{21d0a2ae-9ba6-433d-9785-c8cd2c8a3cf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Mathematics\MyMath">
+      <UniqueIdentifier>{2e9cd29f-36ea-4c7e-8507-510199557731}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\GameMaster\Character">
+      <UniqueIdentifier>{0b9a8b1c-5483-48b6-a3df-11fe99feea01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\SceneManager\GameScene\Character">
+      <UniqueIdentifier>{681cf4be-18b1-4ca3-bc2a-41fcf8daa963}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\GameMaster\Character">
+      <UniqueIdentifier>{fd008a04-3050-45ca-b4c1-bacb7c22cd41}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -80,6 +107,9 @@
     </ClCompile>
     <ClCompile Include="MyLibrary\PrintString\PrintString.cpp">
       <Filter>ソース ファイル\OpenGL\PrintString</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLibrary\GameMaster\GameMaster.cpp">
+      <Filter>ソース ファイル\GameMaster</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -109,6 +139,24 @@
     </ClInclude>
     <ClInclude Include="MyLibrary\SceneManager\Scene.hpp">
       <Filter>ヘッダー ファイル\SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\GameMaster\GameMaster.hpp">
+      <Filter>ヘッダー ファイル\GameMaster</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\GameMaster\RougeLikeMap\MapSet.hpp">
+      <Filter>ヘッダー ファイル\GameMaster\RougeLike</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\GameMaster\RougeLikeMap\RougeLikeMap.hpp">
+      <Filter>ヘッダー ファイル\GameMaster\RougeLike</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\Mathematics\MyVector\MyVector.hpp">
+      <Filter>ヘッダー ファイル\Mathematics\MyVector</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\Mathematics\MyMath\MyMath.hpp">
+      <Filter>ヘッダー ファイル\Mathematics\MyMath</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\GameMaster\GameKey.hpp">
+      <Filter>ヘッダー ファイル\GameMaster</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
