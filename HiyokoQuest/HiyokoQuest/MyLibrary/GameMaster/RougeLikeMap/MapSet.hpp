@@ -6,12 +6,14 @@ namespace MAPSET
 {
 	enum class DATA : unsigned char
 	{
-		NONE, /* 無 */
-		ROOM, /* 部屋 */
-		ROAD, /* 道 */
-		WALL, /* 壁 */
+		NONE,   /* 無 */
+		ROOM,   /* 部屋 */
+		ROAD,   /* 道 */
+		WALL,   /* 壁 */
 
-		SIZE  /* 要素数 */
+		PLAYER, /* プレイヤー */
+
+		SIZE    /* 要素数 */
 	};
 };
 

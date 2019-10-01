@@ -85,6 +85,12 @@
     <Filter Include="ヘッダー ファイル\GameMaster\Character">
       <UniqueIdentifier>{fd008a04-3050-45ca-b4c1-bacb7c22cd41}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\GameMaster\Character\Player">
+      <UniqueIdentifier>{2bc90ea5-564d-41c1-9b87-afe6b00f8fbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\GameMaster\Character\Player">
+      <UniqueIdentifier>{b626493e-ee41-44af-906b-7d6a5f237dc6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -110,6 +116,12 @@
     </ClCompile>
     <ClCompile Include="MyLibrary\GameMaster\GameMaster.cpp">
       <Filter>ソース ファイル\GameMaster</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLibrary\GameMaster\Character\Character.cpp">
+      <Filter>ソース ファイル\GameMaster\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLibrary\GameMaster\Character\Player\Player.cpp">
+      <Filter>ソース ファイル\GameMaster\Character\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +169,15 @@
     </ClInclude>
     <ClInclude Include="MyLibrary\GameMaster\GameKey.hpp">
       <Filter>ヘッダー ファイル\GameMaster</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\GameMaster\Character\Character.hpp">
+      <Filter>ヘッダー ファイル\GameMaster\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\GameMaster\Character\Direction.hpp">
+      <Filter>ヘッダー ファイル\GameMaster\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\GameMaster\Character\Player\Player.hpp">
+      <Filter>ヘッダー ファイル\GameMaster\Character\Player</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

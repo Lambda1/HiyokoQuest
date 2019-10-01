@@ -175,7 +175,7 @@ class RougeLikeMap
 			if(ang < (180+del_ang))  return ANGLE::LEFT;
 			return ANGLE::DOWN;
 		};
-		double angle = (180*my_math::Math::Angle(static_cast<double>(pnt1->left_up.x), static_cast<double>(height-pnt1->left_up.y), static_cast<double>(pnt2->left_up.x), static_cast<double>(height-pnt2->left_up.y)))/my_math::Math::PI;
+		double angle = (180*my_math::Math::Angle(static_cast<double>(pnt1->left_up.x), static_cast<double>(static_cast<double>(height)-pnt1->left_up.y), static_cast<double>(pnt2->left_up.x), static_cast<double>(static_cast<double>(height)-pnt2->left_up.y)))/my_math::Math::PI;
 
 		switch(auto vec = map_ang(static_cast<int>(angle)); vec){
 			case ANGLE::RIGHT:
@@ -262,7 +262,7 @@ class RougeLikeMap
 		this->width  = width;
 		this->height = height;
 		this->room_num = room_num;
-		for(int i = 0;i < static_cast<int>(MAP_LAYER::SIZE);i++) dungeon[i] = new TYPE_MAP[width*height];
+		for(int i = 0;i < static_cast<int>(MAP_LAYER::SIZE);i++) dungeon[i] = new TYPE_MAP[(width*height)];
 	}
 
 	/* ダンジョン生成: 穴掘り法 */
@@ -287,6 +287,19 @@ class RougeLikeMap
 					if(dungeon[i][j] != info[static_cast<int>(BASE_INFO::NONE)]) dungeon[layer_all][j] = dungeon[i][j];
 				}
 			}
+	}
+
+	/* 部屋内の座標をランダムに返す */
+	void GetRoomPos(int* x, int* y)
+	{
+		std::uniform_int_distribution<int> range(0, room_index-1);
+		int index = range(mt_rnd);
+
+		std::uniform_int_distribution<int> range_w(room_pnt[index].left_up.x + 1, room_pnt[index].right_down.x - 1);
+		std::uniform_int_distribution<int> range_h(room_pnt[index].left_up.y + 1, room_pnt[index].right_down.y - 1);
+	
+		*x = range_w(mt_rnd);
+		*y = range_h(mt_rnd);
 	}
 
 	/* ゲッタ */

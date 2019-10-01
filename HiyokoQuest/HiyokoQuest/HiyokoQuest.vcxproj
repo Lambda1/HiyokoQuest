@@ -125,6 +125,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MyLibrary\GameMaster\Character\Character.cpp" />
+    <ClCompile Include="MyLibrary\GameMaster\Character\Player\Player.cpp" />
     <ClCompile Include="MyLibrary\GameMaster\GameMaster.cpp" />
     <ClCompile Include="MyLibrary\MyGL\MyGL.cpp" />
     <ClCompile Include="MyLibrary\PrintString\PrintString.cpp" />
@@ -137,6 +139,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MyLibrary\GameMaster\Character\Character.hpp" />
+    <ClInclude Include="MyLibrary\GameMaster\Character\Direction.hpp" />
+    <ClInclude Include="MyLibrary\GameMaster\Character\Player\Player.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\GameKey.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\GameMaster.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\RougeLikeMap\MapSet.hpp" />

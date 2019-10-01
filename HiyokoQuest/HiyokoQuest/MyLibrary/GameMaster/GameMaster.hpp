@@ -10,6 +10,8 @@
 #include "./RougeLikeMap/MapSet.hpp"
 #include "./GameKey.hpp"
 
+#include "./Character/Player/Player.hpp"
+
 class GameMaster
 {
 	/* ゲームの処理ステップ */
@@ -25,15 +27,25 @@ class GameMaster
 		TURN_END,    /* ターン終了 */
 	};
 
+	/* ゲーム処理 */
 	GAME_STEP game_step; /* ゲーム進行管理 */
 	bool game_over_flag; /* ゲームオーバ管理 */
 
+	/* 乱数処理 */
 	int random_seed, cnt_seed;     /* 乱数シード */
 
+	/* マップ処理 */
 	using MAP_TYPE = unsigned char; /* マップ型を節約 */
 	RougeLikeMap<MAP_TYPE>* game_map; /* ゲームマップ */
 	int floor_number, turn_number, room_number; /* 階層, 経過ターン, 部屋数 */
 	const int width = 120, height = 100; /* マップの広さ(固定) */
+
+	/* プレイヤー処理 */
+	Character* player;
+
+	/* エネミー処理 */
+
+	/* アイテム処理 */
 
 private:
 	/* ターン処理 */
