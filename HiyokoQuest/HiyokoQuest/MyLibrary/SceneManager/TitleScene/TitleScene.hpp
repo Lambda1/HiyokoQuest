@@ -15,8 +15,8 @@ class TitleScene : public BaseScene
 	enum class BUTTON : int
 	{
 		UP     = static_cast<int>('w'),
-		DOWN   = static_cast<int>('x'),
-		OK     = static_cast<int>('s'),
+		DOWN   = static_cast<int>('s'),
+		OK     = static_cast<int>('x'),
 		CANCEL = static_cast<int>('z'),
 		NONE   = 0
 	};

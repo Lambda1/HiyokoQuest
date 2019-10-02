@@ -13,7 +13,9 @@ class Character
 		MAPSET::DATA chara_state;
 		/* キャラ座標 */
 		int x, y;
-		
+		/* キャラの向いている方向 */
+		DIRECTION way;
+
 		/* 消費系ステータス */
 		int hp, mp;
 		/* 標準ステータス */

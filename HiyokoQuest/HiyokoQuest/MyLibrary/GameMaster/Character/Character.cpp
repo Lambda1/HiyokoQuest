@@ -2,7 +2,7 @@
 
 Character::Character() :
 	chara_state(MAPSET::DATA::NONE),
-	x(0), y(0),
+	x(0), y(0), way(DIRECTION::SOUTH),
 	hp(0), mp(0),
 	max_hp(0), max_mp(0),
 	level(0), power(0), defence(0),

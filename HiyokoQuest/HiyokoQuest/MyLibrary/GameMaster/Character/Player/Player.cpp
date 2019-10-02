@@ -36,7 +36,7 @@ void Player::Move(DIRECTION direct)
 		x--; y++; break;
 	case DIRECTION::NORTH_EAST:
 		x++; y--; break;
-	case DIRECTION::NORTH_WESE:
+	case DIRECTION::NORTH_WEST:
 		x--; y--; break;
 	default:
 		break;
@@ -51,7 +51,7 @@ void Player::Update()
 {
 	LevelUp();
 	JudgeDeath();
-
+	
 	std::cout << "Player Status" << std::endl;
 	std::cout << "Position: " << x << " " << y << std::endl;
 	std::cout << "MAX: " << max_hp << " " << max_mp << std::endl;

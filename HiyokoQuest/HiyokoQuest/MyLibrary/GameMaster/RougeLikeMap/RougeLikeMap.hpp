@@ -201,7 +201,8 @@ class RougeLikeMap
 	{
 		SortRoom();
 		for(int i = 0;i < room_index-1;i++){
-			double min = my_math::Math::Distance<double>(room_pnt[i].left_up.x,room_pnt[i].left_up.y,room_pnt[i+1].left_up.x,room_pnt[i+1].left_up.y);
+			int i_index = i + 1; /* VS2019の構文解析ミス回避 */
+			double min = my_math::Math::Distance<double>(room_pnt[i].left_up.x,room_pnt[i].left_up.y,room_pnt[i_index].left_up.x,room_pnt[i_index].left_up.y);
 			int min_index = i+1;
 			for(int j = i+2;j < room_index;j++){
 				double tmp = my_math::Math::Distance<double>(room_pnt[i].left_up.x,room_pnt[i].left_up.y,room_pnt[j].left_up.x,room_pnt[j].left_up.y);
@@ -262,7 +263,8 @@ class RougeLikeMap
 		this->width  = width;
 		this->height = height;
 		this->room_num = room_num;
-		for(int i = 0;i < static_cast<int>(MAP_LAYER::SIZE);i++) dungeon[i] = new TYPE_MAP[(width*height)];
+		int wh_index = width * height; /* VS2019の構文解析ミス回避 */
+		for(int i = 0;i < static_cast<int>(MAP_LAYER::SIZE);i++) dungeon[i] = new TYPE_MAP[wh_index];
 	}
 
 	/* ダンジョン生成: 穴掘り法 */
@@ -303,10 +305,13 @@ class RougeLikeMap
 	}
 
 	/* ゲッタ */
+	/* ポインタ */
 	inline TYPE_MAP* GetDungeon() const { return dungeon[static_cast<int>(MAP_LAYER::FIELD)]; }
 	inline TYPE_MAP* GetItem()    const { return dungeon[static_cast<int>(MAP_LAYER::ITEM)]; }
 	inline TYPE_MAP* GetChara()   const { return dungeon[static_cast<int>(MAP_LAYER::CHARA)]; }
 	inline TYPE_MAP* GetALL()     const { return dungeon[static_cast<int>(MAP_LAYER::ALL)]; }
+	/* 値参照 */
+	inline TYPE_MAP  GetLayerDungeon(const int x, const int y) const { return dungeon[static_cast<int>(MAP_LAYER::FIELD)][y*width+x]; }
 	/* セッタ */
 	inline void SetBaseInfo(const TYPE_MAP none,const TYPE_MAP room,const TYPE_MAP road,const TYPE_MAP wall){ info.push_back(none); info.push_back(room); info.push_back(road); info.push_back(wall); }
 	inline void SetItem(const int i, const int j, const TYPE_MAP data){ dungeon[static_cast<int>(MAP_LAYER::ITEM)][i*width+j] = data; }

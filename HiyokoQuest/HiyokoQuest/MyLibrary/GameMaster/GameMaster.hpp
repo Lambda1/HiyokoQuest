@@ -30,6 +30,10 @@ class GameMaster
 	/* ゲーム処理 */
 	GAME_STEP game_step; /* ゲーム進行管理 */
 	bool game_over_flag; /* ゲームオーバ管理 */
+	
+	/* キー処理 */
+	BUTTON_MASK key_pos;   /* キー1文字分のバッファ */
+	bool all_key_release;  /* 全キー入力監視 */
 
 	/* 乱数処理 */
 	int random_seed, cnt_seed;     /* 乱数シード */
@@ -41,7 +45,7 @@ class GameMaster
 	const int width = 120, height = 100; /* マップの広さ(固定) */
 
 	/* プレイヤー処理 */
-	Character* player;
+	Player* player;
 
 	/* エネミー処理 */
 
@@ -49,6 +53,7 @@ class GameMaster
 
 private:
 	/* ターン処理 */
+	void TurnProcess(); /* ターン統括処理 */
 	void Init();       /* 初期化 */
 	void CreateMap();  /* マップ生成 */
 	void TurnStart();  /* ターン開始 */
@@ -57,6 +62,14 @@ private:
 	void EnemyTurn();  /* エネミーターン */
 	void StatusTurn(); /* ステータスターン */
 	void TurnEnd();    /* ターン終了 */
+
+	/* キャラクター処理 */
+	void CalcDirectionToPos(int *x,int *y,DIRECTION direct); /* 進行方向の座標を取得 */
+	bool IsPosMove(const int x,const int y); /* 座標(x,y)地点は, 進行可能か判定 */
+
+	/* PlayerTurn専用処理 */
+	void PlayerMove();   /* プレイヤー移動処理 */
+	void PlayerAttack(); /* プレイヤー攻撃処理 */
 
 	/* 描画処理 */
 	void DrawMap();    /* マップ描画 */

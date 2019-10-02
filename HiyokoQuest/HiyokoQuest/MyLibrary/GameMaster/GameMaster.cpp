@@ -3,19 +3,66 @@
 GameMaster::GameMaster() :
 	game_step(GAME_STEP::INIT),
 	game_over_flag(false),
+	key_pos(BUTTON_MASK::NONE), all_key_release(false),
 	random_seed(static_cast<int>(std::time(nullptr))), cnt_seed(0),
 	game_map(nullptr) , floor_number(0), turn_number(0), room_number(0),
 	player(nullptr)
 {
 }
-
 GameMaster::~GameMaster()
 {
 	if (player) { delete player; }
 	if (game_map) { delete game_map; }
 }
 
+/* ゲーム更新処理 */
 void GameMaster::Update()
+{
+	/* ターン処理 */
+	TurnProcess();
+
+	/* ゲーム描画 */
+	if (game_step >= GAME_STEP::TURN_START)
+	{
+		DrawMap();
+		DrawStatus();
+	}
+}
+
+void GameMaster::KeyInput(bool* key_on, bool* key_off)
+{
+	key_pos = BUTTON_MASK::NONE;
+	/* 最大入力: 2 */
+	int key_input_number = 0;
+	for (int i = 0; i < ALPHABET && key_input_number < MAX_KEY_INPUT; i++) {
+		if (key_on[i])
+		{
+			key_input_number++;
+			switch (static_cast<BUTTON>(KEY_BIAS+i))
+			{
+			case BUTTON::UP:
+				key_pos = key_pos | BUTTON_MASK::UP; break;
+			case BUTTON::DOWN:
+				key_pos = key_pos | BUTTON_MASK::DOWN; break;
+			case BUTTON::RIGHT:
+				key_pos = key_pos | BUTTON_MASK::RIGHT; break;
+			case BUTTON::LEFT:
+				key_pos = key_pos | BUTTON_MASK::LEFT; break;
+			case BUTTON::OK:
+				key_pos = key_pos | BUTTON_MASK::OK; break;
+			case BUTTON::CANCEL:
+				key_pos = key_pos | BUTTON_MASK::CANCEL; break;
+			default:
+				key_input_number--; break;
+			}
+		}
+	}
+}
+
+/* private */
+/* ゲーム処理 */
+/* ターン統括処理 */
+void GameMaster::TurnProcess()
 {
 	switch (game_step)
 	{
@@ -28,7 +75,7 @@ void GameMaster::Update()
 	case GAME_STEP::PLAYER_TURN:
 		PlayerTurn(); break;
 	case GAME_STEP::ITEM_TURN:
-		break;
+		ItemTurn();   break;
 	case GAME_STEP::ENEMY_TURN:
 		break;
 	case GAME_STEP::STATUS_TURN:
@@ -38,19 +85,8 @@ void GameMaster::Update()
 	default:
 		break;
 	}
-
-	if (game_step >= GAME_STEP::TURN_START) {
-		DrawMap();
-		DrawStatus();
-	}
 }
-
-void GameMaster::KeyInput(bool* key_on, bool* key_off)
-{
-}
-
-/* private */
-/* ゲーム処理 */
+/* 初期化処理 */
 void GameMaster::Init()
 {
 	std::cout << "GAME INIT" << std::endl;
@@ -63,6 +99,7 @@ void GameMaster::Init()
 	/* アイテム生成 */
 
 }
+/* マップ生成処理 */
 void GameMaster::CreateMap()
 {
 	std::cout << "GAME MAP" << std::endl;
@@ -102,6 +139,7 @@ void GameMaster::CreateMap()
 		std::cout << std::endl;
 	}
 }
+/* ターン開始処理 */
 void GameMaster::TurnStart()
 {
 	std::cout << "GAME START" << std::endl;
@@ -109,13 +147,88 @@ void GameMaster::TurnStart()
 	/* ターンを経過 */
 	turn_number++;
 }
+/* プレイヤーターン処理 */
 void GameMaster::PlayerTurn()
 {
 	std::cout << "GAME PLAYER" << std::endl;
-	game_step = GAME_STEP::ITEM_TURN;
 
-	/* プレイヤー情報更新 */
-	player->Update();
+	/* キー入力があった場合, 処理を開始 */
+	if (key_pos != BUTTON_MASK::NONE)
+	{
+		/* プレイヤー移動処理 */
+		PlayerMove();
+		/* プレイヤー攻撃処理 */
+		PlayerAttack();
+
+		/* プレイヤー情報更新 */
+		player->Update();
+
+		/* アイテムターンへ移行 */
+		game_step = GAME_STEP::ITEM_TURN;
+	}
+}
+/* アイテムターン処理 */
+void GameMaster::ItemTurn()
+{
+	std::cout << "GAME ITEM" << std::endl;
+	game_step = GAME_STEP::TURN_START;
+}
+
+/* キャラクター処理 */
+void GameMaster::CalcDirectionToPos(int *x, int *y, DIRECTION direct)
+{
+	switch (direct)
+	{
+	case DIRECTION::EAST:
+		(*x)++; break;
+	case DIRECTION::WEST:
+		(*x)--; break;
+	case DIRECTION::SOUTH:
+		(*y)++; break;
+	case DIRECTION::NORTH:
+		(*y)--; break;
+	case DIRECTION::SOUTH_EAST:
+		(*x)++; (*y)++; break;
+	case DIRECTION::SOUTH_WEST:
+		(*x)--; (*y)++; break;
+	case DIRECTION::NORTH_EAST:
+		(*x)++; (*y)--; break;
+	case DIRECTION::NORTH_WEST:
+		(*x)--; (*y)--; break;
+	default:
+		break;
+	}
+}
+bool GameMaster::IsPosMove(const int x, const int y)
+{
+	MAPSET::DATA dungeon_data = static_cast<MAPSET::DATA>(game_map->GetLayerDungeon(x,y));
+
+	if (dungeon_data == MAPSET::DATA::ROAD || dungeon_data == MAPSET::DATA::ROOM)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+/* PlayerTurn専用処理 */
+/* プレイヤー移動処理 */
+void GameMaster::PlayerMove()
+{
+	/* プレイヤーが進行方向に移動可能か判定 */
+	int pos_x = player->GetPosX(), pos_y = player->GetPosY();
+	CalcDirectionToPos(&pos_x, &pos_y, static_cast<DIRECTION>(key_pos & BUTTON_MASK::CURSOR));
+	/* 移動可能の場合, プレイヤーを移動する */
+	if (IsPosMove(pos_x, pos_y)) {
+		game_map->SetChara(player->GetPosY(), player->GetPosX(), static_cast<MAP_TYPE>(MAPSET::DATA::NONE)); /* 現在地点をクリア */
+		player->Move(static_cast<DIRECTION>(key_pos & BUTTON_MASK::CURSOR)); /* 移動する */
+		game_map->SetChara(pos_y, pos_x, static_cast<MAP_TYPE>(player->GetCharaInfo())); /* 移動地点にplayerを配置 */
+	}
+}
+/* プレイヤー攻撃処理 */
+void GameMaster::PlayerAttack()
+{
+
 }
 
 /* 描画処理 */
