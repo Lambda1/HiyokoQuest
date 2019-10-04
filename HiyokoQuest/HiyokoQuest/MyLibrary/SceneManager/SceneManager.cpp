@@ -46,6 +46,8 @@ void SceneManager::Draw()
 
 void SceneManager::KeyInput(const unsigned char key_on, const unsigned char key_up)
 {
+	std::cout << (int)key_on << " " << (int)key_up << std::endl;
+
 	for (int i = 0; i < alphabet; i++) { key_buffer_prev[i] = key_buffer[i]; }
 	KeyOn(key_on);
 	KeyOff(key_up);
