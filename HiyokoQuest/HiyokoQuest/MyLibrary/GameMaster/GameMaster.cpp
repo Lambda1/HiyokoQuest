@@ -27,9 +27,11 @@ void GameMaster::Update()
 		DrawMap();
 		DrawStatus();
 	}
+
+	std::cout << (int)key_pos << std::endl;
 }
 
-void GameMaster::KeyInput(bool* key_on, bool* key_off)
+void GameMaster::KeyInput(const bool* key_on,const bool* key_prev)
 {
 	key_pos = BUTTON_MASK::NONE;
 	/* 最大入力: 2 */
@@ -173,13 +175,12 @@ void GameMaster::PlayerTurn()
 			game_step = GAME_STEP::ITEM_TURN;
 		}
 	}
-	std::cout << (int)key_pos << std::endl;
 }
 /* アイテムターン処理 */
 void GameMaster::ItemTurn()
 {
 	//std::cout << "GAME ITEM" << std::endl;
-	game_step = GAME_STEP::TURN_START;
+	game_step = GAME_STEP::ENEMY_TURN;
 }
 
 /* キャラクター処理 */

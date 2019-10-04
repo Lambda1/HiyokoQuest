@@ -26,7 +26,7 @@ class BaseScene
 		virtual void Update()=0;
 		virtual void Draw()=0;
 		
-		virtual void KeyInput(bool *key, bool *key_prev)=0;
+		virtual void KeyInput(const bool *key_buffer,const bool *key_buffer_prev)=0;
 
 		inline bool  GetQuit()  { return game_quite; }
 		inline SCENE GetScene() { return scene_number; }

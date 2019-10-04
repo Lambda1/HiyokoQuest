@@ -52,7 +52,7 @@ class TitleScene : public BaseScene
 
 		void Update() override;
 		void Draw()   override;
-		void KeyInput(bool* key_now, bool* key_prev) override;
+		void KeyInput(const bool* key_buffer,const bool* key_buffer_prev) override;
 };
 
 #endif

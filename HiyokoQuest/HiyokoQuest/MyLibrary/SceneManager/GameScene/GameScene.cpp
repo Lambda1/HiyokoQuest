@@ -29,8 +29,8 @@ void GameScene::Draw()
 	glutSwapBuffers();
 }
 
-void GameScene::KeyInput(bool* key_now, bool* key_prev)
+void GameScene::KeyInput(const bool* key_on,const bool* key_off)
 {
 	/* ゲームマスタへキー入力を転送 */
-	game_master.KeyInput(key_now,key_prev);
+	game_master.KeyInput(key_on,key_off);
 }

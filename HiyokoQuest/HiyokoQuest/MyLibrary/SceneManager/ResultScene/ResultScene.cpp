@@ -27,7 +27,7 @@ void ResultScene::Draw()
 	glutSwapBuffers();
 }
 
-void ResultScene::KeyInput(bool* key_now, bool* key_prev)
+void ResultScene::KeyInput(const bool* key_now,const bool* key_prev)
 {
 	key_pos = BUTTON::NONE;
 	for (int i = 0; i < alphabet; i++)

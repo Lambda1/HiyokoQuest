@@ -23,7 +23,7 @@ class ResultScene : public BaseScene
 
 		void Update() override;
 		void Draw()   override;
-		void KeyInput(bool* key_now, bool* key_prev) override;
+		void KeyInput(const bool* key_now,const bool* key_prev) override;
 };
 
 #endif

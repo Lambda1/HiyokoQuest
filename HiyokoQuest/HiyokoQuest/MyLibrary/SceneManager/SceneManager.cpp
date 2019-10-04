@@ -2,17 +2,17 @@
 
 SceneManager::SceneManager() :
 	m_scene(nullptr), now_scene(SCENE::TITLE),
-	key_buffer(nullptr), key_buffer_prev(nullptr)
+	key_buffer_now(nullptr), key_buffer_prev(nullptr)
 {
-	key_buffer = new bool[alphabet];
+	key_buffer_now = new bool[alphabet];
 	key_buffer_prev = new bool[alphabet];
-	for (int i = 0; i < alphabet; i++) key_buffer[i] = key_buffer_prev[i] = false;
+	for (int i = 0; i < alphabet; i++) key_buffer_now[i] = key_buffer_prev[i] = false;
 }
 
 SceneManager::~SceneManager()
 {
 	if (m_scene) delete m_scene;
-	if (key_buffer) delete[] key_buffer;
+	if (key_buffer_now) delete[] key_buffer_now;
 	if (key_buffer_prev) delete[] key_buffer_prev;
 }
 
@@ -35,7 +35,7 @@ void SceneManager::ChangeScene(SCENE scene)
 
 void SceneManager::Update()
 {
-	m_scene->KeyInput(key_buffer, key_buffer_prev);
+	m_scene->KeyInput(key_buffer_now, key_buffer_prev);
 	m_scene->Update();
 }
 
@@ -44,14 +44,15 @@ void SceneManager::Draw()
 	m_scene->Draw();
 }
 
-void SceneManager::KeyInput(const unsigned char key_on, const unsigned char key_up)
+void SceneManager::KeyInput(const bool* key_buffer)
 {
-	std::cout << (int)key_on << " " << (int)key_up << std::endl;
-
-	for (int i = 0; i < alphabet; i++) { key_buffer_prev[i] = key_buffer[i]; }
-	KeyOn(key_on);
-	KeyOff(key_up);
+	for (int i = 0; i < alphabet; i++)
+	{
+		key_buffer_prev[i] = key_buffer_now[i];
+		key_buffer_now[i] = key_buffer[i];
+	}
 }
+
 
 void SceneManager::TransScene()
 {

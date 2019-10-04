@@ -1,11 +1,11 @@
 #include "./MyGL.hpp"
-#include <iostream>
+
 constexpr unsigned int MyGL::msecs;
 constexpr int MyGL::timer_value;
 unsigned int MyGL::deltaTime = 0;
-
-unsigned char MyGL::n_key = 0, MyGL::n_key_up = 0;
+constexpr unsigned char MyGL::key_bias_start, MyGL::key_bias_end;
 int MyGL::sp_key = 0, MyGL::sp_key_up = 0;
+bool* MyGL::key_buffer = nullptr;
 
 void MyGL::Resize(int width,int height)
 {
@@ -24,11 +24,13 @@ void MyGL::Timer(int value)
 }
 void MyGL::Keyboard(unsigned char key,int x,int y)
 {
-	n_key = key;
+	if(key >= key_bias_start && key <= key_bias_end)
+		key_buffer[static_cast<int>(key - key_bias_start)] = true;
 }
 void MyGL::KeyboardUp(unsigned char key,int x,int y)
 {
-	n_key_up = key;
+	if (key >= key_bias_start && key <= key_bias_end)
+		key_buffer[static_cast<int>(key - key_bias_start)] = false;
 }
 void MyGL::SpKeyboardUp(int key,int x,int y)
 {
@@ -38,10 +40,13 @@ void MyGL::DummyDisplay(){}
 
 MyGL::MyGL()
 {
+	key_buffer = new bool[alphabet];
+	for (int i = 0; i < alphabet; i++) key_buffer[i] = false;
 }
 
 MyGL::~MyGL()
 {
+	delete[] key_buffer;
 }
 
 void MyGL::Init(std::string name,int width,int height,int argc,char **argv)

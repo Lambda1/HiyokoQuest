@@ -24,11 +24,11 @@ void TitleScene::Draw()
 	glutSwapBuffers();
 }
 
-void TitleScene::KeyInput(bool* key_now, bool* key_prev)
+void TitleScene::KeyInput(const bool* key_buffer,const bool* key_buffer_prev)
 {
 	key_pos = BUTTON::NONE;
 	for(int i = 0;i < alphabet;i++)
-		if (key_now[i] && !key_prev[i])
+		if (key_buffer[i] && !key_buffer_prev[i])
 		{
 			switch (static_cast<BUTTON>(key_bias+i))
 			{

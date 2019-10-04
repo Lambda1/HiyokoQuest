@@ -84,7 +84,7 @@ public:
 		void Update();
 
 		/* キー入力仲介処理 */
-		void KeyInput(bool *key_on, bool *key_off);
+		void KeyInput(const bool *key_on,const bool *key_off);
 
 		/* ゲッタ */
 		inline bool IsGameOver() { return game_over_flag; }

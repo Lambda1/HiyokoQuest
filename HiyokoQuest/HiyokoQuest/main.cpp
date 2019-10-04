@@ -26,15 +26,13 @@ int main(int argc, char* argv[])
 		opengl_manager.MainLoop(); /* OpenGLのループ処理 */
 		
 		//fps_manager.FPS_Checker(); /* DEBUG: FPSチェック */
-
+		int ncnt = 0;
 		/* 60FPS処理 */
 		if (fps_manager.Timer_30fps())
 		{
-			scene_manager.KeyInput(opengl_manager.GetKey(), opengl_manager.GetKeyUp()); /* キーボード入力 */
+			scene_manager.KeyInput(opengl_manager.GetKeyBuffer()); /* キーボード入力 */
 			scene_manager.Update();    /* シーン更新 */
 			scene_manager.Draw();      /* シーン描画 */
-
-			opengl_manager.ResetKey(); /* キーリセット */
 
 			scene_manager.TransScene(); /* シーン遷移処理 */
 		}
