@@ -27,8 +27,6 @@ void GameMaster::Update()
 		DrawMap();
 		DrawStatus();
 	}
-
-	std::cout << (int)key_pos << std::endl;
 }
 
 void GameMaster::KeyInput(const bool* key_on,const bool* key_prev)
@@ -144,7 +142,7 @@ void GameMaster::CreateMap()
 /* ターン開始処理 */
 void GameMaster::TurnStart()
 {
-	//std::cout << "GAME START" << std::endl;
+	std::cout << "GAME START" << std::endl;
 	game_step = GAME_STEP::PLAYER_TURN;
 	/* ターンを経過 */
 	turn_number++;
@@ -152,7 +150,7 @@ void GameMaster::TurnStart()
 /* プレイヤーターン処理 */
 void GameMaster::PlayerTurn()
 {
-	//std::cout << "GAME PLAYER" << std::endl;
+	std::cout << "GAME PLAYER" << std::endl;
 
 	/* キー入力があった場合, 処理を開始 */
 	if (key_pos != BUTTON_MASK::NONE)
@@ -165,12 +163,10 @@ void GameMaster::PlayerTurn()
 		if (!turn_cost_flag) {
 			turn_cost_flag = PlayerAttack();
 		}
-
-		/* プレイヤー情報更新 */
-		player->Update();
-
 		/* 行動を消費していたら, アイテムターンへ移行 */
-		if (turn_cost_flag) {
+		if (turn_cost_flag)
+		{
+			player->Update(); /* プレイヤー情報更新 */
 			turn_cost_flag = false;
 			game_step = GAME_STEP::ITEM_TURN;
 		}
@@ -179,8 +175,8 @@ void GameMaster::PlayerTurn()
 /* アイテムターン処理 */
 void GameMaster::ItemTurn()
 {
-	//std::cout << "GAME ITEM" << std::endl;
-	game_step = GAME_STEP::ENEMY_TURN;
+	std::cout << "GAME ITEM" << std::endl;
+	game_step = GAME_STEP::TURN_START;
 }
 
 /* キャラクター処理 */
@@ -212,6 +208,7 @@ bool GameMaster::IsPosMove(const int x, const int y)
 {
 	MAPSET::DATA dungeon_data = static_cast<MAPSET::DATA>(game_map->GetLayerDungeon(x,y));
 
+	/* 道 and 部屋ならば, 移動可能 */
 	if (dungeon_data == MAPSET::DATA::ROAD || dungeon_data == MAPSET::DATA::ROOM)
 	{
 		return true;
