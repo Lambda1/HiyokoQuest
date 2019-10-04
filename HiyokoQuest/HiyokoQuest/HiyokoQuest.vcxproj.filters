@@ -91,6 +91,9 @@
     <Filter Include="ソース ファイル\GameMaster\Character\Player">
       <UniqueIdentifier>{b626493e-ee41-44af-906b-7d6a5f237dc6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\FPS_Controller">
+      <UniqueIdentifier>{0424a765-fb4b-403d-80eb-a940462cb293}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -178,6 +181,9 @@
     </ClInclude>
     <ClInclude Include="MyLibrary\GameMaster\Character\Player\Player.hpp">
       <Filter>ヘッダー ファイル\GameMaster\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\FPS_Controller\FPS_Controller.hpp">
+      <Filter>ヘッダー ファイル\FPS_Controller</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

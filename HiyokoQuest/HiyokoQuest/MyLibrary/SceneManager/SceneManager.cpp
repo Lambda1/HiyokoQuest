@@ -12,8 +12,8 @@ SceneManager::SceneManager() :
 SceneManager::~SceneManager()
 {
 	if (m_scene) delete m_scene;
-	if (key_buffer) delete key_buffer;
-	if (key_buffer_prev) delete key_buffer_prev;
+	if (key_buffer) delete[] key_buffer;
+	if (key_buffer_prev) delete[] key_buffer_prev;
 }
 
 void SceneManager::ChangeScene(SCENE scene)
@@ -46,7 +46,7 @@ void SceneManager::Draw()
 
 void SceneManager::KeyInput(const unsigned char key_on, const unsigned char key_up)
 {
-	for (int i = 0; i < alphabet; i++) key_buffer_prev[i] = key_buffer[i];
+	for (int i = 0; i < alphabet; i++) { key_buffer_prev[i] = key_buffer[i]; }
 	KeyOn(key_on);
 	KeyOff(key_up);
 }

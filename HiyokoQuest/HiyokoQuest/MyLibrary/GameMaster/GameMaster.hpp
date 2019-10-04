@@ -30,6 +30,7 @@ class GameMaster
 	/* ゲーム処理 */
 	GAME_STEP game_step; /* ゲーム進行管理 */
 	bool game_over_flag; /* ゲームオーバ管理 */
+	bool turn_cost_flag; /* ターン以降管理 */
 	
 	/* キー処理 */
 	BUTTON_MASK key_pos;   /* キー1文字分のバッファ */
@@ -68,8 +69,8 @@ private:
 	bool IsPosMove(const int x,const int y); /* 座標(x,y)地点は, 進行可能か判定 */
 
 	/* PlayerTurn専用処理 */
-	void PlayerMove();   /* プレイヤー移動処理 */
-	void PlayerAttack(); /* プレイヤー攻撃処理 */
+	bool PlayerMove();   /* プレイヤー移動処理 */
+	bool PlayerAttack(); /* プレイヤー攻撃処理 */
 
 	/* 描画処理 */
 	void DrawMap();    /* マップ描画 */

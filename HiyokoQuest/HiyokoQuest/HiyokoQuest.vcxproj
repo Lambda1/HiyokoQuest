@@ -139,6 +139,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MyLibrary\FPS_Controller\FPS_Controller.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Character.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Direction.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Player\Player.hpp" />

@@ -2,7 +2,7 @@
 
 GameMaster::GameMaster() :
 	game_step(GAME_STEP::INIT),
-	game_over_flag(false),
+	game_over_flag(false), turn_cost_flag(false),
 	key_pos(BUTTON_MASK::NONE), all_key_release(false),
 	random_seed(static_cast<int>(std::time(nullptr))), cnt_seed(0),
 	game_map(nullptr) , floor_number(0), turn_number(0), room_number(0),
@@ -142,7 +142,7 @@ void GameMaster::CreateMap()
 /* ターン開始処理 */
 void GameMaster::TurnStart()
 {
-	std::cout << "GAME START" << std::endl;
+	//std::cout << "GAME START" << std::endl;
 	game_step = GAME_STEP::PLAYER_TURN;
 	/* ターンを経過 */
 	turn_number++;
@@ -150,27 +150,35 @@ void GameMaster::TurnStart()
 /* プレイヤーターン処理 */
 void GameMaster::PlayerTurn()
 {
-	std::cout << "GAME PLAYER" << std::endl;
+	//std::cout << "GAME PLAYER" << std::endl;
 
 	/* キー入力があった場合, 処理を開始 */
 	if (key_pos != BUTTON_MASK::NONE)
 	{
 		/* プレイヤー移動処理 */
-		PlayerMove();
+		if (!turn_cost_flag) {
+			turn_cost_flag = PlayerMove();
+		}
 		/* プレイヤー攻撃処理 */
-		PlayerAttack();
+		if (!turn_cost_flag) {
+			turn_cost_flag = PlayerAttack();
+		}
 
 		/* プレイヤー情報更新 */
 		player->Update();
 
-		/* アイテムターンへ移行 */
-		game_step = GAME_STEP::ITEM_TURN;
+		/* 行動を消費していたら, アイテムターンへ移行 */
+		if (turn_cost_flag) {
+			turn_cost_flag = false;
+			game_step = GAME_STEP::ITEM_TURN;
+		}
 	}
+	std::cout << (int)key_pos << std::endl;
 }
 /* アイテムターン処理 */
 void GameMaster::ItemTurn()
 {
-	std::cout << "GAME ITEM" << std::endl;
+	//std::cout << "GAME ITEM" << std::endl;
 	game_step = GAME_STEP::TURN_START;
 }
 
@@ -213,7 +221,7 @@ bool GameMaster::IsPosMove(const int x, const int y)
 
 /* PlayerTurn専用処理 */
 /* プレイヤー移動処理 */
-void GameMaster::PlayerMove()
+bool GameMaster::PlayerMove()
 {
 	/* プレイヤーが進行方向に移動可能か判定 */
 	int pos_x = player->GetPosX(), pos_y = player->GetPosY();
@@ -223,12 +231,14 @@ void GameMaster::PlayerMove()
 		game_map->SetChara(player->GetPosY(), player->GetPosX(), static_cast<MAP_TYPE>(MAPSET::DATA::NONE)); /* 現在地点をクリア */
 		player->Move(static_cast<DIRECTION>(key_pos & BUTTON_MASK::CURSOR)); /* 移動する */
 		game_map->SetChara(pos_y, pos_x, static_cast<MAP_TYPE>(player->GetCharaInfo())); /* 移動地点にplayerを配置 */
+		return true;
 	}
+	return false;
 }
 /* プレイヤー攻撃処理 */
-void GameMaster::PlayerAttack()
+bool GameMaster::PlayerAttack()
 {
-
+	return false;
 }
 
 /* 描画処理 */
