@@ -60,6 +60,8 @@ void MyGL::Init(std::string name,int width,int height,int argc,char **argv)
 	/* ‚±‚±‚©‚ç: “Á‰»ˆ— */
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_NORMALIZE);
 	/* ‚±‚±‚Ü‚Å: “Á‰»ˆ— */
 }
 

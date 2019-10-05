@@ -1,6 +1,7 @@
 #ifndef __TITLE_SCENE_HPP__
 #define __TITLE_SCENE_HPP__
 
+#include <GL/glew.h>
 #include <GL/freeglut.h>
 
 #include "../BaseScene/BaseScene.hpp"

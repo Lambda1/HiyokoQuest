@@ -25,8 +25,9 @@ void GameMaster::Update()
 	/* ゲーム描画 */
 	if (game_step >= GAME_STEP::TURN_START)
 	{
-		DrawMap();
-		DrawStatus();
+		CameraPos();  /* カメラ設定 */
+		DrawMap();    /* マップ描画 */
+		DrawStatus(); /* ステータス描画 */
 	}
 }
 
@@ -97,6 +98,9 @@ void GameMaster::Init()
 
 	/* プレイヤー招来 */
 	player = new Player;
+
+	/* 描画処理初期化 */
+	draw_manager.Init();
 }
 /* マップ生成処理 */
 void GameMaster::CreateMap()
@@ -160,7 +164,8 @@ void GameMaster::PlayerTurn()
 	if (key_pos != BUTTON_MASK::NONE)
 	{
 		/* プレイヤー移動処理 */
-		if (!turn_cost_flag) {
+		/* (十字キー入力があった場合) */
+		if (((key_pos&BUTTON_MASK::CURSOR) != BUTTON_MASK::NONE) && !turn_cost_flag) {
 			turn_cost_flag = PlayerMove();
 		}
 		/* プレイヤー攻撃処理 */
@@ -173,7 +178,7 @@ void GameMaster::PlayerTurn()
 			player->Update(); /* プレイヤー情報更新 */
 			turn_cost_flag = false;
 			game_step = GAME_STEP::STAIR_TURN;
-
+			
 			game_map->Update();
 			MAP_TYPE* test = game_map->GetALL();
 			for (int i = 0; i < height; i++) {
@@ -292,10 +297,20 @@ void GameMaster::DiposeFloor()
 }
 
 /* 描画処理 */
+void GameMaster::CameraPos()
+{
+	if (key_pos == BUTTON_MASK::UP) ky--;
+	else if (key_pos == BUTTON_MASK::DOWN) ky++;
+	else if (key_pos == BUTTON_MASK::RIGHT) kx++;
+	else if (key_pos == BUTTON_MASK::LEFT) kx--;
+
+	draw_manager.CameraPos(player->GetPosX(), 10, player->GetPosY()+10 , player->GetPosX(), 0, player->GetPosY());
+}
 void GameMaster::DrawMap()
 {
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	draw_manager.DrawMap(game_map->GetDungeon(), width, height);     /* マップ表示 */
+	/* アイテム表示 */
+	draw_manager.DrawCharacter(game_map->GetChara(), width, height); /* 主人公表示 */
 }
 void GameMaster::DrawStatus()
 {

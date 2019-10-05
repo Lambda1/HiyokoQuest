@@ -1,8 +1,6 @@
 #ifndef __GAME_SCENE_HPP__
 #define __GAME_SCENE_HPP__
 
-#include <GL/freeglut.h>
-
 #include "../BaseScene/BaseScene.hpp"
 
 #include "..//Scene.hpp"

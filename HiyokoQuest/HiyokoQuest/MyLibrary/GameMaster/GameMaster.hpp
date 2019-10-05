@@ -1,6 +1,7 @@
 #ifndef __GAME_MASTER_HPP__
 #define __GAME_MASTER_HPP__
 
+#include <GL/glew.h>
 #include <GL/freeglut.h>
 
 #include <iostream>
@@ -12,6 +13,8 @@
 
 #include "./Character/Player/Player.hpp"
 #include "./Character/Stair/Stair.hpp"
+
+#include "..//DrawGame/DrawGame.hpp"
 
 class GameMaster
 {
@@ -57,6 +60,11 @@ class GameMaster
 
 	/* アイテム処理 */
 
+	/* 描画処理 */
+	DrawGame draw_manager; /* 描画管理 */
+
+	int kx = 0, ky = 0;
+
 private:
 	/* ターン処理 */
 	void TurnProcess(); /* ターン統括処理 */
@@ -82,6 +90,7 @@ private:
 	void DiposeFloor();
 
 	/* 描画処理 */
+	void CameraPos();
 	void DrawMap();    /* マップ描画 */
 	void DrawStatus(); /* ステータス描画 */
 
