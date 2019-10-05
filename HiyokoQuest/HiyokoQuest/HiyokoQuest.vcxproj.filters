@@ -79,9 +79,6 @@
     <Filter Include="ソース ファイル\GameMaster\Character">
       <UniqueIdentifier>{0b9a8b1c-5483-48b6-a3df-11fe99feea01}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\SceneManager\GameScene\Character">
-      <UniqueIdentifier>{681cf4be-18b1-4ca3-bc2a-41fcf8daa963}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダー ファイル\GameMaster\Character">
       <UniqueIdentifier>{fd008a04-3050-45ca-b4c1-bacb7c22cd41}</UniqueIdentifier>
     </Filter>
@@ -93,6 +90,12 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\FPS_Controller">
       <UniqueIdentifier>{0424a765-fb4b-403d-80eb-a940462cb293}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\GameMaster\Character\Stair">
+      <UniqueIdentifier>{3c0779fc-eb6e-4588-b673-b94b1a5f5655}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\GameMaster\Character\Stair">
+      <UniqueIdentifier>{d8b38a2a-ab9d-461b-bf21-312a8244e102}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +128,9 @@
     </ClCompile>
     <ClCompile Include="MyLibrary\GameMaster\Character\Player\Player.cpp">
       <Filter>ソース ファイル\GameMaster\Character\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLibrary\GameMaster\Character\Stair\Stair.cpp">
+      <Filter>ソース ファイル\GameMaster\Character\Stair</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +190,9 @@
     </ClInclude>
     <ClInclude Include="MyLibrary\FPS_Controller\FPS_Controller.hpp">
       <Filter>ヘッダー ファイル\FPS_Controller</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\GameMaster\Character\Stair\Stair.hpp">
+      <Filter>ヘッダー ファイル\GameMaster\Character\Stair</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

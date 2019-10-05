@@ -11,6 +11,7 @@
 #include "./GameKey.hpp"
 
 #include "./Character/Player/Player.hpp"
+#include "./Character/Stair/Stair.hpp"
 
 class GameMaster
 {
@@ -21,6 +22,7 @@ class GameMaster
 		CREATE_MAP,  /* マップ生成 */
 		TURN_START,  /* ターン開始 */
 		PLAYER_TURN, /* プレイヤーフェーズ */
+		STAIR_TURN,  /* 階段フェーズ */
 		ITEM_TURN,   /* アイテムフェーズ */
 		ENEMY_TURN,  /* エネミーフェーズ */
 		STATUS_TURN, /* ステータスフェーズ */
@@ -48,6 +50,9 @@ class GameMaster
 	/* プレイヤー処理 */
 	Player* player;
 
+	/* 階段処理 */
+	Stair* stair;
+
 	/* エネミー処理 */
 
 	/* アイテム処理 */
@@ -59,6 +64,7 @@ private:
 	void CreateMap();  /* マップ生成 */
 	void TurnStart();  /* ターン開始 */
 	void PlayerTurn(); /* プレイヤーターン */
+	void StairTurn();  /* 階層ターン */
 	void ItemTurn();   /* アイテムターン */
 	void EnemyTurn();  /* エネミーターン */
 	void StatusTurn(); /* ステータスターン */
@@ -71,6 +77,9 @@ private:
 	/* PlayerTurn専用処理 */
 	bool PlayerMove();   /* プレイヤー移動処理 */
 	bool PlayerAttack(); /* プレイヤー攻撃処理 */
+
+	/* StairTuen専用処理 */
+	void DiposeFloor();
 
 	/* 描画処理 */
 	void DrawMap();    /* マップ描画 */

@@ -27,6 +27,7 @@ class Character
 		/* フラグ */
 		bool death;     /* 死亡フラグ */
 		bool is_friend; /* 友好フラグ */
+		bool is_attack; /* 攻撃フラグ */
 	public:
 		Character();
 		virtual ~Character();
@@ -59,6 +60,16 @@ class Character
 
 		/* 死亡判定 */
 		inline bool IsDeath() { return death; }
+
+		/* 演算子オーバーロード */
+		inline bool operator==(const Character& rhs)
+		{
+			return (this->x == rhs.x) && (this->y == rhs.y);
+		}
+		inline bool operator!=(const Character& rhs)
+		{
+			return !(*this == rhs);
+		}
 };
 
 #endif

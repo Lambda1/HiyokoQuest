@@ -87,6 +87,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,6 +128,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyLibrary\GameMaster\Character\Character.cpp" />
     <ClCompile Include="MyLibrary\GameMaster\Character\Player\Player.cpp" />
+    <ClCompile Include="MyLibrary\GameMaster\Character\Stair\Stair.cpp" />
     <ClCompile Include="MyLibrary\GameMaster\GameMaster.cpp" />
     <ClCompile Include="MyLibrary\MyGL\MyGL.cpp" />
     <ClCompile Include="MyLibrary\PrintString\PrintString.cpp" />
@@ -143,6 +145,7 @@
     <ClInclude Include="MyLibrary\GameMaster\Character\Character.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Direction.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Player\Player.hpp" />
+    <ClInclude Include="MyLibrary\GameMaster\Character\Stair\Stair.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\GameKey.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\GameMaster.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\RougeLikeMap\MapSet.hpp" />

@@ -6,12 +6,13 @@ GameMaster::GameMaster() :
 	key_pos(BUTTON_MASK::NONE), all_key_release(false),
 	random_seed(static_cast<int>(std::time(nullptr))), cnt_seed(0),
 	game_map(nullptr) , floor_number(0), turn_number(0), room_number(0),
-	player(nullptr)
+	player(nullptr), stair(nullptr)
 {
 }
 GameMaster::~GameMaster()
 {
 	if (player) { delete player; }
+	if (stair) { delete stair; }
 	if (game_map) { delete game_map; }
 }
 
@@ -74,14 +75,16 @@ void GameMaster::TurnProcess()
 		TurnStart(); break;
 	case GAME_STEP::PLAYER_TURN:
 		PlayerTurn(); break;
+	case GAME_STEP::STAIR_TURN:
+		StairTurn(); break;
 	case GAME_STEP::ITEM_TURN:
 		ItemTurn();   break;
 	case GAME_STEP::ENEMY_TURN:
-		break;
+		EnemyTurn(); break;
 	case GAME_STEP::STATUS_TURN:
-		break;
+		StatusTurn(); break;
 	case GAME_STEP::TURN_END:
-		break;
+		TurnEnd(); break;
 	default:
 		break;
 	}
@@ -94,10 +97,6 @@ void GameMaster::Init()
 
 	/* プレイヤー招来 */
 	player = new Player;
-	/* エネミー召喚 */
-
-	/* アイテム生成 */
-
 }
 /* マップ生成処理 */
 void GameMaster::CreateMap()
@@ -105,11 +104,6 @@ void GameMaster::CreateMap()
 	std::cout << "GAME MAP" << std::endl;
 	game_step = GAME_STEP::TURN_START;
 	
-	/* 階層移動の場合は, マップを破棄して乱数を+1する. */
-	if (game_map) {
-		delete game_map;
-		cnt_seed++;
-	}
 	/* 階層を進む */
 	floor_number++;
 	/* 部屋数を決定 */
@@ -120,11 +114,21 @@ void GameMaster::CreateMap()
 	game_map->SetBaseInfo(static_cast<MAP_TYPE>(MAPSET::DATA::NONE), static_cast<MAP_TYPE>(MAPSET::DATA::ROOM), static_cast<MAP_TYPE>(MAPSET::DATA::ROAD), static_cast<MAP_TYPE>(MAPSET::DATA::WALL));
 	game_map->Generate();
 
+	/* 階段生成 */
+	stair = new Stair;
+	int stair_pos_x, stair_pos_y;
+	game_map->GetRoomPos(&stair_pos_x, &stair_pos_y);
+	game_map->SetChara(stair_pos_y, stair_pos_x, static_cast<MAP_TYPE>(stair->GetCharaInfo())); /* マップに階段を配置 */
+	stair->InitPos(stair_pos_x, stair_pos_y); /* 階段座標を初期化 */
+	/* エネミー召喚 */
+
+	/* アイテム生成 */
+
 	/* プレイヤー配置 */
-	int pos_x, pos_y;
-	game_map->GetRoomPos(&pos_x, &pos_y); /* ランダムに部屋の座標を取得 */
-	game_map->SetChara(pos_y, pos_x,static_cast<MAP_TYPE>(player->GetCharaInfo())); /* マップにプレイヤーを配置 */
-	player->InitPos(pos_x,pos_y); /* プレイヤー座標を初期化  */
+	int player_pos_x, player_pos_y;
+	game_map->GetRoomPos(&player_pos_x, &player_pos_y); /* ランダムに部屋の座標を取得 */
+	game_map->SetChara(player_pos_y, player_pos_x,static_cast<MAP_TYPE>(player->GetCharaInfo())); /* マップにプレイヤーを配置 */
+	player->InitPos(player_pos_x, player_pos_y); /* プレイヤー座標を初期化  */
 
 	/* エネミー配置 */
 
@@ -150,7 +154,7 @@ void GameMaster::TurnStart()
 /* プレイヤーターン処理 */
 void GameMaster::PlayerTurn()
 {
-	std::cout << "GAME PLAYER" << std::endl;
+	//std::cout << "GAME PLAYER" << std::endl;
 
 	/* キー入力があった場合, 処理を開始 */
 	if (key_pos != BUTTON_MASK::NONE)
@@ -163,19 +167,57 @@ void GameMaster::PlayerTurn()
 		if (!turn_cost_flag) {
 			turn_cost_flag = PlayerAttack();
 		}
-		/* 行動を消費していたら, アイテムターンへ移行 */
+		/* 行動を消費していたら, 次ターンへ移行 */
 		if (turn_cost_flag)
 		{
 			player->Update(); /* プレイヤー情報更新 */
 			turn_cost_flag = false;
-			game_step = GAME_STEP::ITEM_TURN;
+			game_step = GAME_STEP::STAIR_TURN;
+
+			game_map->Update();
+			MAP_TYPE* test = game_map->GetALL();
+			for (int i = 0; i < height; i++) {
+				for (int j = 0; j < width; j++) std::cout << (int)test[i * width + j];
+				std::cout << std::endl;
+			}
 		}
 	}
+}
+/* 階層ターン処理 */
+void GameMaster::StairTurn()
+{
+	std::cout << "GAME STAIR" << std::endl;
+	
+	/* PlayerとSTAIRの座標が等しい時, 次階層へ移動 */
+	if (*player == *stair)
+	{
+		DiposeFloor();
+		game_step = GAME_STEP::CREATE_MAP;
+	}
+	else { game_step = GAME_STEP::ITEM_TURN; }
 }
 /* アイテムターン処理 */
 void GameMaster::ItemTurn()
 {
 	std::cout << "GAME ITEM" << std::endl;
+	game_step = GAME_STEP::ENEMY_TURN;
+}
+/* エネミーターン処理 */
+void GameMaster::EnemyTurn()
+{
+	std::cout << "GAME ENEMY" << std::endl;
+	game_step = GAME_STEP::STATUS_TURN;
+}
+/* ステータスターン処理 */
+void GameMaster::StatusTurn()
+{
+	std::cout << "GAME STATUS" << std::endl;
+	game_step = GAME_STEP::TURN_END;
+}
+/* ターン終了処理 */
+void GameMaster::TurnEnd()
+{
+	std::cout << "GAME END" << std::endl;
 	game_step = GAME_STEP::TURN_START;
 }
 
@@ -237,6 +279,16 @@ bool GameMaster::PlayerMove()
 bool GameMaster::PlayerAttack()
 {
 	return false;
+}
+
+/* StairTurn専用処理 */
+/* 次回層に進むための処理*/
+/* 乱数更新, メモリ解放処理 */
+void GameMaster::DiposeFloor()
+{
+	cnt_seed++;
+	if (game_map) delete game_map;
+	if (stair) delete stair;
 }
 
 /* 描画処理 */
