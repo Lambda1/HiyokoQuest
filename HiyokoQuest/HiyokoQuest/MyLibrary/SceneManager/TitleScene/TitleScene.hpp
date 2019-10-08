@@ -24,7 +24,7 @@ class TitleScene : public BaseScene
 	enum class MENU : int
 	{
 		START,
-		PLAYER2,
+		AI,
 		NETWORK,
 		QUIT,
 

@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 	{
 		opengl_manager.MainLoop(); /* OpenGLのループ処理 */
 		
-		fps_manager.FPS_Checker(); /* DEBUG: FPSチェック */
+		//fps_manager.FPS_Checker(); /* DEBUG: FPSチェック */
 
 		/* 60FPS処理 */
 		if (fps_manager.Timer_60fps())

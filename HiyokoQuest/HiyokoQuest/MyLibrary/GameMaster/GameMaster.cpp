@@ -2,7 +2,7 @@
 
 GameMaster::GameMaster() :
 	game_step(GAME_STEP::INIT),
-	game_over_flag(false), turn_cost_flag(false),
+	game_over_flag(false),
 	key_pos(BUTTON_MASK::NONE), all_key_release(false),
 	random_seed(static_cast<int>(std::time(nullptr))), cnt_seed(0),
 	game_map(nullptr) , floor_number(0), turn_number(0), room_number(0),
@@ -54,6 +54,8 @@ void GameMaster::KeyInput(const bool* key_on,const bool* key_prev)
 				key_pos = key_pos | BUTTON_MASK::OK; break;
 			case BUTTON::CANCEL:
 				key_pos = key_pos | BUTTON_MASK::CANCEL; break;
+			case BUTTON::ATTACK:
+				key_pos = key_pos | BUTTON_MASK::ATTACK; break;
 			default:
 				key_input_number--; break;
 			}
@@ -123,7 +125,7 @@ void GameMaster::CreateMap()
 	int stair_pos_x, stair_pos_y;
 	game_map->GetRoomPos(&stair_pos_x, &stair_pos_y);
 	game_map->SetChara(stair_pos_y, stair_pos_x, static_cast<MAP_TYPE>(stair->GetCharaInfo())); /* マップに階段を配置 */
-	stair->InitPos(stair_pos_x, stair_pos_y); /* 階段座標を初期化 */
+	stair->InitPos(static_cast<POS_TYPE>(stair_pos_x), static_cast<POS_TYPE>(stair_pos_y)); /* 階段座標を初期化 */
 	/* エネミー召喚 */
 
 	/* アイテム生成 */
@@ -132,7 +134,7 @@ void GameMaster::CreateMap()
 	int player_pos_x, player_pos_y;
 	game_map->GetRoomPos(&player_pos_x, &player_pos_y); /* ランダムに部屋の座標を取得 */
 	game_map->SetChara(player_pos_y, player_pos_x,static_cast<MAP_TYPE>(player->GetCharaInfo())); /* マップにプレイヤーを配置 */
-	player->InitPos(player_pos_x, player_pos_y); /* プレイヤー座標を初期化  */
+	player->InitPos(static_cast<POS_TYPE>(player_pos_x), static_cast<POS_TYPE>(player_pos_y)); /* プレイヤー座標を初期化  */
 
 	/* エネミー配置 */
 
@@ -140,12 +142,6 @@ void GameMaster::CreateMap()
 
 	/* 各レイヤを結合 */
 	game_map->Update();
-
-	MAP_TYPE* test = game_map->GetALL();
-	for (int i = 0; i < height; i++) {
-		for (int j = 0; j < width; j++) std::cout << (int)test[i * width + j];
-		std::cout << std::endl;
-	}
 }
 /* ターン開始処理 */
 void GameMaster::TurnStart()
@@ -163,29 +159,33 @@ void GameMaster::PlayerTurn()
 	/* キー入力があった場合, 処理を開始 */
 	if (key_pos != BUTTON_MASK::NONE)
 	{
-		/* プレイヤー移動処理 */
-		/* (十字キー入力があった場合) */
-		if (((key_pos&BUTTON_MASK::CURSOR) != BUTTON_MASK::NONE) && !turn_cost_flag) {
-			turn_cost_flag = PlayerMove();
-		}
-		/* プレイヤー攻撃処理 */
-		if (!turn_cost_flag) {
-			turn_cost_flag = PlayerAttack();
-		}
-		/* 行動を消費していたら, 次ターンへ移行 */
-		if (turn_cost_flag)
+		/* 行動を消費していない場合の処理 */
+		if (player->GetTurnMode() == TURN_MODE::NONE)
 		{
-			player->Update(); /* プレイヤー情報更新 */
-			turn_cost_flag = false;
-			game_step = GAME_STEP::STAIR_TURN;
-			
-			game_map->Update();
-			MAP_TYPE* test = game_map->GetALL();
-			for (int i = 0; i < height; i++) {
-				for (int j = 0; j < width; j++) std::cout << (int)test[i * width + j];
-				std::cout << std::endl;
+			/* プレイヤー移動処理 (十字入力有り) */
+			if (((key_pos & BUTTON_MASK::CURSOR) != BUTTON_MASK::NONE)) {
+				/* 移動可能ならば, マップを移動して移動処理に移行 */
+				if (PlayerMove()) { player->SetTurnMode(TURN_MODE::MOVE); }
+			}
+			/* プレイヤー攻撃処理 (ABXY入力有り) */
+			if (((key_pos & BUTTON_MASK::ABXY) != BUTTON_MASK::NONE)) {
+				if (PlayerAttack()) { player->SetTurnMode(TURN_MODE::ATTACK); }
 			}
 		}
+	}
+	/* 描画用の処理 */
+	if (player->GetTurnMode() == TURN_MODE::MOVE)
+	{
+		player->MoveAnimation();
+	}
+	/* 行動を消費していたら, 次ターンへ移行 */
+	else if (player->GetTurnMode() == TURN_MODE::END)
+	{
+		player->Update(); /* プレイヤー情報更新 */
+		player->SetTurnMode(TURN_MODE::NONE);
+		game_step = GAME_STEP::STAIR_TURN;
+		
+		game_map->Update();
 	}
 }
 /* 階層ターン処理 */
@@ -227,7 +227,7 @@ void GameMaster::TurnEnd()
 }
 
 /* キャラクター処理 */
-void GameMaster::CalcDirectionToPos(int *x, int *y, DIRECTION direct)
+void GameMaster::CalcDirectionToPos(POS_TYPE *x, POS_TYPE *y, DIRECTION direct)
 {
 	switch (direct)
 	{
@@ -269,13 +269,14 @@ bool GameMaster::IsPosMove(const int x, const int y)
 bool GameMaster::PlayerMove()
 {
 	/* プレイヤーが進行方向に移動可能か判定 */
-	int pos_x = player->GetPosX(), pos_y = player->GetPosY();
+	POS_TYPE pos_x = player->GetPosX(), pos_y = player->GetPosY();
 	CalcDirectionToPos(&pos_x, &pos_y, static_cast<DIRECTION>(key_pos & BUTTON_MASK::CURSOR));
 	/* 移動可能の場合, プレイヤーを移動する */
-	if (IsPosMove(pos_x, pos_y)) {
-		game_map->SetChara(player->GetPosY(), player->GetPosX(), static_cast<MAP_TYPE>(MAPSET::DATA::NONE)); /* 現在地点をクリア */
+	if (IsPosMove(static_cast<int>(pos_x), static_cast<int>(pos_y)))
+	{
+		game_map->SetChara(static_cast<int>(player->GetPosY()), static_cast<int>(player->GetPosX()), static_cast<MAP_TYPE>(MAPSET::DATA::NONE)); /* 現在地点をクリア */
 		player->Move(static_cast<DIRECTION>(key_pos & BUTTON_MASK::CURSOR)); /* 移動する */
-		game_map->SetChara(pos_y, pos_x, static_cast<MAP_TYPE>(player->GetCharaInfo())); /* 移動地点にplayerを配置 */
+		game_map->SetChara(static_cast<int>(pos_y), static_cast<int>(pos_x), static_cast<MAP_TYPE>(player->GetCharaInfo())); /* 移動地点にplayerを配置 */
 		return true;
 	}
 	return false;
@@ -299,18 +300,15 @@ void GameMaster::DiposeFloor()
 /* 描画処理 */
 void GameMaster::CameraPos()
 {
-	if (key_pos == BUTTON_MASK::UP) ky--;
-	else if (key_pos == BUTTON_MASK::DOWN) ky++;
-	else if (key_pos == BUTTON_MASK::RIGHT) kx++;
-	else if (key_pos == BUTTON_MASK::LEFT) kx--;
-
-	draw_manager.CameraPos(player->GetPosX(), 10, player->GetPosY()+10 , player->GetPosX(), 0, player->GetPosY());
+	draw_manager.CameraPos(player->GetPosPX(), 10.0f, player->GetPosPY() + 10.0f, player->GetPosPX(), 0.0f, player->GetPosPY());
 }
 void GameMaster::DrawMap()
 {
-	draw_manager.DrawMap(game_map->GetDungeon(), width, height);     /* マップ表示 */
+	draw_manager.DrawInit(); /* 画面クリア */
+
+	draw_manager.DrawMap(game_map->GetALL(), width, height, static_cast<int>(player->GetPosX()), static_cast<int>(player->GetPosY())); /* マップ表示 */
 	/* アイテム表示 */
-	draw_manager.DrawCharacter(game_map->GetChara(), width, height); /* 主人公表示 */
+	draw_manager.DrawCharacter(player); /* 主人公表示 */
 }
 void GameMaster::DrawStatus()
 {

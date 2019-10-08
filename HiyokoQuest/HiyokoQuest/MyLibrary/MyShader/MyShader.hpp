@@ -20,7 +20,11 @@ class MyShader{
 	void PrintCompileError(const GLuint);
 	
 	public:
-	MyShader(){}
+	MyShader() :
+	compiled(0), linked(0),
+	vertShader(0), fragShader(0),
+	gl2Program(0)
+	{}
 	MyShader(const std::string, const std::string);
 	~MyShader();
 	bool Set(const std::string, const std::string);

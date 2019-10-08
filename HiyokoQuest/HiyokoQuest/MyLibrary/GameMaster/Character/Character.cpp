@@ -1,13 +1,15 @@
 #include "./Character.hpp"
 
 Character::Character() :
+	turn_cost(TURN_MODE::NONE),
 	chara_state(MAPSET::DATA::NONE),
 	x(0), y(0), way(DIRECTION::SOUTH),
 	hp(0), mp(0),
 	max_hp(0), max_mp(0),
 	level(0), power(0), defence(0),
 	exp(0), next_level_exp(0),
-	death(false), is_friend(false), is_attack(false)
+	death(false), is_friend(false), is_attack(false),
+	prev_x(x), prev_y(y)
 {
 }
 
@@ -16,10 +18,10 @@ Character::~Character()
 }
 
 /* ‰Šú‰»ˆ— */
-void Character::InitPos(const int x, const int y)
+void Character::InitPos(const POS_TYPE x, const POS_TYPE y)
 {
-	this->x = x;
-	this->y = y;
+	this->x = prev_x = x;
+	this->y = prev_y = y;
 }
 void Character::InitStatus(const int level, const int power, const int defence)
 {
