@@ -330,4 +330,4 @@ ASALocalRun/
 .mfractor/
 
 # Don't ignore lists
-!./HiyokoQuest/HiyokoQuest/ModelResources/
+!./HiyokoQuest/HiyokoQuest/ModelResources/*
