@@ -14,7 +14,7 @@ void Stair::Move(DIRECTION direct)
 
 }
 
-void Stair::Teleport(const int x, const int y)
+void Stair::Teleport(const POS_TYPE x, const POS_TYPE y)
 {
 
 }

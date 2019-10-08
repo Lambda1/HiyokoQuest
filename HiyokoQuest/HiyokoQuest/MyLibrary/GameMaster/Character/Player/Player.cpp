@@ -20,6 +20,10 @@ Player::~Player()
 
 void Player::Move(DIRECTION direct)
 {
+	/* 描画のために, 前回の座標を保存 */
+	prev_x = x, prev_y = y;
+	way = direct;
+	/* 移動座標の計算 */
 	switch (direct)
 	{
 	case DIRECTION::EAST:
@@ -42,8 +46,9 @@ void Player::Move(DIRECTION direct)
 		break;
 	}
 }
-void Player::Teleport(const int x, const int y)
+void Player::Teleport(const POS_TYPE x, const POS_TYPE y)
 {
+	prev_x = x, prev_y = y;
 	this->x = x;
 	this->y = y;
 }
@@ -60,6 +65,32 @@ void Player::Update()
 	std::cout << "D F: " << death << " " << is_friend << std::endl;
 	std::cout << std::endl;
 }
+
+/* 描画用処理 */
+/* 移動アニメーション */
+void Player::MoveAnimation()
+{
+	/* X軸の移動 */
+	if (((x - prev_x) < 0 ? (x - prev_x) * -1 : x - prev_x) < M_EPSILON) { prev_x = x; }
+	else
+	{
+		if (x - prev_x < 0) prev_x -= MOVE_RESOlUTION;
+		else prev_x += MOVE_RESOlUTION;
+	}
+	/* Y軸の移動 */
+	if (((y - prev_y) < 0 ? (y - prev_y) * -1 : y - prev_y) < M_EPSILON) { prev_y = y; }
+	else
+	{
+		if (y - prev_y < 0) prev_y -= MOVE_RESOlUTION;
+		else prev_y += MOVE_RESOlUTION;
+	}
+
+	/* 移動は完了しているか? */
+	if (x == prev_x && y == prev_y) { turn_cost = TURN_MODE::END; return; }
+
+	turn_cost = TURN_MODE::MOVE;
+}
+
 /* private */
 /* 更新処理 */
 void Player::LevelUp()

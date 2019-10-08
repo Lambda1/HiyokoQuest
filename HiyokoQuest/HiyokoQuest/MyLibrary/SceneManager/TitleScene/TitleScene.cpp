@@ -61,10 +61,10 @@ void TitleScene::View3D()
 void TitleScene::StartMenu()
 {
 	/* 文字メニュー表示 */
-	opengl_string.DrawStrings("START",    menu_locate_x, menu_locate_y - menu_rate * static_cast<int>(MENU::START),   0, PS::COLOR::BLACK);
-	opengl_string.DrawStrings("2-PLAYER", menu_locate_x, menu_locate_y - menu_rate * static_cast<int>(MENU::PLAYER2), 0, PS::COLOR::SILVER);
-	opengl_string.DrawStrings("NETWORK",  menu_locate_x, menu_locate_y - menu_rate * static_cast<int>(MENU::NETWORK), 0, PS::COLOR::SILVER);
-	opengl_string.DrawStrings("QUIT",     menu_locate_x, menu_locate_y - menu_rate * static_cast<int>(MENU::QUIT),    0, PS::COLOR::BLACK);
+	opengl_string.DrawStrings("START",   menu_locate_x, menu_locate_y - menu_rate * static_cast<int>(MENU::START),   0, PS::COLOR::BLACK);
+	opengl_string.DrawStrings("AI-MODE", menu_locate_x, menu_locate_y - menu_rate * static_cast<int>(MENU::AI),      0, PS::COLOR::SILVER);
+	opengl_string.DrawStrings("NETWORK", menu_locate_x, menu_locate_y - menu_rate * static_cast<int>(MENU::NETWORK), 0, PS::COLOR::SILVER);
+	opengl_string.DrawStrings("QUIT",    menu_locate_x, menu_locate_y - menu_rate * static_cast<int>(MENU::QUIT),    0, PS::COLOR::BLACK);
 
 	/* キー入力によるカーソル位置算出 */
 	if (key_pos == BUTTON::DOWN) { cursor_location = (cursor_location + 1) % static_cast<int>(MENU::SIZE); }
@@ -94,7 +94,7 @@ void TitleScene::IsSceneTrans()
 		{
 		case MENU::START:
 			scene_number = SCENE::GAME; break;
-		case MENU::PLAYER2:
+		case MENU::AI:
 			break;
 		case MENU::NETWORK:
 			break;

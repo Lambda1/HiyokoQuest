@@ -126,21 +126,27 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MyLibrary\DrawGame\DrawGame.cpp" />
     <ClCompile Include="MyLibrary\GameMaster\Character\Character.cpp" />
     <ClCompile Include="MyLibrary\GameMaster\Character\Player\Player.cpp" />
     <ClCompile Include="MyLibrary\GameMaster\Character\Stair\Stair.cpp" />
     <ClCompile Include="MyLibrary\GameMaster\GameMaster.cpp" />
+    <ClCompile Include="MyLibrary\Graphics\BMPLoader\BMPLoader.cpp" />
+    <ClCompile Include="MyLibrary\Graphics\ObjLoader\ObjLoader.cpp" />
     <ClCompile Include="MyLibrary\MyGL\MyGL.cpp" />
+    <ClCompile Include="MyLibrary\MyShader\MyShader.cpp" />
     <ClCompile Include="MyLibrary\PrintString\PrintString.cpp" />
     <ClCompile Include="MyLibrary\SceneManager\GameScene\GameScene.cpp" />
     <ClCompile Include="MyLibrary\SceneManager\ResultScene\ResultScene.cpp" />
     <ClCompile Include="MyLibrary\SceneManager\SceneManager.cpp" />
     <ClCompile Include="MyLibrary\SceneManager\TitleScene\TitleScene.cpp" />
+    <ClCompile Include="MyLibrary\VBOLoader\VBOLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MyLibrary\DrawGame\DrawGame.hpp" />
     <ClInclude Include="MyLibrary\FPS_Controller\FPS_Controller.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Character.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Direction.hpp" />
@@ -150,9 +156,13 @@
     <ClInclude Include="MyLibrary\GameMaster\GameMaster.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\RougeLikeMap\MapSet.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\RougeLikeMap\RougeLikeMap.hpp" />
+    <ClInclude Include="MyLibrary\Graphics\BMPLoader\BMPLoader.hpp" />
+    <ClInclude Include="MyLibrary\Graphics\ObjLoader\ObjLoader.hpp" />
+    <ClInclude Include="MyLibrary\Graphics\ResourcePath.hpp" />
     <ClInclude Include="MyLibrary\Mathematics\MyMath\MyMath.hpp" />
     <ClInclude Include="MyLibrary\Mathematics\MyVector\MyVector.hpp" />
     <ClInclude Include="MyLibrary\MyGL\MyGL.hpp" />
+    <ClInclude Include="MyLibrary\MyShader\MyShader.hpp" />
     <ClInclude Include="MyLibrary\PrintString\PrintString.hpp" />
     <ClInclude Include="MyLibrary\SceneManager\BaseScene\BaseScene.hpp" />
     <ClInclude Include="MyLibrary\SceneManager\GameScene\GameScene.hpp" />
@@ -160,6 +170,7 @@
     <ClInclude Include="MyLibrary\SceneManager\Scene.hpp" />
     <ClInclude Include="MyLibrary\SceneManager\SceneManager.hpp" />
     <ClInclude Include="MyLibrary\SceneManager\TitleScene\TitleScene.hpp" />
+    <ClInclude Include="MyLibrary\VBOLoader\VBOLoader.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

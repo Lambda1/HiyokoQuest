@@ -10,7 +10,7 @@ public:
 	~Stair();
 
 	void Move(DIRECTION direct) override;
-	void Teleport(const int x, const int y) override;
+	void Teleport(const POS_TYPE x, const POS_TYPE y) override;
 
 	void Update() override;
 };

@@ -11,6 +11,7 @@ enum class BUTTON : int
 	LEFT = static_cast<int>('a'),
 	OK = static_cast<int>('x'),
 	CANCEL = static_cast<int>('z'),
+	ATTACK = static_cast<int>('e'),
 	NONE = 0
 };
 

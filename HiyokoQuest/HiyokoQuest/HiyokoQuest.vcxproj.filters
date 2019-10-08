@@ -97,6 +97,30 @@
     <Filter Include="ヘッダー ファイル\GameMaster\Character\Stair">
       <UniqueIdentifier>{d8b38a2a-ab9d-461b-bf21-312a8244e102}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\DrawGame">
+      <UniqueIdentifier>{30b0adb0-99a3-4fdb-824d-807053676122}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\DrawGame">
+      <UniqueIdentifier>{52dd98ec-e9e0-471a-8540-f24813094d37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\DrawGame\Graphics">
+      <UniqueIdentifier>{3fac506e-d635-4176-ab17-82b7695dd859}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\DrawGame\Graphics">
+      <UniqueIdentifier>{ad2d4cb7-2567-4b8a-9595-40eed5cce040}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\OpenGL\VBOLoader">
+      <UniqueIdentifier>{c14a9f41-7193-463f-a925-05396ce6e2ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\OpenGL\VBOLoader">
+      <UniqueIdentifier>{ed2e9cca-815c-4f2f-a680-ba88aa73667c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\OpenGL\MyShader">
+      <UniqueIdentifier>{b7454839-a88f-41d4-b214-7c1e2fa36307}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\OpenGL\MyShader">
+      <UniqueIdentifier>{d83ba804-1f01-4eb6-87b5-1edab2ea9f64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -131,6 +155,21 @@
     </ClCompile>
     <ClCompile Include="MyLibrary\GameMaster\Character\Stair\Stair.cpp">
       <Filter>ソース ファイル\GameMaster\Character\Stair</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLibrary\DrawGame\DrawGame.cpp">
+      <Filter>ソース ファイル\DrawGame</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLibrary\Graphics\ObjLoader\ObjLoader.cpp">
+      <Filter>ソース ファイル\DrawGame\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLibrary\Graphics\BMPLoader\BMPLoader.cpp">
+      <Filter>ソース ファイル\DrawGame\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLibrary\VBOLoader\VBOLoader.cpp">
+      <Filter>ソース ファイル\OpenGL\VBOLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLibrary\MyShader\MyShader.cpp">
+      <Filter>ソース ファイル\OpenGL\MyShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -193,6 +232,24 @@
     </ClInclude>
     <ClInclude Include="MyLibrary\GameMaster\Character\Stair\Stair.hpp">
       <Filter>ヘッダー ファイル\GameMaster\Character\Stair</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\DrawGame\DrawGame.hpp">
+      <Filter>ヘッダー ファイル\DrawGame</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\Graphics\BMPLoader\BMPLoader.hpp">
+      <Filter>ヘッダー ファイル\DrawGame\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\Graphics\ObjLoader\ObjLoader.hpp">
+      <Filter>ヘッダー ファイル\DrawGame\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\Graphics\ResourcePath.hpp">
+      <Filter>ヘッダー ファイル\DrawGame\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\VBOLoader\VBOLoader.hpp">
+      <Filter>ヘッダー ファイル\OpenGL\VBOLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\MyShader\MyShader.hpp">
+      <Filter>ヘッダー ファイル\OpenGL\MyShader</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

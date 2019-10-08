@@ -1,6 +1,7 @@
 #ifndef __GAME_MASTER_HPP__
 #define __GAME_MASTER_HPP__
 
+#include <GL/glew.h>
 #include <GL/freeglut.h>
 
 #include <iostream>
@@ -12,6 +13,8 @@
 
 #include "./Character/Player/Player.hpp"
 #include "./Character/Stair/Stair.hpp"
+
+#include "..//DrawGame/DrawGame.hpp"
 
 class GameMaster
 {
@@ -32,7 +35,6 @@ class GameMaster
 	/* ゲーム処理 */
 	GAME_STEP game_step; /* ゲーム進行管理 */
 	bool game_over_flag; /* ゲームオーバ管理 */
-	bool turn_cost_flag; /* ターン以降管理 */
 	
 	/* キー処理 */
 	BUTTON_MASK key_pos;   /* キー1文字分のバッファ */
@@ -45,7 +47,7 @@ class GameMaster
 	using MAP_TYPE = unsigned char; /* マップ型を節約 */
 	RougeLikeMap<MAP_TYPE>* game_map; /* ゲームマップ */
 	int floor_number, turn_number, room_number; /* 階層, 経過ターン, 部屋数 */
-	const int width = 120, height = 100; /* マップの広さ(固定) */
+	const int width = 70, height = 50; /* マップの広さ(固定) */
 
 	/* プレイヤー処理 */
 	Player* player;
@@ -56,6 +58,9 @@ class GameMaster
 	/* エネミー処理 */
 
 	/* アイテム処理 */
+
+	/* 描画処理 */
+	DrawGame draw_manager; /* 描画管理 */
 
 private:
 	/* ターン処理 */
@@ -71,7 +76,7 @@ private:
 	void TurnEnd();    /* ターン終了 */
 
 	/* キャラクター処理 */
-	void CalcDirectionToPos(int *x,int *y,DIRECTION direct); /* 進行方向の座標を取得 */
+	void CalcDirectionToPos(POS_TYPE *x,POS_TYPE *y,DIRECTION direct); /* 進行方向の座標を取得 */
 	bool IsPosMove(const int x,const int y); /* 座標(x,y)地点は, 進行可能か判定 */
 
 	/* PlayerTurn専用処理 */
@@ -82,6 +87,7 @@ private:
 	void DiposeFloor();
 
 	/* 描画処理 */
+	void CameraPos();
 	void DrawMap();    /* マップ描画 */
 	void DrawStatus(); /* ステータス描画 */
 
