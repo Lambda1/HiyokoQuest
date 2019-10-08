@@ -20,14 +20,23 @@ class DrawGame
 {
 	/* .obj情報 */
 	const int obj_info     = 3; /* 頂点・法線・UV座標 */
-	const int model_number = 1; /* 使用する3Dモデル数 */
+	const int model_number = 4; /* 使用する3Dモデル数 */
 	/* 描画クリッピング範囲 */
 	const int range_x = 7, range_y = 9;
 
-
 	/* 3Dモデル 関係 */
+	/* 主人公 */
 	ObjLoader* player;
 	const int player_id_start = 0;
+	/* 壁 */
+	ObjLoader* wall;
+	const int wall_id_start  = player_id_start + obj_info;
+	/* 階段 */
+	ObjLoader* stair;
+	const int stair_id_start = wall_id_start + obj_info;
+	/* 床 */
+	ObjLoader* tyle;
+	const int tyle_id_start  = stair_id_start + obj_info;
 
 	/* Shader関係 */
 	MyShader shader_manager;
@@ -38,6 +47,8 @@ class DrawGame
 
 private:
 	/* 初期化関係 */
+	/* .objロード */
+	ObjLoader* LoadObjFile(const std::string &obj_path);
 	/* VBO初期化 */
 	void SetVBOInfo(ObjLoader *obj_data, const int id_start); 	/* VBOに.objファイルを追加 */
 
@@ -70,8 +81,10 @@ public:
 		void DrawMap(const unsigned char* dungeon, const int& width, const int& height, const int& px, const int& py);
 		/* レイヤ層によるキャラクタ表示 */
 		void DrawCharacter(const unsigned char* dungeon, const int& width, const int& height); /* キャラクター表示 */
-		/* 座標におけるキャラクタ表示 (クリッピングに使用) */
+		/* 座標におけるキャラクタ表示 */
 		void DrawCharacter(Character* ch_obj);
+		/* 座標におけるキャラクタ表示 (クリップングに使用) */
+		void DrawCharacter(Character* ch_obj, const int& width, const int& height,const int& px,const int& py);
 };
 
 #endif

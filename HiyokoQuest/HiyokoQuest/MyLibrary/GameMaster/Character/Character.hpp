@@ -47,7 +47,7 @@ class Character
 		/* 移動処理用変数 */
 		POS_TYPE prev_x, prev_y; /* 前回の座標 */
 		const float MOVE_RESOlUTION = 0.050f; /* 移動分解能 */
-		const float M_EPSILON = 0.010f; /* 移動処理閾値 */
+		const float M_EPSILON = 0.10f; /* 移動処理閾値 */
 		const float ANG_DEG = 45.0f;
 
 	public:
@@ -88,21 +88,21 @@ class Character
 			float ang = 0.0f;
 			switch (way)
 			{
-			case DIRECTION::EAST:
-				ang = ANG_DEG * 4.0f; break;
-			case DIRECTION::WEST:
-				ang = ANG_DEG * 0.0f; break;
 			case DIRECTION::SOUTH:
-				ang = ANG_DEG * 2.0f; break;
-			case DIRECTION::NORTH:
-				ang = ANG_DEG * 6.0f; break;
+				ang = ANG_DEG * 0.0f; break;
 			case DIRECTION::SOUTH_EAST:
-				ang = ANG_DEG * 3.0f; break;
-			case DIRECTION::SOUTH_WEST:
 				ang = ANG_DEG * 1.0f; break;
+			case DIRECTION::EAST:
+				ang = ANG_DEG * 2.0f; break;
 			case DIRECTION::NORTH_EAST:
-				ang = ANG_DEG * 5.0f; break;
+				ang = ANG_DEG * 3.0f; break;
+			case DIRECTION::NORTH:
+				ang = ANG_DEG * 4.0f; break;
 			case DIRECTION::NORTH_WEST:
+				ang = ANG_DEG * 5.0f; break;
+			case DIRECTION::WEST:
+				ang = ANG_DEG * 6.0f; break;
+			case DIRECTION::SOUTH_WEST:
 				ang = ANG_DEG * 7.0f; break;
 			default:
 				break;

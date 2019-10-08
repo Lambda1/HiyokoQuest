@@ -306,9 +306,10 @@ void GameMaster::DrawMap()
 {
 	draw_manager.DrawInit(); /* 画面クリア */
 
-	draw_manager.DrawMap(game_map->GetALL(), width, height, static_cast<int>(player->GetPosX()), static_cast<int>(player->GetPosY())); /* マップ表示 */
+	draw_manager.DrawMap(game_map->GetDungeon(), width, height, static_cast<int>(player->GetPosX()), static_cast<int>(player->GetPosY())); /* マップ表示 */
 	/* アイテム表示 */
 	draw_manager.DrawCharacter(player); /* 主人公表示 */
+	draw_manager.DrawCharacter(stair, width, height, static_cast<int>(player->GetPosX()), static_cast<int>(player->GetPosY()));  /* 階段表示 */
 }
 void GameMaster::DrawStatus()
 {

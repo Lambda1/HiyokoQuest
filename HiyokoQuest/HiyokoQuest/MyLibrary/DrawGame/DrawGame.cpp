@@ -1,21 +1,26 @@
 #include "./DrawGame.hpp"
 
 DrawGame::DrawGame() :
-	player(nullptr)
+	player(nullptr),
+	wall(nullptr), stair(nullptr), tyle(nullptr)
 {
 }
 
 DrawGame::~DrawGame()
 {
 	if (player) delete player;
+	if (wall)   delete wall;
+	if (stair)  delete stair;
+	if (tyle)   delete tyle;
 }
 
 void DrawGame::Init()
 {
-	/* Player3Dƒ‚ƒfƒ‹‚Ìƒ[ƒh */
-	player = new ObjLoader;
-	player->Init(FILE_PATH::ResoucePath::player_model_path + FILE_PATH::ResoucePath::obj_suffix);
-	player->LoadTextureImage(FILE_PATH::ResoucePath::player_model_path + FILE_PATH::ResoucePath::bmp_suffix);
+	/* 3Dƒ‚ƒfƒ‹‚Ìƒ[ƒh */
+	player = LoadObjFile(FILE_PATH::ResoucePath::player_model_path); /* Player */
+	wall   = LoadObjFile(FILE_PATH::ResoucePath::wall_model_path);   /* Wall */
+	stair  = LoadObjFile(FILE_PATH::ResoucePath::stair_model_path);  /* Stair */
+	tyle   = LoadObjFile(FILE_PATH::ResoucePath::tyle_model_path);   /* Tyle */
 
 	/* Shader‰Šú‰» */
 	shader_manager.Set(FILE_PATH::ResoucePath::obj_shader_path+FILE_PATH::ResoucePath::vert_shader_suffix, FILE_PATH::ResoucePath::obj_shader_path + FILE_PATH::ResoucePath::frag_shader_suffix);
@@ -25,9 +30,15 @@ void DrawGame::Init()
 
 	/* Texture‚ğVBO‚É“o˜^ */
 	player->SetTexId(vbo_manager.InitTex()); /* Player‚ÌƒeƒNƒXƒ`ƒƒ“o˜^ */
+	wall->SetTexId(vbo_manager.InitTex());   /* Wall‚ÌƒeƒNƒXƒ`ƒƒ“o˜^ */
+	stair->SetTexId(vbo_manager.InitTex());  /* Stair‚ÌƒeƒNƒXƒ`ƒƒ“o˜^ */
+	tyle->SetTexId(vbo_manager.InitTex());   /* Tyle‚ÌƒeƒNƒXƒ`ƒƒ“o˜^ */
 
 	/* ƒ‚ƒfƒ‹î•ñ‚ğVBO‚É“o˜^ */
 	SetVBOInfo(player, player_id_start); /* VBO‚Éplayer‚ğ“o˜^ */
+	SetVBOInfo(wall,   wall_id_start);   /* VBO‚Éwall‚ğ“o˜^ */
+	SetVBOInfo(stair,  stair_id_start);  /* VBO‚Éstair‚ğ“o˜^ */
+	SetVBOInfo(tyle,   tyle_id_start);   /* VBO‚Étyle‚ğ“o˜^ */
 }
 /* ƒ}ƒbƒv‘w•`‰æ */
 /* ƒŒƒCƒ„”Å */
@@ -50,10 +61,12 @@ void DrawGame::DrawMap(const unsigned char* dungeon, const int& width, const int
 		for (int j = sx; j < range_w; j++) {
 			switch (dungeon[i * width + j])
 			{
+			case static_cast<unsigned char>(MAPSET::DATA::ROOM) :
+				DrawObj(tyle, static_cast<float>(j), static_cast<float>(i), 0.0f);  break;
+			case static_cast<unsigned char>(MAPSET::DATA::ROAD):
+				DrawObj(tyle, static_cast<float>(j), static_cast<float>(i), 0.0f);  break;
 			case static_cast<unsigned char>(MAPSET::DATA::WALL):
-				DrawObj(player, static_cast<float>(j), static_cast<float>(i), 0.0f);  break;
-			case static_cast<unsigned char>(MAPSET::DATA::STAIR) :
-					DrawObj(player, static_cast<float>(j), static_cast<float>(i), 0.0f);  break;
+				DrawObj(wall, static_cast<float>(j), static_cast<float>(i), 0.0f);  break;
 			default:
 				break;
 			}
@@ -74,16 +87,36 @@ void DrawGame::DrawCharacter(Character* ch_data)
 	switch (ch_data->GetCharaInfo())
 	{
 	case MAPSET::DATA::PLAYER:
-		DrawObj(player, ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle()); break;
+		DrawObj(player,ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle()); break;
+	case MAPSET::DATA::STAIR:
+		DrawObj(stair, ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle()); break;
 	default:
 		break;
 	}
 }
+/* ƒNƒŠƒbƒsƒ“ƒO */
+void DrawGame::DrawCharacter(Character* ch_data, const int& width, const int& height, const int& px, const int& py)
+{
+	int sx = ((px - range_x) < 0) ? 0 : px - range_x;
+	int sy = ((py - range_y) < 0) ? 0 : py - range_y;
+	int range_w = ((sx + range_x * 2) < width ? (sx + range_x * 2) : width);
+	int range_h = ((sy + range_y * 2) < height ? (sy + range_y * 2) : height);
+	
+	if(ch_data->GetPosX() >= sx && ch_data->GetPosX() <= range_w)
+		if(ch_data->GetPosY() >= sy && ch_data->GetPosY() <= range_h) DrawCharacter(ch_data);
+}
 /* private */
 /* ‰Šú‰»ŠÖŒW */
+ObjLoader* DrawGame::LoadObjFile(const std::string &obj_path)
+{
+	ObjLoader* obj_file = new ObjLoader;
+	obj_file->Init(obj_path + FILE_PATH::ResoucePath::obj_suffix);
+	obj_file->LoadTextureImage(obj_path + FILE_PATH::ResoucePath::bmp_suffix);
+	return obj_file;
+}
 void DrawGame::SetVBOInfo(ObjLoader* obj_data,const int id_start)
 {
-	obj_data->SetVBOId(player_id_start, id_start + obj_info); /* vertex, texture, uv */
+	obj_data->SetVBOId(id_start, id_start + obj_info); /* vertex, texture, uv */
 	vbo_manager.SetBuffer(obj_data->GetVertexSize(), obj_data->GetVertexPointer(), obj_data->GetVertexID()); /* ’¸“_ */
 	vbo_manager.SetBuffer(obj_data->GetNormalSize(), obj_data->GetNormalPointer(), obj_data->GetNormalID()); /* –@ü */
 	vbo_manager.SetBuffer(obj_data->GetUVSize(), obj_data->GetUVPointer(), obj_data->GetUVID()); /* UV */
@@ -106,7 +139,7 @@ void DrawGame::DrawObj(ObjLoader *obj_data, const float &x, const float &z,const
 	/* VBO İ’è */
 	vbo_manager.BindBufferUseShader(obj_data->GetVertexID(), value[0], 3);
 	vbo_manager.BindBufferUseShader(obj_data->GetUVID(), *(value+1), 2);
-	vbo_manager.BindTexture(static_cast<GLuint>(player->GetTexID()));
+	vbo_manager.BindTexture(static_cast<GLuint>(obj_data->GetTexID()));
 
 	/* Start */
 	glPushMatrix();
