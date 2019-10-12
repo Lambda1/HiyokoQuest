@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <ctime>
+#include <list>
 
 #include "./RougeLikeMap/RougeLikeMap.hpp"
 #include "./RougeLikeMap/MapSet.hpp"
@@ -13,6 +14,7 @@
 
 #include "./Character/Player/Player.hpp"
 #include "./Character/Stair/Stair.hpp"
+#include "./Character/Enemy/Enemy.hpp"
 
 #include "..//DrawGame/DrawGame.hpp"
 
@@ -30,6 +32,7 @@ class GameMaster
 		ENEMY_TURN,  /* エネミーフェーズ */
 		STATUS_TURN, /* ステータスフェーズ */
 		TURN_END,    /* ターン終了 */
+		GAME_END,    /* ゲーム終了 */
 	};
 
 	/* ゲーム処理 */
@@ -56,6 +59,7 @@ class GameMaster
 	Stair* stair;
 
 	/* エネミー処理 */
+	std::list<Character*> enemy_list;
 
 	/* アイテム処理 */
 
@@ -74,6 +78,7 @@ private:
 	void EnemyTurn();  /* エネミーターン */
 	void StatusTurn(); /* ステータスターン */
 	void TurnEnd();    /* ターン終了 */
+	void GameEnd();    /* ゲーム終了 */
 
 	/* キャラクター処理 */
 	void CalcDirectionToPos(POS_TYPE *x,POS_TYPE *y,DIRECTION direct); /* 進行方向の座標を取得 */
@@ -85,6 +90,7 @@ private:
 
 	/* StairTuen専用処理 */
 	void DiposeFloor();
+	void DiposeEnemy();
 
 	/* 描画処理 */
 	void CameraPos();

@@ -20,9 +20,14 @@
 
 class DrawGame
 {
+	enum class ENEMY_INFO : int
+	{
+		ENEMY,
+	};
+
 	/* .obj情報 */
 	const int obj_info     = 3; /* 頂点・法線・UV座標 */
-	const int model_number = 4; /* 使用する3Dモデル数 */
+	const int model_number = 5; /* 使用する3Dモデル数 */
 	/* 描画クリッピング範囲 */
 	const int range_x = 7, range_y = 9;
 
@@ -49,6 +54,9 @@ class DrawGame
 	/* 床 */
 	ObjLoader* tyle;
 	const int tyle_id_start  = stair_id_start + obj_info;
+	/* 敵 */
+	std::vector<ObjLoader*> enemy;
+	std::vector<int> enemy_id_start;
 
 	/* Shader関係 */
 	MyShader shader_manager;
@@ -75,7 +83,7 @@ private:
 	{
 		glBegin(GL_QUADS);
 		{
-			glColor3f(0.7f, 0.7f, 0.7f);
+			glColor3f(0.4f, 0.4f, 0.4f);
 			glVertex3f(x, y, 0.1f);
 			glVertex3f(x + frame_size_w, y, 0.1f);
 			glVertex3f(x + frame_size_w, y + frame_size_h, 0.1f);

@@ -34,6 +34,7 @@ void Player::Teleport(const POS_TYPE x, const POS_TYPE y)
 }
 void Player::Update()
 {
+	exp += 100;
 	LevelUp();
 	JudgeDeath();
 	
@@ -67,7 +68,7 @@ void Player::LevelUp()
 }
 void Player::JudgeDeath()
 {
-	if (hp == 0) {
+	if (hp <= 0) {
 		death = true;
 	}
 }

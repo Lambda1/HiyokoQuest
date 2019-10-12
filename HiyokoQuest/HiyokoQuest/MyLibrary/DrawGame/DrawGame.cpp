@@ -13,6 +13,7 @@ DrawGame::~DrawGame()
 	if (wall)   delete wall;
 	if (stair)  delete stair;
 	if (tyle)   delete tyle;
+	for (std::vector<ObjLoader*>::iterator itr = enemy.begin(); itr != enemy.end(); itr++) { delete *itr; }
 }
 
 void DrawGame::Init()
@@ -22,6 +23,9 @@ void DrawGame::Init()
 	wall   = LoadObjFile(FILE_PATH::ResoucePath::wall_model_path);   /* Wall */
 	stair  = LoadObjFile(FILE_PATH::ResoucePath::stair_model_path);  /* Stair */
 	tyle   = LoadObjFile(FILE_PATH::ResoucePath::tyle_model_path);   /* Tyle */
+
+	enemy.push_back(LoadObjFile(FILE_PATH::ResoucePath::enemy_model_path));
+	for(int i = 0;i < static_cast<int>(enemy.size());i++) enemy_id_start.push_back(tyle_id_start + obj_info*(i+1));
 
 	/* Shader‰Šú‰» */
 	shader_manager.Set(FILE_PATH::ResoucePath::obj_shader_path+FILE_PATH::ResoucePath::vert_shader_suffix, FILE_PATH::ResoucePath::obj_shader_path + FILE_PATH::ResoucePath::frag_shader_suffix);
@@ -34,12 +38,18 @@ void DrawGame::Init()
 	wall->SetTexId(vbo_manager.InitTex());   /* Wall‚ÌƒeƒNƒXƒ`ƒƒ“o˜^ */
 	stair->SetTexId(vbo_manager.InitTex());  /* Stair‚ÌƒeƒNƒXƒ`ƒƒ“o˜^ */
 	tyle->SetTexId(vbo_manager.InitTex());   /* Tyle‚ÌƒeƒNƒXƒ`ƒƒ“o˜^ */
+	for (std::vector<ObjLoader*>::iterator itr = enemy.begin(); itr != enemy.end(); itr++) { (*itr)->SetTexId(vbo_manager.InitTex()); }
 
 	/* ƒ‚ƒfƒ‹î•ñ‚ğVBO‚É“o˜^ */
 	SetVBOInfo(player, player_id_start); /* VBO‚Éplayer‚ğ“o˜^ */
 	SetVBOInfo(wall,   wall_id_start);   /* VBO‚Éwall‚ğ“o˜^ */
 	SetVBOInfo(stair,  stair_id_start);  /* VBO‚Éstair‚ğ“o˜^ */
 	SetVBOInfo(tyle,   tyle_id_start);   /* VBO‚Étyle‚ğ“o˜^ */
+	int index_id = 0;
+	for (std::vector<ObjLoader*>::iterator itr = enemy.begin(); itr != enemy.end(); itr++)
+	{
+		SetVBOInfo((*itr),enemy_id_start[index_id++]);
+	}
 }
 /* ƒ}ƒbƒv‘w•`‰æ */
 /* ƒŒƒCƒ„”Å */
@@ -91,6 +101,8 @@ void DrawGame::DrawCharacter(Character* ch_data)
 		DrawObj(player,ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle()); break;
 	case MAPSET::DATA::STAIR:
 		DrawObj(stair, ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle()); break;
+	case MAPSET::DATA::ENEMY:
+		DrawObj(enemy[static_cast<int>(ENEMY_INFO::ENEMY)], ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle()); break;
 	default:
 		break;
 	}
@@ -110,7 +122,7 @@ void DrawGame::DrawCharacter(Character* ch_data, const int& width, const int& he
 void DrawGame::DrawStatusBar(Character* ch_data, const int& floor)
 {
 	DrawMode2D();
-	//DrawRect(up_x, up_y);
+	DrawRect(up_x, up_y);
 	print_manager.DrawStrings(GetStringFL(floor), st_up_x + wide_length * 0, st_up_y, 0, PS::COLOR::WHITE);
 	print_manager.DrawStrings(GetStringLV(ch_data->GetLevel()), st_up_x + wide_length * 1, st_up_y, 0, PS::COLOR::WHITE);
 	print_manager.DrawStrings(GetStringHP(ch_data->GetHP(), ch_data->GetMaxHP()), st_up_x + wide_length * 2, st_up_y, 0, PS::COLOR::WHITE);

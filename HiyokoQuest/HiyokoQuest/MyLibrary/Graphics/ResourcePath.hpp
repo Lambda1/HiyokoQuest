@@ -24,6 +24,8 @@ namespace FILE_PATH
 		inline static const std::string wall_model_path = "../ModelResources/Wall/wall";    /* 壁モデル */
 		inline static const std::string stair_model_path = "../ModelResources/Stair/stair"; /* 階段モデル */
 		inline static const std::string tyle_model_path = "../ModelResources/Tyle/tyle";    /* 床モデル */
+
+		inline static const std::string enemy_model_path = "../ModelResources/Enemy/enemy";    /* 敵モデル */
 	};
 }
 
