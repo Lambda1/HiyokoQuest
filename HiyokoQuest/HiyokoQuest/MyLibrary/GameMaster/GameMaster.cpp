@@ -103,6 +103,7 @@ void GameMaster::Init()
 
 	/* 描画処理初期化 */
 	draw_manager.Init();
+	draw_manager.SetSize(width, height);
 }
 /* マップ生成処理 */
 void GameMaster::CreateMap()
@@ -173,10 +174,17 @@ void GameMaster::PlayerTurn()
 			}
 		}
 	}
+
 	/* 描画用の処理 */
 	if (player->GetTurnMode() == TURN_MODE::MOVE)
 	{
 		player->MoveAnimation();
+		/* 移動は完了しているか? */
+		if (player->GetPosX() == player->GetPosPX() && player->GetPosY() == player->GetPosPY()) { player->SetTurnMode(TURN_MODE::END); }
+	}
+	else if (player->GetTurnMode() == TURN_MODE::ATTACK)
+	{
+		player->AttackAnimation();
 	}
 	/* 行動を消費していたら, 次ターンへ移行 */
 	else if (player->GetTurnMode() == TURN_MODE::END)
@@ -284,7 +292,7 @@ bool GameMaster::PlayerMove()
 /* プレイヤー攻撃処理 */
 bool GameMaster::PlayerAttack()
 {
-	return false;
+	return true;
 }
 
 /* StairTurn専用処理 */
@@ -313,4 +321,5 @@ void GameMaster::DrawMap()
 }
 void GameMaster::DrawStatus()
 {
+	draw_manager.DrawStatusBar(player, floor_number);
 }

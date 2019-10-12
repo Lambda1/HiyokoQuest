@@ -12,7 +12,7 @@ namespace FILE_PATH
 		~ResoucePath() = delete;
 
 		inline static const std::string bmp_suffix = ".bmp";
-		inline static const std::string obj_suffix = ".obj";
+		inline static const std::string obj_suffix = ".obj_";
 
 		inline static const std::string vert_shader_suffix = ".vert";
 		inline static const std::string frag_shader_suffix = ".fs";

@@ -24,9 +24,6 @@ class Player : public Character
 		void Teleport(const POS_TYPE x, const POS_TYPE y) override;
 
 		void Update() override;
-
-		/* •`‰æ—pˆ— */
-		void MoveAnimation();
 };
 
 #endif

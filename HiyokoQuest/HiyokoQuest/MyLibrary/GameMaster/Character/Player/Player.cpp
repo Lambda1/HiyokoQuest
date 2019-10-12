@@ -24,27 +24,7 @@ void Player::Move(DIRECTION direct)
 	prev_x = x, prev_y = y;
 	way = direct;
 	/* 移動座標の計算 */
-	switch (direct)
-	{
-	case DIRECTION::EAST:
-		x++; break;
-	case DIRECTION::WEST:
-		x--; break;
-	case DIRECTION::SOUTH:
-		y++; break;
-	case DIRECTION::NORTH:
-		y--; break;
-	case DIRECTION::SOUTH_EAST:
-		x++; y++; break;
-	case DIRECTION::SOUTH_WEST:
-		x--; y++; break;
-	case DIRECTION::NORTH_EAST:
-		x++; y--; break;
-	case DIRECTION::NORTH_WEST:
-		x--; y--; break;
-	default:
-		break;
-	}
+	CalcMoveDirect(1.0f);
 }
 void Player::Teleport(const POS_TYPE x, const POS_TYPE y)
 {
@@ -64,31 +44,6 @@ void Player::Update()
 	std::cout << "EXP NEXP: " << exp << " "  << next_level_exp << std::endl;
 	std::cout << "D F: " << death << " " << is_friend << std::endl;
 	std::cout << std::endl;
-}
-
-/* 描画用処理 */
-/* 移動アニメーション */
-void Player::MoveAnimation()
-{
-	/* X軸の移動 */
-	if (((x - prev_x) < 0 ? (x - prev_x) * -1 : x - prev_x) < M_EPSILON) { prev_x = x; }
-	else
-	{
-		if (x - prev_x < 0) prev_x -= MOVE_RESOlUTION;
-		else prev_x += MOVE_RESOlUTION;
-	}
-	/* Y軸の移動 */
-	if (((y - prev_y) < 0 ? (y - prev_y) * -1 : y - prev_y) < M_EPSILON) { prev_y = y; }
-	else
-	{
-		if (y - prev_y < 0) prev_y -= MOVE_RESOlUTION;
-		else prev_y += MOVE_RESOlUTION;
-	}
-
-	/* 移動は完了しているか? */
-	if (x == prev_x && y == prev_y) { turn_cost = TURN_MODE::END; return; }
-
-	turn_cost = TURN_MODE::MOVE;
 }
 
 /* private */

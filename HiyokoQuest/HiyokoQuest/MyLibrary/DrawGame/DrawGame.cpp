@@ -1,6 +1,7 @@
 #include "./DrawGame.hpp"
 
 DrawGame::DrawGame() :
+	width(0), height(0),
 	player(nullptr),
 	wall(nullptr), stair(nullptr), tyle(nullptr)
 {
@@ -105,6 +106,16 @@ void DrawGame::DrawCharacter(Character* ch_data, const int& width, const int& he
 	if(ch_data->GetPosX() >= sx && ch_data->GetPosX() <= range_w)
 		if(ch_data->GetPosY() >= sy && ch_data->GetPosY() <= range_h) DrawCharacter(ch_data);
 }
+/* ステータス描画 */
+void DrawGame::DrawStatusBar(Character* ch_data, const int& floor)
+{
+	DrawMode2D();
+	//DrawRect(up_x, up_y);
+	print_manager.DrawStrings(GetStringFL(floor), st_up_x + wide_length * 0, st_up_y, 0, PS::COLOR::WHITE);
+	print_manager.DrawStrings(GetStringLV(ch_data->GetLevel()), st_up_x + wide_length * 1, st_up_y, 0, PS::COLOR::WHITE);
+	print_manager.DrawStrings(GetStringHP(ch_data->GetHP(), ch_data->GetMaxHP()), st_up_x + wide_length * 2, st_up_y, 0, PS::COLOR::WHITE);
+	DrawMode3D();
+}
 /* private */
 /* 初期化関係 */
 ObjLoader* DrawGame::LoadObjFile(const std::string &obj_path)
@@ -123,6 +134,22 @@ void DrawGame::SetVBOInfo(ObjLoader* obj_data,const int id_start)
 	vbo_manager.SetTexBuffer(static_cast<GLint>(obj_data->GetTexID()), obj_data->GetTexWidth(), obj_data->GetTexHeight(), obj_data->GetTexBuf()); /* Texture */
 }
 /* 描画関係 */
+void DrawGame::DrawMode2D()
+{
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(-1.0, 1.0, -1.0, 1.0, 1.0, -1.0); /* -1.0～1.0の空間に設定 */
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+}
+void DrawGame::DrawMode3D()
+{
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(30, static_cast<double>(width / height), 1.0, 100.0);
+	glMatrixMode(GL_MODELVIEW);
+}
 void DrawGame::DrawObj(ObjLoader *obj_data, const float &x, const float &z,const float &ang)
 {
 	/* シェーダの設定 */
