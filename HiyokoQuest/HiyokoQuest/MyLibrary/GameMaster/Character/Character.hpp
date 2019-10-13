@@ -75,7 +75,8 @@ class Character
 		int  Attack(const int damaged_side_defence); /* 与えるダメージ */
 		void UseMP(const int used_mp);               /* 消費MP */
 		void GetEXP(const int get_exp);              /* 獲得経験値 */
-		
+		virtual int GiveEXP()=0;                     /* 与える経験値 */
+
 		/* 更新処理 */
 		virtual void Update() = 0;
 
@@ -96,6 +97,7 @@ class Character
 		inline bool GetFriend()  { return is_friend; }
 		inline MAPSET::DATA GetCharaInfo() { return chara_state; }
 		inline TURN_MODE GetTurnMode() { return turn_cost; }
+		inline DIRECTION GetDirect() { return way; }
 		/* 方向を角度(度)に変換 */
 		inline float GetAngle()
 		{

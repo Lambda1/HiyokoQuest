@@ -83,6 +83,7 @@ private:
 	/* キャラクター処理 */
 	void CalcDirectionToPos(POS_TYPE *x,POS_TYPE *y,DIRECTION direct); /* 進行方向の座標を取得 */
 	bool IsPosMove(const int x,const int y); /* 座標(x,y)地点は, 進行可能か判定 */
+	MAPSET::DATA IsPosAttack(const int& x, const int& y);
 
 	/* PlayerTurn専用処理 */
 	bool PlayerMove();   /* プレイヤー移動処理 */

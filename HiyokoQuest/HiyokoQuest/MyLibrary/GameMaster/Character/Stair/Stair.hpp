@@ -13,6 +13,8 @@ public:
 	void Teleport(const POS_TYPE x, const POS_TYPE y) override;
 
 	void Update() override;
+
+	inline int GiveEXP() override { return exp; } /* ŠK’i‚Í“|‚³‚ê‚È‚¢‚Ì‚Å, ŒÄ‚Ño‚³‚È‚¢ */
 };
 
 #endif

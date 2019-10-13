@@ -10,7 +10,7 @@ class Player : public Character
 		const int first_hp = 10, first_mp = 10;
 		const int first_level = 1;
 		const int first_power = 5, first_defence = 1;
-		const int first_next_exp = 10;
+		const int first_next_exp = first_level * 2;
 
 		/* XVˆ— */
 		void LevelUp();
@@ -24,6 +24,8 @@ class Player : public Character
 		void Teleport(const POS_TYPE x, const POS_TYPE y) override;
 
 		void Update() override;
+
+		int GiveEXP() override { return exp; }
 };
 
 #endif

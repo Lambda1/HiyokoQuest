@@ -34,7 +34,6 @@ void Enemy::Teleport(const POS_TYPE x, const POS_TYPE y)
 }
 void Enemy::Update()
 {
-	exp += 100;
 	JudgeDeath();
 }
 

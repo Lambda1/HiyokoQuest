@@ -10,7 +10,7 @@ class Enemy : public Character
 		const int first_hp = 5, first_mp = 0;
 		const int first_level = 1;
 		const int first_power = 2, first_defence = 1;
-		const int first_next_exp = 0;
+		const int first_next_exp = first_level;
 
 		/* 更新処理 */
 		void JudgeDeath();
@@ -23,6 +23,9 @@ class Enemy : public Character
 		void Teleport(const POS_TYPE x, const POS_TYPE y) override;
 
 		void Update() override;
+
+		/* ゲッタ */
+		inline int GiveEXP() override { return next_level_exp; } /* 与えるEXP */
 };
 
 #endif
