@@ -1,6 +1,7 @@
 #include "./DrawGame.hpp"
 
 DrawGame::DrawGame() :
+	width(0), height(0),
 	player(nullptr),
 	wall(nullptr), stair(nullptr), tyle(nullptr)
 {
@@ -12,6 +13,7 @@ DrawGame::~DrawGame()
 	if (wall)   delete wall;
 	if (stair)  delete stair;
 	if (tyle)   delete tyle;
+	for (std::vector<ObjLoader*>::iterator itr = enemy.begin(); itr != enemy.end(); itr++) { delete *itr; }
 }
 
 void DrawGame::Init()
@@ -21,6 +23,9 @@ void DrawGame::Init()
 	wall   = LoadObjFile(FILE_PATH::ResoucePath::wall_model_path);   /* Wall */
 	stair  = LoadObjFile(FILE_PATH::ResoucePath::stair_model_path);  /* Stair */
 	tyle   = LoadObjFile(FILE_PATH::ResoucePath::tyle_model_path);   /* Tyle */
+
+	enemy.push_back(LoadObjFile(FILE_PATH::ResoucePath::enemy_model_path));
+	for(int i = 0;i < static_cast<int>(enemy.size());i++) enemy_id_start.push_back(tyle_id_start + obj_info*(i+1));
 
 	/* Shaderèâä˙âª */
 	shader_manager.Set(FILE_PATH::ResoucePath::obj_shader_path+FILE_PATH::ResoucePath::vert_shader_suffix, FILE_PATH::ResoucePath::obj_shader_path + FILE_PATH::ResoucePath::frag_shader_suffix);
@@ -33,12 +38,18 @@ void DrawGame::Init()
 	wall->SetTexId(vbo_manager.InitTex());   /* WallÇÃÉeÉNÉXÉ`ÉÉìoò^ */
 	stair->SetTexId(vbo_manager.InitTex());  /* StairÇÃÉeÉNÉXÉ`ÉÉìoò^ */
 	tyle->SetTexId(vbo_manager.InitTex());   /* TyleÇÃÉeÉNÉXÉ`ÉÉìoò^ */
+	for (std::vector<ObjLoader*>::iterator itr = enemy.begin(); itr != enemy.end(); itr++) { (*itr)->SetTexId(vbo_manager.InitTex()); }
 
 	/* ÉÇÉfÉãèÓïÒÇVBOÇ…ìoò^ */
 	SetVBOInfo(player, player_id_start); /* VBOÇ…playerÇìoò^ */
 	SetVBOInfo(wall,   wall_id_start);   /* VBOÇ…wallÇìoò^ */
 	SetVBOInfo(stair,  stair_id_start);  /* VBOÇ…stairÇìoò^ */
 	SetVBOInfo(tyle,   tyle_id_start);   /* VBOÇ…tyleÇìoò^ */
+	int index_id = 0;
+	for (std::vector<ObjLoader*>::iterator itr = enemy.begin(); itr != enemy.end(); itr++)
+	{
+		SetVBOInfo((*itr),enemy_id_start[index_id++]);
+	}
 }
 /* É}ÉbÉvëwï`âÊ */
 /* ÉåÉCÉÑî≈ */
@@ -90,6 +101,8 @@ void DrawGame::DrawCharacter(Character* ch_data)
 		DrawObj(player,ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle()); break;
 	case MAPSET::DATA::STAIR:
 		DrawObj(stair, ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle()); break;
+	case MAPSET::DATA::ENEMY:
+		DrawObj(enemy[static_cast<int>(ENEMY_INFO::ENEMY)], ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle()); break;
 	default:
 		break;
 	}
@@ -104,6 +117,16 @@ void DrawGame::DrawCharacter(Character* ch_data, const int& width, const int& he
 	
 	if(ch_data->GetPosX() >= sx && ch_data->GetPosX() <= range_w)
 		if(ch_data->GetPosY() >= sy && ch_data->GetPosY() <= range_h) DrawCharacter(ch_data);
+}
+/* ÉXÉeÅ[É^ÉXï`âÊ */
+void DrawGame::DrawStatusBar(Character* ch_data, const int& floor)
+{
+	DrawMode2D();
+	DrawRect(up_x, up_y);
+	print_manager.DrawStrings(GetStringFL(floor), st_up_x + wide_length * 0, st_up_y, 0, PS::COLOR::WHITE);
+	print_manager.DrawStrings(GetStringLV(ch_data->GetLevel()), st_up_x + wide_length * 1, st_up_y, 0, PS::COLOR::WHITE);
+	print_manager.DrawStrings(GetStringHP(ch_data->GetHP(), ch_data->GetMaxHP()), st_up_x + wide_length * 2, st_up_y, 0, PS::COLOR::WHITE);
+	DrawMode3D();
 }
 /* private */
 /* èâä˙âªä÷åW */
@@ -123,6 +146,22 @@ void DrawGame::SetVBOInfo(ObjLoader* obj_data,const int id_start)
 	vbo_manager.SetTexBuffer(static_cast<GLint>(obj_data->GetTexID()), obj_data->GetTexWidth(), obj_data->GetTexHeight(), obj_data->GetTexBuf()); /* Texture */
 }
 /* ï`âÊä÷åW */
+void DrawGame::DrawMode2D()
+{
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(-1.0, 1.0, -1.0, 1.0, 1.0, -1.0); /* -1.0Å`1.0ÇÃãÛä‘Ç…ê›íË */
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+}
+void DrawGame::DrawMode3D()
+{
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(30, static_cast<double>(width / height), 1.0, 100.0);
+	glMatrixMode(GL_MODELVIEW);
+}
 void DrawGame::DrawObj(ObjLoader *obj_data, const float &x, const float &z,const float &ang)
 {
 	/* ÉVÉFÅ[É_ÇÃê›íË */

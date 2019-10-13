@@ -2,6 +2,7 @@
 #define __CHARACTER_HPP__
 
 #include <iostream>
+#include <stack>
 
 #include "..//RougeLikeMap/MapSet.hpp"
 #include "./Direction.hpp"
@@ -50,6 +51,12 @@ class Character
 		const float M_EPSILON = 0.10f; /* 移動処理閾値 */
 		const float ANG_DEG = 45.0f;
 
+		/* アニメーション処理用変数 */
+		int frame_counter; /* フレームカウンター */
+		const float attack_move = 0.3f; /* 攻撃アニメーションの移動量 */
+		std::stack<POS_TYPE> pos_stack;
+
+		void CalcMoveDirect(const POS_TYPE &val);
 	public:
 		Character();
 		virtual ~Character();
@@ -68,13 +75,21 @@ class Character
 		int  Attack(const int damaged_side_defence); /* 与えるダメージ */
 		void UseMP(const int used_mp);               /* 消費MP */
 		void GetEXP(const int get_exp);              /* 獲得経験値 */
-		
+		virtual int GiveEXP()=0;                     /* 与える経験値 */
+
 		/* 更新処理 */
 		virtual void Update() = 0;
+
+		/* アニメーション */
+		void MoveAnimation();
+		void AttackAnimation();
 
 		/* ゲッタ */
 		inline int  GetPower()   { return power; }
 		inline int  GetDefence() { return defence; }
+		inline int  GetHP() { return hp; }
+		inline int  GetMaxHP() { return max_hp; }
+		inline int  GetLevel() { return level; }
 		inline POS_TYPE  GetPosX()    { return x; }
 		inline POS_TYPE  GetPosY()    { return y; }
 		inline POS_TYPE  GetPosPX() { return prev_x; }
@@ -82,6 +97,7 @@ class Character
 		inline bool GetFriend()  { return is_friend; }
 		inline MAPSET::DATA GetCharaInfo() { return chara_state; }
 		inline TURN_MODE GetTurnMode() { return turn_cost; }
+		inline DIRECTION GetDirect() { return way; }
 		/* 方向を角度(度)に変換 */
 		inline float GetAngle()
 		{

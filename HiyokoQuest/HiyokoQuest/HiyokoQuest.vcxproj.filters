@@ -121,6 +121,12 @@
     <Filter Include="ヘッダー ファイル\OpenGL\MyShader">
       <UniqueIdentifier>{d83ba804-1f01-4eb6-87b5-1edab2ea9f64}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\GameMaster\Character\Enemy">
+      <UniqueIdentifier>{49c7820b-0ee4-4e85-93f8-cc6481937bdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\GameMaster\Character\Enemy">
+      <UniqueIdentifier>{8f2589df-adaf-400d-9d57-c51c480dfaa3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -170,6 +176,9 @@
     </ClCompile>
     <ClCompile Include="MyLibrary\MyShader\MyShader.cpp">
       <Filter>ソース ファイル\OpenGL\MyShader</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLibrary\GameMaster\Character\Enemy\Enemy.cpp">
+      <Filter>ソース ファイル\GameMaster\Character\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -250,6 +259,9 @@
     </ClInclude>
     <ClInclude Include="MyLibrary\MyShader\MyShader.hpp">
       <Filter>ヘッダー ファイル\OpenGL\MyShader</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\GameMaster\Character\Enemy\Enemy.hpp">
+      <Filter>ヘッダー ファイル\GameMaster\Character\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

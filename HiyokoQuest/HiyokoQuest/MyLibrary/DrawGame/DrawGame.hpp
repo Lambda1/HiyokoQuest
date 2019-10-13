@@ -11,6 +11,8 @@
 #include "..//GameMaster/RougeLikeMap/MapSet.hpp"
 #include "../GameMaster/Character/Character.hpp"
 
+#include "../PrintString/PrintString.hpp"
+
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
@@ -18,11 +20,26 @@
 
 class DrawGame
 {
+	enum class ENEMY_INFO : int
+	{
+		ENEMY,
+	};
+
 	/* .obj情報 */
 	const int obj_info     = 3; /* 頂点・法線・UV座標 */
-	const int model_number = 4; /* 使用する3Dモデル数 */
+	const int model_number = 5; /* 使用する3Dモデル数 */
 	/* 描画クリッピング範囲 */
 	const int range_x = 7, range_y = 9;
+
+	/* 画面サイズ */
+	int width, height;
+	
+	/* ステータスバー位置 */
+	const float up_x = -0.9f, up_y = 0.80f;
+	const float frame_size_w = 0.6f, frame_size_h = 0.12f;
+	const float wide_length = 0.15f;
+	/* ステータス文字相対位置 */
+	const float st_up_x = up_x + 0.01f, st_up_y = up_y + 0.03f;
 
 	/* 3Dモデル 関係 */
 	/* 主人公 */
@@ -37,6 +54,9 @@ class DrawGame
 	/* 床 */
 	ObjLoader* tyle;
 	const int tyle_id_start  = stair_id_start + obj_info;
+	/* 敵 */
+	std::vector<ObjLoader*> enemy;
+	std::vector<int> enemy_id_start;
 
 	/* Shader関係 */
 	MyShader shader_manager;
@@ -44,6 +64,9 @@ class DrawGame
 
 	/* VBO関係 */
 	VBOLoader vbo_manager;
+
+	/* 文字表示関連 */
+	PrintString print_manager;
 
 private:
 	/* 初期化関係 */
@@ -53,7 +76,36 @@ private:
 	void SetVBOInfo(ObjLoader *obj_data, const int id_start); 	/* VBOに.objファイルを追加 */
 
 	/* 描画関係 */
+	void DrawMode2D(); /* 並行投影 */
+	void DrawMode3D(); /* 透視投影 */
+	/* ステータス表示 */
+	inline void DrawRect(const float& x, const float& y)
+	{
+		glBegin(GL_QUADS);
+		{
+			glColor3f(0.4f, 0.4f, 0.4f);
+			glVertex3f(x, y, 0.1f);
+			glVertex3f(x + frame_size_w, y, 0.1f);
+			glVertex3f(x + frame_size_w, y + frame_size_h, 0.1f);
+			glVertex3f(x, y + frame_size_h, 0.1f);
+		}
+		glEnd();
+	}
+	inline std::string GetStringLV(const int& level)
+	{
+		return (std::string("Lv: ") + std::to_string(level));
+	}
+	inline std::string GetStringHP(const int& hp, const int& max_hp)
+	{
+		return (std::string("HP: ") + std::to_string(hp) + std::string(" / ") + std::to_string(max_hp));
+	}
+	inline std::string GetStringFL(const int& floor)
+	{
+		return (std::to_string(floor) + std::string(" F"));
+	}
+	/* .obj表示 */
 	void DrawObj(ObjLoader *obj_data, const float &x, const float &z, const float &ang); /* VBO+Shaderで.objを描画 */
+
 public:
 		DrawGame();
 		~DrawGame();
@@ -82,9 +134,15 @@ public:
 		/* レイヤ層によるキャラクタ表示 */
 		void DrawCharacter(const unsigned char* dungeon, const int& width, const int& height); /* キャラクター表示 */
 		/* 座標におけるキャラクタ表示 */
-		void DrawCharacter(Character* ch_obj);
+		void DrawCharacter(Character* ch_data);
 		/* 座標におけるキャラクタ表示 (クリップングに使用) */
-		void DrawCharacter(Character* ch_obj, const int& width, const int& height,const int& px,const int& py);
+		void DrawCharacter(Character* ch_data, const int& width, const int& height,const int& px,const int& py);
+
+		/* ステータス表示 */
+		void DrawStatusBar(Character* ch_data, const int& floor);
+
+		/* セッタ */
+		inline void SetSize(const int& width, const int& height) { this->width = width, this->height = height; }
 };
 
 #endif

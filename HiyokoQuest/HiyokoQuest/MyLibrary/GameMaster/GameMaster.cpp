@@ -11,9 +11,10 @@ GameMaster::GameMaster() :
 }
 GameMaster::~GameMaster()
 {
-	if (player) { delete player; }
-	if (stair) { delete stair; }
-	if (game_map) { delete game_map; }
+	if (player) { delete player; player = nullptr; }
+	if (stair) { delete stair; stair = nullptr; }
+	if (game_map) { delete game_map; game_map = nullptr;}
+	DiposeEnemy();
 }
 
 /* ゲーム更新処理 */
@@ -21,10 +22,10 @@ void GameMaster::Update()
 {
 	/* ターン処理 */
 	TurnProcess();
-
 	/* ゲーム描画 */
-	if (game_step >= GAME_STEP::TURN_START)
+	if (!game_over_flag && game_step >= GAME_STEP::TURN_START)
 	{
+		game_map->Update(); /* マップ更新 */
 		CameraPos();  /* カメラ設定 */
 		DrawMap();    /* マップ描画 */
 		DrawStatus(); /* ステータス描画 */
@@ -88,6 +89,8 @@ void GameMaster::TurnProcess()
 		StatusTurn(); break;
 	case GAME_STEP::TURN_END:
 		TurnEnd(); break;
+	case GAME_STEP::GAME_END:
+		GameEnd(); break;
 	default:
 		break;
 	}
@@ -103,6 +106,7 @@ void GameMaster::Init()
 
 	/* 描画処理初期化 */
 	draw_manager.Init();
+	draw_manager.SetSize(width, height);
 }
 /* マップ生成処理 */
 void GameMaster::CreateMap()
@@ -126,7 +130,12 @@ void GameMaster::CreateMap()
 	game_map->GetRoomPos(&stair_pos_x, &stair_pos_y);
 	game_map->SetChara(stair_pos_y, stair_pos_x, static_cast<MAP_TYPE>(stair->GetCharaInfo())); /* マップに階段を配置 */
 	stair->InitPos(static_cast<POS_TYPE>(stair_pos_x), static_cast<POS_TYPE>(stair_pos_y)); /* 階段座標を初期化 */
+	
 	/* エネミー召喚 */
+	for (int i = 0; i < floor_number; i++) {
+		Enemy *enemy_tmp = new Enemy;
+		enemy_list.push_back(enemy_tmp);
+	}
 
 	/* アイテム生成 */
 
@@ -137,6 +146,12 @@ void GameMaster::CreateMap()
 	player->InitPos(static_cast<POS_TYPE>(player_pos_x), static_cast<POS_TYPE>(player_pos_y)); /* プレイヤー座標を初期化  */
 
 	/* エネミー配置 */
+	for (std::list<Character*>::iterator itr = enemy_list.begin(); itr != enemy_list.end(); itr++) {
+		int enemy_pos_x, enemy_pos_y;
+		game_map->GetRoomPos(&enemy_pos_x, &enemy_pos_y);
+		game_map->SetChara(enemy_pos_y, enemy_pos_x, static_cast<MAP_TYPE>((*itr)->GetCharaInfo())); /* マップに敵を配置 */
+		(*itr)->InitPos(static_cast<POS_TYPE>(enemy_pos_x), static_cast<POS_TYPE>(enemy_pos_y)); /* 敵座標を初期化 */
+	}
 
 	/* アイテム配置 */
 
@@ -168,15 +183,22 @@ void GameMaster::PlayerTurn()
 				if (PlayerMove()) { player->SetTurnMode(TURN_MODE::MOVE); }
 			}
 			/* プレイヤー攻撃処理 (ABXY入力有り) */
-			if (((key_pos & BUTTON_MASK::ABXY) != BUTTON_MASK::NONE)) {
+			if (((key_pos & BUTTON_MASK::ABXY) == BUTTON_MASK::ATTACK)) {
 				if (PlayerAttack()) { player->SetTurnMode(TURN_MODE::ATTACK); }
 			}
 		}
 	}
+
 	/* 描画用の処理 */
 	if (player->GetTurnMode() == TURN_MODE::MOVE)
 	{
 		player->MoveAnimation();
+		/* 移動は完了しているか? */
+		if (player->GetPosX() == player->GetPosPX() && player->GetPosY() == player->GetPosPY()) { player->SetTurnMode(TURN_MODE::END); }
+	}
+	else if (player->GetTurnMode() == TURN_MODE::ATTACK)
+	{
+		player->AttackAnimation();
 	}
 	/* 行動を消費していたら, 次ターンへ移行 */
 	else if (player->GetTurnMode() == TURN_MODE::END)
@@ -184,8 +206,6 @@ void GameMaster::PlayerTurn()
 		player->Update(); /* プレイヤー情報更新 */
 		player->SetTurnMode(TURN_MODE::NONE);
 		game_step = GAME_STEP::STAIR_TURN;
-		
-		game_map->Update();
 	}
 }
 /* 階層ターン処理 */
@@ -211,19 +231,41 @@ void GameMaster::ItemTurn()
 void GameMaster::EnemyTurn()
 {
 	std::cout << "GAME ENEMY" << std::endl;
+	for (std::list<Character*>::iterator itr = enemy_list.begin(); itr != enemy_list.end(); itr++)
+	{
+		(*itr)->Update();
+		/* 敵が倒されている場合, 処理: 死亡+経験値 */
+		if ((*itr)->IsDeath())
+		{
+			player->GetEXP((*itr)->GiveEXP());
+			player->Update();
+			game_map->SetChara(static_cast<int>((*itr)->GetPosY()), static_cast<int>((*itr)->GetPosX()), static_cast<MAP_TYPE>(MAPSET::DATA::NONE)); /* 現在地点をクリア */
+			delete* itr;
+			enemy_list.erase(itr);
+		}
+	}
 	game_step = GAME_STEP::STATUS_TURN;
 }
 /* ステータスターン処理 */
 void GameMaster::StatusTurn()
 {
 	std::cout << "GAME STATUS" << std::endl;
-	game_step = GAME_STEP::TURN_END;
+	if (player->IsDeath()) { game_step = GAME_STEP::GAME_END; }
+	else { game_step = GAME_STEP::TURN_END; }
 }
 /* ターン終了処理 */
 void GameMaster::TurnEnd()
 {
-	std::cout << "GAME END" << std::endl;
+	std::cout << "TURN END" << std::endl;
 	game_step = GAME_STEP::TURN_START;
+}
+/* ゲーム終了処理 */
+void GameMaster::GameEnd()
+{
+	std::cout << "GAME END" << std::endl;
+	DiposeFloor();
+	if (player) { delete player; player = nullptr; }
+	game_over_flag = true;
 }
 
 /* キャラクター処理 */
@@ -253,15 +295,18 @@ void GameMaster::CalcDirectionToPos(POS_TYPE *x, POS_TYPE *y, DIRECTION direct)
 }
 bool GameMaster::IsPosMove(const int x, const int y)
 {
-	MAPSET::DATA dungeon_data = static_cast<MAPSET::DATA>(game_map->GetLayerDungeon(x,y));
+	MAPSET::DATA dungeon_data = static_cast<MAPSET::DATA>(game_map->GetLayerALL(x, y));
 
-	/* 道 and 部屋ならば, 移動可能 */
-	if (dungeon_data == MAPSET::DATA::ROAD || dungeon_data == MAPSET::DATA::ROOM)
+	/* 道 or 部屋 or 階段ならば, 移動可能 */
+	if (dungeon_data == MAPSET::DATA::ROAD || dungeon_data == MAPSET::DATA::ROOM || dungeon_data == MAPSET::DATA::STAIR)
 	{
 		return true;
 	}
-
 	return false;
+}
+MAPSET::DATA GameMaster::IsPosAttack(const int& x, const int& y)
+{
+	return static_cast<MAPSET::DATA>(game_map->GetChara()[y*width + x]);
 }
 
 /* PlayerTurn専用処理 */
@@ -284,7 +329,23 @@ bool GameMaster::PlayerMove()
 /* プレイヤー攻撃処理 */
 bool GameMaster::PlayerAttack()
 {
-	return false;
+	POS_TYPE pos_x = player->GetPosX(), pos_y = player->GetPosY();
+	CalcDirectionToPos(&pos_x, &pos_y, player->GetDirect());
+	/* 攻撃先に敵が存在する場合, 攻撃計算処理 */
+	if (IsPosAttack(static_cast<int>(pos_x), static_cast<int>(pos_y)) == MAPSET::DATA::ENEMY)
+	{
+		/* 敵を全探索して, 計算処理 */
+		for (std::list<Character*>::iterator itr = enemy_list.begin(); itr != enemy_list.end(); itr++)
+		{
+			if ((*itr)->GetPosX() == pos_x && (*itr)->GetPosY() == pos_y)
+			{
+				int damege = player->Attack((*itr)->GetDefence());
+				(*itr)->Damaged(damege);
+				break;
+			}
+		}
+	}
+	return true;
 }
 
 /* StairTurn専用処理 */
@@ -293,10 +354,19 @@ bool GameMaster::PlayerAttack()
 void GameMaster::DiposeFloor()
 {
 	cnt_seed++;
-	if (game_map) delete game_map;
-	if (stair) delete stair;
+	if (game_map) { delete game_map; game_map = nullptr; }
+	if (stair) { delete stair; stair = nullptr; }
+	DiposeEnemy();
 }
-
+void GameMaster::DiposeEnemy()
+{
+	for (std::list<Character*>::iterator itr = enemy_list.begin(); itr != enemy_list.end(); itr++) {
+		if (*itr) {
+			delete *itr;
+			enemy_list.erase(itr);
+		}
+	}
+}
 /* 描画処理 */
 void GameMaster::CameraPos()
 {
@@ -310,7 +380,12 @@ void GameMaster::DrawMap()
 	/* アイテム表示 */
 	draw_manager.DrawCharacter(player); /* 主人公表示 */
 	draw_manager.DrawCharacter(stair, width, height, static_cast<int>(player->GetPosX()), static_cast<int>(player->GetPosY()));  /* 階段表示 */
+
+	for (std::list<Character*>::iterator itr = enemy_list.begin(); itr != enemy_list.end(); itr++) {
+		draw_manager.DrawCharacter((*itr), width, height, static_cast<int>((*itr)->GetPosX()), static_cast<int>((*itr)->GetPosY()));  /* 敵表示 */
+	}
 }
 void GameMaster::DrawStatus()
 {
+	draw_manager.DrawStatusBar(player, floor_number);
 }

@@ -128,6 +128,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyLibrary\DrawGame\DrawGame.cpp" />
     <ClCompile Include="MyLibrary\GameMaster\Character\Character.cpp" />
+    <ClCompile Include="MyLibrary\GameMaster\Character\Enemy\Enemy.cpp" />
     <ClCompile Include="MyLibrary\GameMaster\Character\Player\Player.cpp" />
     <ClCompile Include="MyLibrary\GameMaster\Character\Stair\Stair.cpp" />
     <ClCompile Include="MyLibrary\GameMaster\GameMaster.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="MyLibrary\FPS_Controller\FPS_Controller.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Character.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Direction.hpp" />
+    <ClInclude Include="MyLibrary\GameMaster\Character\Enemy\Enemy.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Player\Player.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Stair\Stair.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\GameKey.hpp" />
