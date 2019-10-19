@@ -25,10 +25,13 @@ void GameMaster::Update()
 	/* ゲーム描画 */
 	if (!game_over_flag && game_step >= GAME_STEP::TURN_START)
 	{
-		game_map->Update(); /* マップ更新 */
-		CameraPos();  /* カメラ設定 */
-		DrawMap();    /* マップ描画 */
-		DrawStatus(); /* ステータス描画 */
+		DrawAll();
+		//AnimationUpdate();
+
+		//game_map->Update(); /* マップ更新 */
+		//CameraPos();  /* カメラ設定 */
+		//DrawMap();    /* マップ描画 */
+		//DrawStatus(); /* ステータス描画 */
 	}
 }
 
@@ -161,7 +164,7 @@ void GameMaster::CreateMap()
 /* ターン開始処理 */
 void GameMaster::TurnStart()
 {
-	std::cout << "GAME START" << std::endl;
+	std::cout << "GAME START " << turn_number << std::endl;
 	game_step = GAME_STEP::PLAYER_TURN;
 	/* ターンを経過 */
 	turn_number++;
@@ -188,23 +191,11 @@ void GameMaster::PlayerTurn()
 			}
 		}
 	}
-
-	/* 描画用の処理 */
-	if (player->GetTurnMode() == TURN_MODE::MOVE)
-	{
-		player->MoveAnimation();
-		/* 移動は完了しているか? */
-		if (player->GetPosX() == player->GetPosPX() && player->GetPosY() == player->GetPosPY()) { player->SetTurnMode(TURN_MODE::END); }
-	}
-	else if (player->GetTurnMode() == TURN_MODE::ATTACK)
-	{
-		player->AttackAnimation();
-	}
-	/* 行動を消費していたら, 次ターンへ移行 */
-	else if (player->GetTurnMode() == TURN_MODE::END)
+	
+	/* プレイヤーが行動した場合, ターンを移行 */
+	if (player->GetTurnMode() != TURN_MODE::NONE)
 	{
 		player->Update(); /* プレイヤー情報更新 */
-		player->SetTurnMode(TURN_MODE::NONE);
 		game_step = GAME_STEP::STAIR_TURN;
 	}
 }
@@ -217,6 +208,7 @@ void GameMaster::StairTurn()
 	if (*player == *stair)
 	{
 		DiposeFloor();
+		player->SetTurnMode(TURN_MODE::NONE);
 		game_step = GAME_STEP::CREATE_MAP;
 	}
 	else { game_step = GAME_STEP::ITEM_TURN; }
@@ -244,23 +236,22 @@ void GameMaster::EnemyTurn()
 		{
 			if ((*itr)->GetTurnMode() == TURN_MODE::NONE)
 			{
-				if (CharacterMove(*itr, DIRECTION::EAST)) { (*itr)->SetTurnMode(TURN_MODE::MOVE); }
+				/* ランダムAI */
+				if (rand() % 2 == 0) {
+					if (CharacterMove(*itr, DIRECTION::EAST)) { (*itr)->SetTurnMode(TURN_MODE::MOVE); }
+					else { (*itr)->SetTurnMode(TURN_MODE::END); }
+				}
+				else {
+					(*itr)->SetTurnMode(TURN_MODE::ATTACK);
+				}
 			}
 
-			if ((*itr)->GetTurnMode() == TURN_MODE::MOVE)
-			{
-				(*itr)->MoveAnimation();
-				if ((*itr)->GetPosX() == (*itr)->GetPosPX() && (*itr)->GetPosY() == (*itr)->GetPosPY()) { (*itr)->SetTurnMode(TURN_MODE::END); }
-				else { is_next_turn = false; }
-			}
+			if ((*itr)->GetTurnMode() == TURN_MODE::NONE) { is_next_turn = false; }
 		}
 	}
 
-	if (is_next_turn)
-	{
-		for (std::list<Character*>::iterator itr = enemy_list.begin(); itr != enemy_list.end(); itr++) { (*itr)->SetTurnMode(TURN_MODE::NONE); }
-		game_step = GAME_STEP::STATUS_TURN;
-	}
+	/* 全ての敵が行動した場合, ターンを移行 */
+	if (is_next_turn) { game_step = GAME_STEP::STATUS_TURN; }
 }
 /* ステータスターン処理 */
 void GameMaster::StatusTurn()
@@ -273,7 +264,9 @@ void GameMaster::StatusTurn()
 void GameMaster::TurnEnd()
 {
 	std::cout << "TURN END" << std::endl;
-	game_step = GAME_STEP::TURN_START;
+	/* アニメーションを描画 */
+	/* アニメーション終了後に, 初めのターンに戻る */
+	if(AnimationUpdate()) { game_step = GAME_STEP::TURN_START; }
 }
 /* ゲーム終了処理 */
 void GameMaster::GameEnd()
@@ -341,9 +334,40 @@ bool GameMaster::CharacterMove(Character *ch_data, const DIRECTION& direct)
 	return false;
 }
 /* アニメーション処理 */
-void GameMaster::AnimationUpdate()
+bool GameMaster::AnimationUpdate()
 {
+	/* 主人公: アニメーション */
+	if (player->GetTurnMode() == TURN_MODE::MOVE)
+	{
+		player->MoveAnimation();
+		if (player->GetPosX() == player->GetPosPX() && player->GetPosY() == player->GetPosPY()) { player->SetTurnMode(TURN_MODE::END); }
+	}
+	else if (player->GetTurnMode() == TURN_MODE::ATTACK)
+	{
+		player->AttackAnimation();
+	}
+	if (player->GetTurnMode() == TURN_MODE::END)
+	{
+		player->SetTurnMode(TURN_MODE::NONE);
+	}
 
+	/* 敵: アニメーション */
+	for (std::list<Character*>::iterator itr = enemy_list.begin(); itr != enemy_list.end(); itr++)
+	{
+		if ((*itr)->GetTurnMode() == TURN_MODE::MOVE)
+		{
+			(*itr)->MoveAnimation();
+			if ((*itr)->GetPosX() == (*itr)->GetPosPX() && (*itr)->GetPosY() == (*itr)->GetPosPY()) { (*itr)->SetTurnMode(TURN_MODE::END); }
+		}
+		else if ((*itr)->GetTurnMode() == TURN_MODE::ATTACK) { (*itr)->AttackAnimation(); }
+
+		if ((*itr)->GetTurnMode() == TURN_MODE::END) { (*itr)->SetTurnMode(TURN_MODE::NONE); }
+	}
+
+	/* 全てのキャラクタのアニメーションは終了しているか? */
+	if (player->GetTurnMode() != TURN_MODE::NONE) return false;
+	for (std::list<Character*>::iterator itr = enemy_list.begin(); itr != enemy_list.end(); itr++) { if ((*itr)->GetTurnMode() != TURN_MODE::NONE) return false; }
+	return true;
 }
 
 /* PlayerTurn専用処理 */
@@ -428,4 +452,11 @@ void GameMaster::DrawMap()
 void GameMaster::DrawStatus()
 {
 	draw_manager.DrawStatusBar(player, floor_number);
+}
+void GameMaster::DrawAll()
+{
+	game_map->Update(); /* マップ更新 */
+	CameraPos();  /* カメラ設定 */
+	DrawMap();    /* マップ描画 */
+	DrawStatus(); /* ステータス描画 */
 }
