@@ -180,7 +180,7 @@ void GameMaster::PlayerTurn()
 			/* プレイヤー移動処理 (十字入力有り) */
 			if (((key_pos & BUTTON_MASK::CURSOR) != BUTTON_MASK::NONE)) {
 				/* 移動可能ならば, マップを移動して移動処理に移行 */
-				if (PlayerMove()) { player->SetTurnMode(TURN_MODE::MOVE); }
+				if (CharacterMove(player, static_cast<DIRECTION>(key_pos & BUTTON_MASK::CURSOR))) { player->SetTurnMode(TURN_MODE::MOVE); }
 			}
 			/* プレイヤー攻撃処理 (ABXY入力有り) */
 			if (((key_pos & BUTTON_MASK::ABXY) == BUTTON_MASK::ATTACK)) {
@@ -231,20 +231,36 @@ void GameMaster::ItemTurn()
 void GameMaster::EnemyTurn()
 {
 	std::cout << "GAME ENEMY" << std::endl;
+
+	bool is_next_turn = true;
+
 	for (std::list<Character*>::iterator itr = enemy_list.begin(); itr != enemy_list.end(); itr++)
 	{
 		(*itr)->Update();
-		/* 敵が倒されている場合, 処理: 死亡+経験値 */
-		if ((*itr)->IsDeath())
+		const bool is_death = EnemyDeath(itr); /* 敵が倒されている場合, 処理: 死亡+経験値 */
+		
+		/* 生存している場合の処理 */
+		if (!is_death)
 		{
-			player->GetEXP((*itr)->GiveEXP());
-			player->Update();
-			game_map->SetChara(static_cast<int>((*itr)->GetPosY()), static_cast<int>((*itr)->GetPosX()), static_cast<MAP_TYPE>(MAPSET::DATA::NONE)); /* 現在地点をクリア */
-			delete* itr;
-			enemy_list.erase(itr);
+			if ((*itr)->GetTurnMode() == TURN_MODE::NONE)
+			{
+				if (CharacterMove(*itr, DIRECTION::EAST)) { (*itr)->SetTurnMode(TURN_MODE::MOVE); }
+			}
+
+			if ((*itr)->GetTurnMode() == TURN_MODE::MOVE)
+			{
+				(*itr)->MoveAnimation();
+				if ((*itr)->GetPosX() == (*itr)->GetPosPX() && (*itr)->GetPosY() == (*itr)->GetPosPY()) { (*itr)->SetTurnMode(TURN_MODE::END); }
+				else { is_next_turn = false; }
+			}
 		}
 	}
-	game_step = GAME_STEP::STATUS_TURN;
+
+	if (is_next_turn)
+	{
+		for (std::list<Character*>::iterator itr = enemy_list.begin(); itr != enemy_list.end(); itr++) { (*itr)->SetTurnMode(TURN_MODE::NONE); }
+		game_step = GAME_STEP::STATUS_TURN;
+	}
 }
 /* ステータスターン処理 */
 void GameMaster::StatusTurn()
@@ -308,24 +324,29 @@ MAPSET::DATA GameMaster::IsPosAttack(const int& x, const int& y)
 {
 	return static_cast<MAPSET::DATA>(game_map->GetChara()[y*width + x]);
 }
-
-/* PlayerTurn専用処理 */
-/* プレイヤー移動処理 */
-bool GameMaster::PlayerMove()
+/* キャラクタ汎用移動処理 */
+bool GameMaster::CharacterMove(Character *ch_data, const DIRECTION& direct)
 {
-	/* プレイヤーが進行方向に移動可能か判定 */
-	POS_TYPE pos_x = player->GetPosX(), pos_y = player->GetPosY();
-	CalcDirectionToPos(&pos_x, &pos_y, static_cast<DIRECTION>(key_pos & BUTTON_MASK::CURSOR));
-	/* 移動可能の場合, プレイヤーを移動する */
+	/* キャラクタが進行方向に移動可能か判定 */
+	POS_TYPE pos_x = ch_data->GetPosX(), pos_y = ch_data->GetPosY();
+	CalcDirectionToPos(&pos_x, &pos_y, direct);
+	/* 移動可能の場合, キャラクタを移動する */
 	if (IsPosMove(static_cast<int>(pos_x), static_cast<int>(pos_y)))
 	{
-		game_map->SetChara(static_cast<int>(player->GetPosY()), static_cast<int>(player->GetPosX()), static_cast<MAP_TYPE>(MAPSET::DATA::NONE)); /* 現在地点をクリア */
-		player->Move(static_cast<DIRECTION>(key_pos & BUTTON_MASK::CURSOR)); /* 移動する */
-		game_map->SetChara(static_cast<int>(pos_y), static_cast<int>(pos_x), static_cast<MAP_TYPE>(player->GetCharaInfo())); /* 移動地点にplayerを配置 */
+		game_map->SetChara(static_cast<int>(ch_data->GetPosY()), static_cast<int>(ch_data->GetPosX()), static_cast<MAP_TYPE>(MAPSET::DATA::NONE)); /* 現在地点をクリア */
+		ch_data->Move(direct);
+		game_map->SetChara(static_cast<int>(pos_y), static_cast<int>(pos_x), static_cast<MAP_TYPE>(ch_data->GetCharaInfo())); /* 移動地点にキャラクタを配置 */
 		return true;
 	}
 	return false;
 }
+/* アニメーション処理 */
+void GameMaster::AnimationUpdate()
+{
+
+}
+
+/* PlayerTurn専用処理 */
 /* プレイヤー攻撃処理 */
 bool GameMaster::PlayerAttack()
 {
@@ -354,19 +375,38 @@ bool GameMaster::PlayerAttack()
 void GameMaster::DiposeFloor()
 {
 	cnt_seed++;
+	DiposeEnemy();
 	if (game_map) { delete game_map; game_map = nullptr; }
 	if (stair) { delete stair; stair = nullptr; }
-	DiposeEnemy();
 }
 void GameMaster::DiposeEnemy()
 {
 	for (std::list<Character*>::iterator itr = enemy_list.begin(); itr != enemy_list.end(); itr++) {
-		if (*itr) {
+		if (*itr)
+		{
+			game_map->SetChara(static_cast<int>((*itr)->GetPosY()), static_cast<int>((*itr)->GetPosX()), static_cast<MAP_TYPE>(MAPSET::DATA::NONE)); /* 現在地点をクリア */
 			delete *itr;
 			enemy_list.erase(itr);
 		}
 	}
 }
+
+/* EnemyTurn専用処理 */
+/* Enemyの死亡処理 */
+bool GameMaster::EnemyDeath(const std::list<Character*>::iterator& enemy_itr)
+{
+	if ((*enemy_itr)->IsDeath())
+	{
+		player->GetEXP((*enemy_itr)->GiveEXP());
+		player->Update();
+		game_map->SetChara(static_cast<int>((*enemy_itr)->GetPosY()), static_cast<int>((*enemy_itr)->GetPosX()), static_cast<MAP_TYPE>(MAPSET::DATA::NONE)); /* 現在地点をクリア */
+		delete* enemy_itr;
+		enemy_list.erase(enemy_itr);
+		return true;
+	}
+	return false;
+}
+
 /* 描画処理 */
 void GameMaster::CameraPos()
 {
