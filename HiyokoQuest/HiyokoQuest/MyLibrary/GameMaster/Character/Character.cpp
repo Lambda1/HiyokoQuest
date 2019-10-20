@@ -8,7 +8,7 @@ Character::Character() :
 	max_hp(0), max_mp(0),
 	level(0), power(0), defence(0),
 	exp(0), next_level_exp(0),
-	death(false), is_friend(false), is_attack(false),
+	death(false), is_friend(false), is_attack(false), attacked_ch(MAPSET::DATA::NONE),
 	prev_x(x), prev_y(y),
 	frame_counter(0)
 {

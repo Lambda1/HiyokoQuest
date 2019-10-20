@@ -44,6 +44,7 @@ class Character
 		bool death;     /* 死亡フラグ */
 		bool is_friend; /* 友好フラグ */
 		bool is_attack; /* 攻撃フラグ */
+		MAPSET::DATA attacked_ch; /* 最後に攻撃されたキャラ */
 
 		/* 移動処理用変数 */
 		POS_TYPE prev_x, prev_y; /* 前回の座標 */
@@ -98,6 +99,7 @@ class Character
 		inline MAPSET::DATA GetCharaInfo() { return chara_state; }
 		inline TURN_MODE GetTurnMode() { return turn_cost; }
 		inline DIRECTION GetDirect() { return way; }
+		inline MAPSET::DATA GetAttacked() { return attacked_ch; }
 		/* 方向を角度(度)に変換 */
 		inline float GetAngle()
 		{
@@ -128,6 +130,7 @@ class Character
 
 		/* セッタ */
 		inline void SetTurnMode(const TURN_MODE mode) { turn_cost = mode; }
+		inline void SetAttacked(const MAPSET::DATA data) { attacked_ch = data; }
 
 		/* 死亡判定 */
 		inline bool IsDeath() { return death; }

@@ -82,21 +82,25 @@ private:
 
 	/* キャラクター処理 */
 	void CalcDirectionToPos(POS_TYPE *x,POS_TYPE *y,DIRECTION direct); /* 進行方向の座標を取得 */
+	MAPSET::DATA GetDirectionInfo(POS_TYPE x, POS_TYPE y, const DIRECTION direct);
 	bool IsPosMove(const int x,const int y); /* 座標(x,y)地点は, 進行可能か判定 */
 	MAPSET::DATA IsPosAttack(const int& x, const int& y);
+	bool CharacterMove(Character *ch_data, const DIRECTION &direct); /* 汎用移動処理 */
+	bool CharacterAttack(Character *ch_data); /* 汎用攻撃処理 */
+	bool AnimationUpdate(); /* アニメーション処理 */
 
-	/* PlayerTurn専用処理 */
-	bool PlayerMove();   /* プレイヤー移動処理 */
-	bool PlayerAttack(); /* プレイヤー攻撃処理 */
-
-	/* StairTuen専用処理 */
+	/* StairTurn専用処理 */
 	void DiposeFloor();
 	void DiposeEnemy();
+
+	/* EnemyTurn専用処理 */
+	bool EnemyDeath(const std::list<Character*>::iterator &enemy_itr);
 
 	/* 描画処理 */
 	void CameraPos();
 	void DrawMap();    /* マップ描画 */
 	void DrawStatus(); /* ステータス描画 */
+	void DrawAll();
 
 public:
 		GameMaster();
