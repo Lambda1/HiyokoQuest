@@ -129,6 +129,7 @@ class Character
 		}
 
 		/* ƒZƒbƒ^ */
+		inline void SetDirection(const DIRECTION direct) { way = direct; }
 		inline void SetTurnMode(const TURN_MODE mode) { turn_cost = mode; }
 		inline void SetAttacked(const MAPSET::DATA data) { attacked_ch = data; }
 

@@ -349,6 +349,7 @@ bool GameMaster::CharacterMove(Character *ch_data, const DIRECTION& direct)
 	/* キャラクタが進行方向に移動可能か判定 */
 	POS_TYPE pos_x = ch_data->GetPosX(), pos_y = ch_data->GetPosY();
 	CalcDirectionToPos(&pos_x, &pos_y, direct);
+	ch_data->SetDirection(direct);
 	/* 移動可能の場合, キャラクタを移動する */
 	if (IsPosMove(static_cast<int>(pos_x), static_cast<int>(pos_y)))
 	{
