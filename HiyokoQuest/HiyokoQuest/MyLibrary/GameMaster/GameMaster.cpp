@@ -164,7 +164,7 @@ void GameMaster::DispInfo()
 {
 	std::cout << "DISPLAY INFO" << std::endl;
 	draw_manager.DrawInit();
-	if (draw_manager.DrawBlackScreen(floor_number, 100))
+	if (draw_manager.DrawBlackScreen(floor_number, 60))
 	{
 		game_step = GAME_STEP::TURN_START;
 	}
@@ -489,6 +489,7 @@ bool GameMaster::EnemyDeath(const std::list<Character*>::iterator& enemy_itr)
 void GameMaster::CameraPos()
 {
 	draw_manager.CameraPos(player->GetPosPX(), 10.0f, player->GetPosPY() + 10.0f, player->GetPosPX(), 0.0f, player->GetPosPY());
+	//draw_manager.CameraPos(player->GetPosPX(), 1.0f, player->GetPosPY(), player->GetPosPX(), 0.9f, (player->GetPosPY()-0.5f)); /* FPSモード(アルファ版) */
 }
 void GameMaster::DrawMap()
 {

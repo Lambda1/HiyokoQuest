@@ -1,4 +1,3 @@
-#include <iostream>
 #include <string>
 
 #include ".//MyLibrary/MyGL/MyGL.hpp"
