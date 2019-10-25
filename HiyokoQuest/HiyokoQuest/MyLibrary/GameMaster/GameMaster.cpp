@@ -72,6 +72,8 @@ void GameMaster::TurnProcess()
 		Init(); break;
 	case GAME_STEP::CREATE_MAP:
 		CreateMap(); break;
+	case GAME_STEP::DISPLAY_INFO:
+		DispInfo(); break;
 	case GAME_STEP::TURN_START:
 		TurnStart(); break;
 	case GAME_STEP::PLAYER_TURN:
@@ -109,7 +111,6 @@ void GameMaster::Init()
 void GameMaster::CreateMap()
 {
 	std::cout << "GAME MAP" << std::endl;
-	game_step = GAME_STEP::TURN_START;
 	
 	/* 階層を進む */
 	floor_number++;
@@ -154,7 +155,21 @@ void GameMaster::CreateMap()
 
 	/* 各レイヤを結合 */
 	game_map->Update();
+
+	game_step = GAME_STEP::DISPLAY_INFO;
 }
+
+/* ダンジョン情報表示 */
+void GameMaster::DispInfo()
+{
+	std::cout << "DISPLAY INFO" << std::endl;
+	draw_manager.DrawInit();
+	if (draw_manager.DrawBlackScreen(floor_number, 100))
+	{
+		game_step = GAME_STEP::TURN_START;
+	}
+}
+
 /* ターン開始処理 */
 void GameMaster::TurnStart()
 {
@@ -349,7 +364,7 @@ bool GameMaster::CharacterMove(Character *ch_data, const DIRECTION& direct)
 	/* キャラクタが進行方向に移動可能か判定 */
 	POS_TYPE pos_x = ch_data->GetPosX(), pos_y = ch_data->GetPosY();
 	CalcDirectionToPos(&pos_x, &pos_y, direct);
-	ch_data->SetDirection(direct);
+	ch_data->SetDirection(direct); /* キャラクタの向きを入力方向へ */
 	/* 移動可能の場合, キャラクタを移動する */
 	if (IsPosMove(static_cast<int>(pos_x), static_cast<int>(pos_y)))
 	{

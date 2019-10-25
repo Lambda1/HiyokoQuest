@@ -68,6 +68,10 @@ class DrawGame
 	/* 文字表示関連 */
 	PrintString print_manager;
 
+	/* フレーム処理関連 */
+	int  frame_counter;    /* フレームカウンタ */
+	bool is_frame_counter; /* フレーム処理判定 */
+
 private:
 	/* 初期化関係 */
 	/* .objロード */
@@ -140,6 +144,9 @@ public:
 
 		/* ステータス表示 */
 		void DrawStatusBar(Character* ch_data, const int& floor);
+
+		/* 階層表示 */
+		bool DrawBlackScreen(const int &floor_num, const int &frame_time);
 
 		/* セッタ */
 		inline void SetSize(const int& width, const int& height) { this->width = width, this->height = height; }

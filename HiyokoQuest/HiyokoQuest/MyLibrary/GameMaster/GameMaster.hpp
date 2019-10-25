@@ -25,6 +25,7 @@ class GameMaster
 	{
 		INIT,        /* 初期化: 初めの1回のみ */
 		CREATE_MAP,  /* マップ生成 */
+		DISPLAY_INFO,/* ダンジョン情報表示 */
 		TURN_START,  /* ターン開始 */
 		PLAYER_TURN, /* プレイヤーフェーズ */
 		STAIR_TURN,  /* 階段フェーズ */
@@ -71,6 +72,7 @@ private:
 	void TurnProcess(); /* ターン統括処理 */
 	void Init();       /* 初期化 */
 	void CreateMap();  /* マップ生成 */
+	void DispInfo();   /* ダンジョン情報表示 */
 	void TurnStart();  /* ターン開始 */
 	void PlayerTurn(); /* プレイヤーターン */
 	void StairTurn();  /* 階層ターン */

@@ -3,7 +3,8 @@
 DrawGame::DrawGame() :
 	width(0), height(0),
 	player(nullptr),
-	wall(nullptr), stair(nullptr), tyle(nullptr)
+	wall(nullptr), stair(nullptr), tyle(nullptr),
+	frame_counter(0), is_frame_counter(false)
 {
 }
 
@@ -127,6 +128,35 @@ void DrawGame::DrawStatusBar(Character* ch_data, const int& floor)
 	print_manager.DrawStrings(GetStringLV(ch_data->GetLevel()), st_up_x + wide_length * 1, st_up_y, 0, PS::COLOR::WHITE);
 	print_manager.DrawStrings(GetStringHP(ch_data->GetHP(), ch_data->GetMaxHP()), st_up_x + wide_length * 2, st_up_y, 0, PS::COLOR::WHITE);
 	DrawMode3D();
+}
+/* ˆÃ“]•`‰æ */
+bool DrawGame::DrawBlackScreen(const int &floor_num, const int& frame_time)
+{
+	/* ƒtƒŒ[ƒ€ˆ—‚³‚ê‚Ä‚¢‚È‚¢ê‡, ‰Šú‰» */
+	if (!is_frame_counter)
+	{
+		frame_counter = 0;
+		is_frame_counter = true;
+	}
+
+	/* ‘JˆÚ‰æ–Ê•\¦ */
+	if (is_frame_counter)
+	{
+		DrawMode2D();
+
+		DrawMode3D();
+
+		frame_counter++;
+	}
+
+	/* ‹K’èƒtƒŒ[ƒ€”‚É’B‚µ‚½ê‡, ˆ—‚ğI—¹ */
+	if (frame_counter >= frame_time)
+	{
+		frame_counter = 0;
+		is_frame_counter = false;
+		return true;
+	}
+	return false;
 }
 /* private */
 /* ‰Šú‰»ŠÖŒW */
