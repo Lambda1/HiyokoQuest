@@ -59,9 +59,12 @@ void MyGL::Init(std::string name,int width,int height,int argc,char **argv)
 
 	/* ここから: 特化処理 */
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_NORMALIZE);
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); /* アルファブレンド */
 	/* ここまで: 特化処理 */
 }
 

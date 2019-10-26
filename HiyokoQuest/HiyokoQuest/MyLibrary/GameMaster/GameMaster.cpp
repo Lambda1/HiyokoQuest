@@ -169,6 +169,8 @@ void GameMaster::TurnStart()
 	game_step = GAME_STEP::PLAYER_TURN;
 	/* ターンを経過 */
 	turn_number++;
+	/* ミニマップの更新 */
+	game_map->MiniMapUpdate(static_cast<int>(player->GetPosX()), static_cast<int>(player->GetPosY()));
 }
 /* プレイヤーターン処理 */
 void GameMaster::PlayerTurn()
@@ -194,7 +196,6 @@ void GameMaster::PlayerTurn()
 	/* プレイヤーが行動した場合, ターンを移行 */
 	if (player->GetTurnMode() != TURN_MODE::NONE)
 	{
-		game_map->Update(); /* マップ更新 */
 		game_step = GAME_STEP::ENEMY_TURN;
 	}
 }
@@ -237,7 +238,6 @@ void GameMaster::EnemyTurn()
 	/* 全ての敵が行動した場合, ターンを移行 */
 	if (is_next_turn)
 	{
-		game_map->Update(); /* マップ更新 */
 		game_step = GAME_STEP::STATUS_TURN;
 	}
 }
@@ -497,7 +497,9 @@ void GameMaster::DrawStatus()
 }
 void GameMaster::DrawAll()
 {
+	game_map->Update(); /* マップ更新 */
 	CameraPos();  /* カメラ設定 */
 	DrawMap();    /* マップ描画 */
 	DrawStatus(); /* ステータス描画 */
+	draw_manager.DrawMiniMap(reinterpret_cast<MAPSET::DATA*>(game_map->GetMiniMap())); /* ミニマップ描画 */
 }

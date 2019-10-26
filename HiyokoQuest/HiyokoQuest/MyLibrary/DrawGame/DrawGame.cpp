@@ -135,6 +135,35 @@ void DrawGame::DrawStatusBar(Character* ch_data, const int& floor)
 	DrawMode3D();
 	glPopMatrix();
 }
+/* ミニマップ表示 */
+void DrawGame::DrawMiniMap(const MAPSET::DATA *dungeon)
+{
+	DrawMode2D();
+	glPointSize(7.0f);
+	glBegin(GL_POINTS);
+	for (int i = 0; i < height; i++)
+	{
+		for (int j = 0; j < width; j++)
+		{
+			switch (dungeon[i*width+j])
+			{
+			case MAPSET::DATA::WALL:
+				glColor4f(1.0f, 0.0f, 0.0f, 0.7f);
+				glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f); break;
+			case MAPSET::DATA::ROAD:
+				glColor4f(0.0f, 1.0f, 0.0f, 0.7f);
+				glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f); break;
+			case MAPSET::DATA::ROOM:
+				glColor4f(0.0f, 0.0f, 1.0f, 0.7f);
+				glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f); break;
+			default:
+				break;
+			}
+		}
+	}
+	glEnd();
+	DrawMode3D();
+}
 /* 暗転描画 */
 bool DrawGame::DrawBlackScreen(const int &floor_num, const int& frame_time)
 {

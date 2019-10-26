@@ -145,6 +145,9 @@ public:
 		/* ステータス表示 */
 		void DrawStatusBar(Character* ch_data, const int& floor);
 
+		/* ミニマップ表示 */
+		void DrawMiniMap(const MAPSET::DATA *dungeon);
+
 		/* 階層表示 */
 		bool DrawBlackScreen(const int &floor_num, const int &frame_time);
 

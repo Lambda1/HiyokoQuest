@@ -91,10 +91,10 @@ class Character
 		inline int  GetHP() { return hp; }
 		inline int  GetMaxHP() { return max_hp; }
 		inline int  GetLevel() { return level; }
-		inline POS_TYPE  GetPosX()    { return x; }
-		inline POS_TYPE  GetPosY()    { return y; }
-		inline POS_TYPE  GetPosPX() { return prev_x; }
-		inline POS_TYPE  GetPosPY() { return prev_y; }
+		inline POS_TYPE  GetPosX()  const  { return x; }
+		inline POS_TYPE  GetPosY()  const  { return y; }
+		inline POS_TYPE  GetPosPX() const { return prev_x; }
+		inline POS_TYPE  GetPosPY() const { return prev_y; }
 		inline bool GetFriend()  { return is_friend; }
 		inline MAPSET::DATA GetCharaInfo() { return chara_state; }
 		inline TURN_MODE GetTurnMode() { return turn_cost; }
