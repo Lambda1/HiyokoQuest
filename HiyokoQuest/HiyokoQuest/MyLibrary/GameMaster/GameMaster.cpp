@@ -72,12 +72,12 @@ void GameMaster::TurnProcess()
 		Init(); break;
 	case GAME_STEP::CREATE_MAP:
 		CreateMap(); break;
+	case GAME_STEP::DISPLAY_INFO:
+		DispInfo(); break;
 	case GAME_STEP::TURN_START:
 		TurnStart(); break;
 	case GAME_STEP::PLAYER_TURN:
 		PlayerTurn(); break;
-	case GAME_STEP::STAIR_TURN:
-		StairTurn(); break;
 	case GAME_STEP::ITEM_TURN:
 		ItemTurn();   break;
 	case GAME_STEP::ENEMY_TURN:
@@ -86,6 +86,8 @@ void GameMaster::TurnProcess()
 		StatusTurn(); break;
 	case GAME_STEP::TURN_END:
 		TurnEnd(); break;
+	case GAME_STEP::STAIR_TURN:
+		StairTurn(); break;
 	case GAME_STEP::GAME_END:
 		GameEnd(); break;
 	default:
@@ -109,7 +111,6 @@ void GameMaster::Init()
 void GameMaster::CreateMap()
 {
 	std::cout << "GAME MAP" << std::endl;
-	game_step = GAME_STEP::TURN_START;
 	
 	/* 階層を進む */
 	floor_number++;
@@ -130,7 +131,7 @@ void GameMaster::CreateMap()
 	
 	/* エネミー召喚 */
 	for (int i = 0; i < floor_number; i++) {
-		Enemy *enemy_tmp = new Enemy;
+		Enemy *enemy_tmp = new Enemy(static_cast<float>(floor_number*0.5f));
 		enemy_list.push_back(enemy_tmp);
 	}
 
@@ -154,7 +155,18 @@ void GameMaster::CreateMap()
 
 	/* 各レイヤを結合 */
 	game_map->Update();
+
+	game_step = GAME_STEP::DISPLAY_INFO;
 }
+
+/* ダンジョン情報表示 */
+void GameMaster::DispInfo()
+{
+	std::cout << "DISPLAY INFO" << std::endl;
+	draw_manager.DrawInit();
+	if (draw_manager.DrawBlackScreen(floor_number, static_cast<int>(BASE_FPS*1.5f))) { game_step = GAME_STEP::TURN_START; }
+}
+
 /* ターン開始処理 */
 void GameMaster::TurnStart()
 {
@@ -189,22 +201,8 @@ void GameMaster::PlayerTurn()
 	/* プレイヤーが行動した場合, ターンを移行 */
 	if (player->GetTurnMode() != TURN_MODE::NONE)
 	{
-		game_step = GAME_STEP::STAIR_TURN;
+		game_step = GAME_STEP::ENEMY_TURN;
 	}
-}
-/* 階層ターン処理 */
-void GameMaster::StairTurn()
-{
-	std::cout << "GAME STAIR" << std::endl;
-	
-	/* PlayerとSTAIRの座標が等しい時, 次階層へ移動 */
-	if (*player == *stair)
-	{
-		DiposeFloor();
-		player->SetTurnMode(TURN_MODE::NONE);
-		game_step = GAME_STEP::CREATE_MAP;
-	}
-	else { game_step = GAME_STEP::ITEM_TURN; }
 }
 /* アイテムターン処理 */
 void GameMaster::ItemTurn()
@@ -262,7 +260,21 @@ void GameMaster::TurnEnd()
 	std::cout << "TURN END" << std::endl;
 	/* アニメーションを描画 */
 	/* アニメーション終了後に, 初めのターンに戻る */
-	if(AnimationUpdate()) { game_step = GAME_STEP::TURN_START; }
+	if (AnimationUpdate()) { game_step = GAME_STEP::STAIR_TURN; }
+}
+/* 階層ターン処理 */
+void GameMaster::StairTurn()
+{
+	std::cout << "GAME STAIR" << std::endl;
+
+	/* PlayerとSTAIRの座標が等しい時, 次階層へ移動 */
+	if (*player == *stair)
+	{
+		DiposeFloor();
+		player->SetTurnMode(TURN_MODE::NONE);
+		game_step = GAME_STEP::CREATE_MAP;
+	}
+	else { game_step = GAME_STEP::TURN_START; }
 }
 /* ゲーム終了処理 */
 void GameMaster::GameEnd()
@@ -349,6 +361,7 @@ bool GameMaster::CharacterMove(Character *ch_data, const DIRECTION& direct)
 	/* キャラクタが進行方向に移動可能か判定 */
 	POS_TYPE pos_x = ch_data->GetPosX(), pos_y = ch_data->GetPosY();
 	CalcDirectionToPos(&pos_x, &pos_y, direct);
+	ch_data->SetDirection(direct); /* キャラクタの向きを入力方向へ */
 	/* 移動可能の場合, キャラクタを移動する */
 	if (IsPosMove(static_cast<int>(pos_x), static_cast<int>(pos_y)))
 	{
@@ -473,6 +486,7 @@ bool GameMaster::EnemyDeath(const std::list<Character*>::iterator& enemy_itr)
 void GameMaster::CameraPos()
 {
 	draw_manager.CameraPos(player->GetPosPX(), 10.0f, player->GetPosPY() + 10.0f, player->GetPosPX(), 0.0f, player->GetPosPY());
+	//draw_manager.CameraPos(player->GetPosPX(), 1.0f, player->GetPosPY(), player->GetPosPX(), 0.9f, (player->GetPosPY()-0.5f)); /* FPSモード(アルファ版) */
 }
 void GameMaster::DrawMap()
 {

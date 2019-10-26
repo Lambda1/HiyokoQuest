@@ -3,7 +3,8 @@
 DrawGame::DrawGame() :
 	width(0), height(0),
 	player(nullptr),
-	wall(nullptr), stair(nullptr), tyle(nullptr)
+	wall(nullptr), stair(nullptr), tyle(nullptr),
+	frame_counter(0), is_frame_counter(false)
 {
 }
 
@@ -50,6 +51,10 @@ void DrawGame::Init()
 	{
 		SetVBOInfo((*itr),enemy_id_start[index_id++]);
 	}
+
+	/* シェーダ処理の初期化 */
+	shader_manager.UseProgram();
+	shader_manager.UnUseProgram();
 }
 /* マップ層描画 */
 /* レイヤ版 */
@@ -121,12 +126,50 @@ void DrawGame::DrawCharacter(Character* ch_data, const int& width, const int& he
 /* ステータス描画 */
 void DrawGame::DrawStatusBar(Character* ch_data, const int& floor)
 {
+	glPushMatrix();
 	DrawMode2D();
 	DrawRect(up_x, up_y);
 	print_manager.DrawStrings(GetStringFL(floor), st_up_x + wide_length * 0, st_up_y, 0, PS::COLOR::WHITE);
 	print_manager.DrawStrings(GetStringLV(ch_data->GetLevel()), st_up_x + wide_length * 1, st_up_y, 0, PS::COLOR::WHITE);
 	print_manager.DrawStrings(GetStringHP(ch_data->GetHP(), ch_data->GetMaxHP()), st_up_x + wide_length * 2, st_up_y, 0, PS::COLOR::WHITE);
 	DrawMode3D();
+	glPopMatrix();
+}
+/* 暗転描画 */
+bool DrawGame::DrawBlackScreen(const int &floor_num, const int& frame_time)
+{
+	/* フレーム処理されていない場合, 初期化 */
+	if (!is_frame_counter)
+	{
+		frame_counter = 0;
+		is_frame_counter = true;
+	}
+
+	/* 遷移画面表示 */
+	if (is_frame_counter)
+	{
+		glPushMatrix();
+		{
+			DrawMode2D();
+
+			print_manager.DrawStrings(std::string("FLOOR:"), -0.4f, 0.0f, 0.0f, PS::COLOR::RED);
+			print_manager.DrawStrings(std::to_string(floor_num), 0.0f, 0.0f, 0.0f, PS::COLOR::WHITE);
+
+			DrawMode3D();
+		}
+		glPopMatrix();
+
+		frame_counter++;
+	}
+
+	/* 規定フレーム数に達した場合, 処理を終了 */
+	if (frame_counter >= frame_time)
+	{
+		frame_counter = 0;
+		is_frame_counter = false;
+		return true;
+	}
+	return false;
 }
 /* private */
 /* 初期化関係 */

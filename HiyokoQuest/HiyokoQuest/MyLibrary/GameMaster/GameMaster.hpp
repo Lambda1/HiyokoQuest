@@ -25,13 +25,14 @@ class GameMaster
 	{
 		INIT,        /* 初期化: 初めの1回のみ */
 		CREATE_MAP,  /* マップ生成 */
+		DISPLAY_INFO,/* ダンジョン情報表示 */
 		TURN_START,  /* ターン開始 */
 		PLAYER_TURN, /* プレイヤーフェーズ */
-		STAIR_TURN,  /* 階段フェーズ */
 		ITEM_TURN,   /* アイテムフェーズ */
 		ENEMY_TURN,  /* エネミーフェーズ */
 		STATUS_TURN, /* ステータスフェーズ */
 		TURN_END,    /* ターン終了 */
+		STAIR_TURN,  /* 階段フェーズ */
 		GAME_END,    /* ゲーム終了 */
 	};
 
@@ -65,12 +66,14 @@ class GameMaster
 
 	/* 描画処理 */
 	DrawGame draw_manager; /* 描画管理 */
+	const float BASE_FPS = 60.0f; /* 基礎フレーム(1秒) */
 
 private:
 	/* ターン処理 */
 	void TurnProcess(); /* ターン統括処理 */
 	void Init();       /* 初期化 */
 	void CreateMap();  /* マップ生成 */
+	void DispInfo();   /* ダンジョン情報表示 */
 	void TurnStart();  /* ターン開始 */
 	void PlayerTurn(); /* プレイヤーターン */
 	void StairTurn();  /* 階層ターン */

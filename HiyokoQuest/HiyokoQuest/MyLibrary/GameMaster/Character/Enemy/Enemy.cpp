@@ -14,6 +14,20 @@ Enemy::Enemy()
 	is_friend = false;
 }
 
+Enemy::Enemy(const float &up_rate)
+{
+	chara_state = MAPSET::DATA::ENEMY;
+
+	hp = max_hp = static_cast<int>(first_hp+up_rate);
+	mp = max_mp = static_cast<int>(first_mp+up_rate);
+	level = first_level;
+	power = static_cast<int>(first_power+up_rate);
+	defence = static_cast<int>(first_defence+up_rate);
+	next_level_exp = first_next_exp;
+
+	is_friend = false;
+}
+
 Enemy::~Enemy()
 {
 }

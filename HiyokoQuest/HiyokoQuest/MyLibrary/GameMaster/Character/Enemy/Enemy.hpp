@@ -17,6 +17,7 @@ class Enemy : public Character
 	
 	public:
 		Enemy();
+		Enemy(const float& up_rate); /* パワーアップ版 */
 		~Enemy();
 
 		void Move(DIRECTION direct) override;
