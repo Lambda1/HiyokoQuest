@@ -6,12 +6,10 @@ TitleScene::TitleScene() :
 	key_pos(BUTTON::NONE)
 {
 	scene_number = SCENE::TITLE;
-	std::cout << "TITLE CON" << std::endl;
 }
 
 TitleScene::~TitleScene()
 {
-	std::cout << "TITLE DES" << std::endl;
 }
 
 void TitleScene::Update()

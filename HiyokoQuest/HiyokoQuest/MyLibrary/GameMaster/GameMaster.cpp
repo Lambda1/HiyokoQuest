@@ -97,7 +97,6 @@ void GameMaster::TurnProcess()
 /* 初期化処理 */
 void GameMaster::Init()
 {
-	std::cout << "GAME INIT" << std::endl;
 	game_step = GAME_STEP::CREATE_MAP;
 
 	/* プレイヤー招来 */
@@ -110,8 +109,6 @@ void GameMaster::Init()
 /* マップ生成処理 */
 void GameMaster::CreateMap()
 {
-	std::cout << "GAME MAP" << std::endl;
-	
 	/* 階層を進む */
 	floor_number++;
 	/* 部屋数を決定 */
@@ -162,7 +159,6 @@ void GameMaster::CreateMap()
 /* ダンジョン情報表示 */
 void GameMaster::DispInfo()
 {
-	std::cout << "DISPLAY INFO" << std::endl;
 	draw_manager.DrawInit();
 	if (draw_manager.DrawBlackScreen(floor_number, static_cast<int>(BASE_FPS*1.5f))) { game_step = GAME_STEP::TURN_START; }
 }
@@ -170,7 +166,6 @@ void GameMaster::DispInfo()
 /* ターン開始処理 */
 void GameMaster::TurnStart()
 {
-	std::cout << "GAME START " << turn_number << std::endl;
 	game_step = GAME_STEP::PLAYER_TURN;
 	/* ターンを経過 */
 	turn_number++;
@@ -178,8 +173,6 @@ void GameMaster::TurnStart()
 /* プレイヤーターン処理 */
 void GameMaster::PlayerTurn()
 {
-	//std::cout << "GAME PLAYER" << std::endl;
-
 	/* キー入力があった場合, 処理を開始 */
 	if (key_pos != BUTTON_MASK::NONE)
 	{
@@ -207,14 +200,11 @@ void GameMaster::PlayerTurn()
 /* アイテムターン処理 */
 void GameMaster::ItemTurn()
 {
-	std::cout << "GAME ITEM" << std::endl;
 	game_step = GAME_STEP::ENEMY_TURN;
 }
 /* エネミーターン処理 */
 void GameMaster::EnemyTurn()
 {
-	std::cout << "GAME ENEMY" << std::endl;
-
 	bool is_next_turn = true;
 
 	for (std::list<Character*>::iterator itr = enemy_list.begin(); itr != enemy_list.end(); itr++)
@@ -249,7 +239,6 @@ void GameMaster::EnemyTurn()
 /* ステータスターン処理 */
 void GameMaster::StatusTurn()
 {
-	std::cout << "GAME STATUS" << std::endl;
 	player->Update(); /* 敵からの攻撃による死亡判定を行うため, ステータス処理時に更新 */
 	if (player->IsDeath()) { game_step = GAME_STEP::GAME_END; }
 	else { game_step = GAME_STEP::TURN_END; }
@@ -257,7 +246,6 @@ void GameMaster::StatusTurn()
 /* ターン終了処理 */
 void GameMaster::TurnEnd()
 {
-	std::cout << "TURN END" << std::endl;
 	/* アニメーションを描画 */
 	/* アニメーション終了後に, 初めのターンに戻る */
 	if (AnimationUpdate()) { game_step = GAME_STEP::STAIR_TURN; }
@@ -265,8 +253,6 @@ void GameMaster::TurnEnd()
 /* 階層ターン処理 */
 void GameMaster::StairTurn()
 {
-	std::cout << "GAME STAIR" << std::endl;
-
 	/* PlayerとSTAIRの座標が等しい時, 次階層へ移動 */
 	if (*player == *stair)
 	{
@@ -279,7 +265,6 @@ void GameMaster::StairTurn()
 /* ゲーム終了処理 */
 void GameMaster::GameEnd()
 {
-	std::cout << "GAME END" << std::endl;
 	DiposeFloor();
 	if (player) { delete player; player = nullptr; }
 	game_over_flag = true;

@@ -6,12 +6,10 @@ ResultScene::ResultScene() :
 	key_pos(BUTTON::NONE)
 {
 	scene_number = SCENE::RESULT;
-	std::cout << "RESULT CON" << std::endl;
 }
 
 ResultScene::~ResultScene()
 {
-	std::cout << "RESULT DES" << std::endl;
 }
 
 void ResultScene::Update()

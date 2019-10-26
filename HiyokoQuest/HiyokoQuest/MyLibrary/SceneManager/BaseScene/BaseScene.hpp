@@ -20,8 +20,8 @@ class BaseScene
 	public:
 		BaseScene() :
 			scene_transition(false), game_quite(false), scene_number(SCENE::TITLE)
-		{ std::cout << "BASE CON" << std::endl; }
-		virtual ~BaseScene(){std::cout << "BASE DES" << std::endl;}
+		{}
+		virtual ~BaseScene(){}
 		
 		virtual void Update()=0;
 		virtual void Draw()=0;
