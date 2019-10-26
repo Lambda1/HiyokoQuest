@@ -8,6 +8,10 @@ int main(int argc, char* argv[])
 {
 	const std::string window_name = "Sample"; /* ウィンドウタイトル */
 	const int width = 900, height = 600; /* 画面の大きさ */
+	
+	const int frame_rate_key = 1; /* F1: fps切替キー */
+	const double main_fps[2] = {1000.0/60.0, 1000.0/120.0}; /* fps処理 */
+	int fps_index = 0; /* fps選択インデックス */
 
 	MyGL opengl_manager;        /* OpenGL処理 */
 	SceneManager scene_manager; /* シーン処理 */
@@ -24,10 +28,13 @@ int main(int argc, char* argv[])
 	{
 		opengl_manager.MainLoop(); /* OpenGLのループ処理 */
 		
-		//fps_manager.FPS_Checker(); /* DEBUG: FPSチェック */
+		fps_manager.FPS_Checker(); /* DEBUG: FPSチェック */
 
-		/* 60FPS処理 */
-		if (fps_manager.Timer_60fps())
+		/* FPS切替 */
+		if (opengl_manager.GetSpKeyUp() == frame_rate_key) { fps_index = (fps_index + 1) % 2; }
+		
+		/* 60 || 120fps処理 */
+		if (fps_manager.Timer_Nfps(main_fps[fps_index]))
 		{
 			scene_manager.KeyInput(opengl_manager.GetKeyBuffer()); /* キーボード入力 */
 			
