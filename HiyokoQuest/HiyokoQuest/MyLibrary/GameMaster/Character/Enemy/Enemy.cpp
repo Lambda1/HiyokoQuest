@@ -23,7 +23,7 @@ Enemy::Enemy(const float &up_rate)
 	level = first_level;
 	power = static_cast<int>(first_power+up_rate);
 	defence = static_cast<int>(first_defence+up_rate);
-	next_level_exp = first_next_exp;
+	next_level_exp = static_cast<int>(first_level + first_next_exp*up_rate);
 
 	is_friend = false;
 }

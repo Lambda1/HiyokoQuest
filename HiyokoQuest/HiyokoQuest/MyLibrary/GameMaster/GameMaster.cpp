@@ -127,7 +127,7 @@ void GameMaster::CreateMap()
 	stair->InitPos(static_cast<POS_TYPE>(stair_pos_x), static_cast<POS_TYPE>(stair_pos_y)); /* 階段座標を初期化 */
 	
 	/* エネミー召喚 */
-	for (int i = 0; i < floor_number; i++) {
+	for (int i = 0; i < floor_number*2; i++) {
 		Enemy *enemy_tmp = new Enemy(static_cast<float>(floor_number*0.5f));
 		enemy_list.push_back(enemy_tmp);
 	}
@@ -194,6 +194,7 @@ void GameMaster::PlayerTurn()
 	/* プレイヤーが行動した場合, ターンを移行 */
 	if (player->GetTurnMode() != TURN_MODE::NONE)
 	{
+		game_map->Update(); /* マップ更新 */
 		game_step = GAME_STEP::ENEMY_TURN;
 	}
 }
@@ -234,7 +235,11 @@ void GameMaster::EnemyTurn()
 	}
 
 	/* 全ての敵が行動した場合, ターンを移行 */
-	if (is_next_turn) { game_step = GAME_STEP::STATUS_TURN; }
+	if (is_next_turn)
+	{
+		game_map->Update(); /* マップ更新 */
+		game_step = GAME_STEP::STATUS_TURN;
+	}
 }
 /* ステータスターン処理 */
 void GameMaster::StatusTurn()
@@ -247,7 +252,7 @@ void GameMaster::StatusTurn()
 void GameMaster::TurnEnd()
 {
 	/* アニメーションを描画 */
-	/* アニメーション終了後に, 初めのターンに戻る */
+	/* アニメーション終了後に, 次ターンへ */
 	if (AnimationUpdate()) { game_step = GAME_STEP::STAIR_TURN; }
 }
 /* 階層ターン処理 */
@@ -492,7 +497,6 @@ void GameMaster::DrawStatus()
 }
 void GameMaster::DrawAll()
 {
-	game_map->Update(); /* マップ更新 */
 	CameraPos();  /* カメラ設定 */
 	DrawMap();    /* マップ描画 */
 	DrawStatus(); /* ステータス描画 */
