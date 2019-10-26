@@ -78,8 +78,6 @@ void GameMaster::TurnProcess()
 		TurnStart(); break;
 	case GAME_STEP::PLAYER_TURN:
 		PlayerTurn(); break;
-	case GAME_STEP::STAIR_TURN:
-		StairTurn(); break;
 	case GAME_STEP::ITEM_TURN:
 		ItemTurn();   break;
 	case GAME_STEP::ENEMY_TURN:
@@ -88,6 +86,8 @@ void GameMaster::TurnProcess()
 		StatusTurn(); break;
 	case GAME_STEP::TURN_END:
 		TurnEnd(); break;
+	case GAME_STEP::STAIR_TURN:
+		StairTurn(); break;
 	case GAME_STEP::GAME_END:
 		GameEnd(); break;
 	default:
@@ -131,7 +131,7 @@ void GameMaster::CreateMap()
 	
 	/* エネミー召喚 */
 	for (int i = 0; i < floor_number; i++) {
-		Enemy *enemy_tmp = new Enemy;
+		Enemy *enemy_tmp = new Enemy(static_cast<float>(floor_number*0.5f));
 		enemy_list.push_back(enemy_tmp);
 	}
 
@@ -164,10 +164,7 @@ void GameMaster::DispInfo()
 {
 	std::cout << "DISPLAY INFO" << std::endl;
 	draw_manager.DrawInit();
-	if (draw_manager.DrawBlackScreen(floor_number, 60))
-	{
-		game_step = GAME_STEP::TURN_START;
-	}
+	if (draw_manager.DrawBlackScreen(floor_number, static_cast<int>(BASE_FPS*1.5f))) { game_step = GAME_STEP::TURN_START; }
 }
 
 /* ターン開始処理 */
@@ -204,22 +201,8 @@ void GameMaster::PlayerTurn()
 	/* プレイヤーが行動した場合, ターンを移行 */
 	if (player->GetTurnMode() != TURN_MODE::NONE)
 	{
-		game_step = GAME_STEP::STAIR_TURN;
+		game_step = GAME_STEP::ENEMY_TURN;
 	}
-}
-/* 階層ターン処理 */
-void GameMaster::StairTurn()
-{
-	std::cout << "GAME STAIR" << std::endl;
-	
-	/* PlayerとSTAIRの座標が等しい時, 次階層へ移動 */
-	if (*player == *stair)
-	{
-		DiposeFloor();
-		player->SetTurnMode(TURN_MODE::NONE);
-		game_step = GAME_STEP::CREATE_MAP;
-	}
-	else { game_step = GAME_STEP::ITEM_TURN; }
 }
 /* アイテムターン処理 */
 void GameMaster::ItemTurn()
@@ -277,7 +260,21 @@ void GameMaster::TurnEnd()
 	std::cout << "TURN END" << std::endl;
 	/* アニメーションを描画 */
 	/* アニメーション終了後に, 初めのターンに戻る */
-	if(AnimationUpdate()) { game_step = GAME_STEP::TURN_START; }
+	if (AnimationUpdate()) { game_step = GAME_STEP::STAIR_TURN; }
+}
+/* 階層ターン処理 */
+void GameMaster::StairTurn()
+{
+	std::cout << "GAME STAIR" << std::endl;
+
+	/* PlayerとSTAIRの座標が等しい時, 次階層へ移動 */
+	if (*player == *stair)
+	{
+		DiposeFloor();
+		player->SetTurnMode(TURN_MODE::NONE);
+		game_step = GAME_STEP::CREATE_MAP;
+	}
+	else { game_step = GAME_STEP::TURN_START; }
 }
 /* ゲーム終了処理 */
 void GameMaster::GameEnd()
