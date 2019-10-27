@@ -11,7 +11,7 @@
 
 class GameScene : public BaseScene
 {
-	GameMaster game_master; /* ゲーム統括クラス */
+	GameMaster *game_master; /* ゲーム統括クラス */
 
 	public:
 		GameScene();

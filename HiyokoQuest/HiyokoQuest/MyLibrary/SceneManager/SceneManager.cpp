@@ -18,8 +18,10 @@ SceneManager::~SceneManager()
 
 void SceneManager::ChangeScene(SCENE scene)
 {
-	if(m_scene) delete m_scene;
-
+	if (m_scene) {
+		delete m_scene;
+		m_scene = nullptr;
+	}
 	switch(scene)
 	{
 		case SCENE::TITLE:
@@ -52,7 +54,6 @@ void SceneManager::KeyInput(const bool* key_buffer)
 		key_buffer_now[i] = key_buffer[i];
 	}
 }
-
 
 void SceneManager::TransScene()
 {

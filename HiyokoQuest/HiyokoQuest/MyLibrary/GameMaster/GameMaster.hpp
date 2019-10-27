@@ -97,7 +97,8 @@ private:
 	void DiposeEnemy();
 
 	/* EnemyTurnê—pˆ— */
-	bool EnemyDeath(const std::list<Character*>::iterator &enemy_itr);
+	/* iterator‚Í”j‰ó‘Îô‚Ì‚½‚ß, ‰ğ•ú‚ÉXV‚³‚ê‚é */
+	bool EnemyDeath(std::list<Character*>::iterator &enemy_itr);
 
 	/* •`‰æˆ— */
 	void CameraPos();

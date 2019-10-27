@@ -11,10 +11,10 @@ GameMaster::GameMaster() :
 }
 GameMaster::~GameMaster()
 {
+	DiposeEnemy();
 	if (player) { delete player; player = nullptr; }
 	if (stair) { delete stair; stair = nullptr; }
 	if (game_map) { delete game_map; game_map = nullptr;}
-	DiposeEnemy();
 }
 
 /* ゲーム更新処理 */
@@ -131,7 +131,6 @@ void GameMaster::CreateMap()
 		Enemy *enemy_tmp = new Enemy(static_cast<float>(floor_number*0.5f));
 		enemy_list.push_back(enemy_tmp);
 	}
-
 	/* アイテム生成 */
 
 	/* プレイヤー配置 */
@@ -209,7 +208,8 @@ void GameMaster::EnemyTurn()
 {
 	bool is_next_turn = true;
 
-	for (std::list<Character*>::iterator itr = enemy_list.begin(); itr != enemy_list.end(); itr++)
+	/* iteratorの破壊に注意すること */
+	for (std::list<Character*>::iterator itr = enemy_list.begin(); itr != enemy_list.end();)
 	{
 		(*itr)->Update();
 		const bool is_death = EnemyDeath(itr); /* 敵が倒されている場合, 処理: 死亡+経験値 */
@@ -233,6 +233,10 @@ void GameMaster::EnemyTurn()
 
 			if ((*itr)->GetTurnMode() == TURN_MODE::NONE) { is_next_turn = false; }
 		}
+		else {
+			continue;
+		}
+		itr++;
 	}
 
 	/* 全ての敵が行動した場合, ターンを移行 */
@@ -441,19 +445,22 @@ void GameMaster::DiposeFloor()
 }
 void GameMaster::DiposeEnemy()
 {
-	for (std::list<Character*>::iterator itr = enemy_list.begin(); itr != enemy_list.end(); itr++) {
+	/* iteratorの破壊に注意すること */
+	for (std::list<Character*>::iterator itr = enemy_list.begin(); itr != enemy_list.end();) {
 		if (*itr)
 		{
 			game_map->SetChara(static_cast<int>((*itr)->GetPosY()), static_cast<int>((*itr)->GetPosX()), static_cast<MAP_TYPE>(MAPSET::DATA::NONE)); /* 現在地点をクリア */
-			delete *itr;
-			enemy_list.erase(itr);
+			delete* itr;
+			itr = enemy_list.erase(itr);
+			continue;
 		}
+		itr++;
 	}
 }
 
 /* EnemyTurn専用処理 */
 /* Enemyの死亡処理 */
-bool GameMaster::EnemyDeath(const std::list<Character*>::iterator& enemy_itr)
+bool GameMaster::EnemyDeath(std::list<Character*>::iterator& enemy_itr)
 {
 	if ((*enemy_itr)->IsDeath())
 	{
@@ -466,7 +473,7 @@ bool GameMaster::EnemyDeath(const std::list<Character*>::iterator& enemy_itr)
 
 		game_map->SetChara(static_cast<int>((*enemy_itr)->GetPosY()), static_cast<int>((*enemy_itr)->GetPosX()), static_cast<MAP_TYPE>(MAPSET::DATA::NONE)); /* 現在地点をクリア */
 		delete* enemy_itr;
-		enemy_list.erase(enemy_itr);
+		enemy_itr = enemy_list.erase(enemy_itr);
 		return true;
 	}
 	return false;

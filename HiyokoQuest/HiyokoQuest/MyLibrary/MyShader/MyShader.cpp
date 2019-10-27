@@ -16,6 +16,8 @@ MyShader::MyShader(const std::string fname1, const std::string fname2)
 	glUseProgram(gl2Program);
 	ifs_v.close();
 	ifs_f.close();
+	glDeleteShader(vertShader);
+	glDeleteShader(fragShader);
 }
 
 MyShader::~MyShader()

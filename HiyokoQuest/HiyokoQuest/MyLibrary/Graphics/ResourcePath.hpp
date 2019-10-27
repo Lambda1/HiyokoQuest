@@ -9,7 +9,7 @@ namespace FILE_PATH
 	{
 	public:
 		ResoucePath() = delete;
-		~ResoucePath() = delete;
+		~ResoucePath(){}
 
 		inline static const std::string bmp_suffix = ".bmp";
 		inline static const std::string obj_suffix = ".obj_";

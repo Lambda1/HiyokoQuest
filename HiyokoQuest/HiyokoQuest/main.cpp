@@ -1,4 +1,5 @@
 #include <string>
+#include <crtdbg.h>
 
 #include ".//MyLibrary/MyGL/MyGL.hpp"
 #include ".//MyLibrary/SceneManager/SceneManager.hpp"
@@ -28,7 +29,7 @@ int main(int argc, char* argv[])
 	{
 		opengl_manager.MainLoop(); /* OpenGLのループ処理 */
 		
-		fps_manager.FPS_Checker(); /* DEBUG: FPSチェック */
+		//fps_manager.FPS_Checker(); /* DEBUG: FPSチェック */
 
 		/* FPS切替 */
 		if (opengl_manager.GetSpKeyUp() == frame_rate_key) { fps_index = (fps_index + 1) % 2; }
@@ -44,6 +45,5 @@ int main(int argc, char* argv[])
 			scene_manager.TransScene(); /* シーン遷移処理 */
 		}
 	}
-
 	return 0;
 }

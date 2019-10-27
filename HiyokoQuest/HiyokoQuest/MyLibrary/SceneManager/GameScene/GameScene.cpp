@@ -2,22 +2,28 @@
 
 #include <iostream>
 
-GameScene::GameScene()
+GameScene::GameScene() :
+	game_master(nullptr)
 {
+	game_master = new GameMaster;
 	scene_number = SCENE::GAME;
 }
 
 GameScene::~GameScene()
 {
+	if (game_master) {
+		delete game_master;
+		game_master = nullptr;
+	}
 }
 
 void GameScene::Update()
 {
 	/* ゲーム更新 */
-	game_master.Update();
+	game_master->Update();
 
 	/* ゲームオーバー判定 */
-	if (game_master.IsGameOver()) {
+	if (game_master->IsGameOver()) {
 		scene_number = SCENE::RESULT;
 	}
 }
@@ -30,5 +36,5 @@ void GameScene::Draw()
 void GameScene::KeyInput(const bool* key_on,const bool* key_off)
 {
 	/* ゲームマスタへキー入力を転送 */
-	game_master.KeyInput(key_on,key_off);
+	game_master->KeyInput(key_on,key_off);
 }

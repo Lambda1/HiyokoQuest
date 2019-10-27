@@ -60,9 +60,10 @@ void BMPLoader::InfoHdLoad(std::fstream *bmp)
 }
 void BMPLoader::ImageDLoad(std::fstream *bmp)
 {
-	r = new int[width*height];
-	g = new int[width*height];
-	b = new int[width*height];
+	int index = width * height; /* C26451 */
+	r = new int[index];
+	g = new int[index];
+	b = new int[index];
 	int length = width*3 + width%4;
 	unsigned char *data = new unsigned char[length];
 
@@ -79,7 +80,8 @@ void BMPLoader::ImageDLoad(std::fstream *bmp)
 		
 void BMPLoader::UseRawData()
 {
-	raw_array = new unsigned char[(width*3 + width%4)*height];
+	int index = (width * 3 + width % 4) * height; /* C26451 */
+	raw_array = new unsigned char[index];
 	for(int i = 0;i < height;i++){
 		for(int j = 0;j < width;j++){
 			raw_array[(height-i-1)*(width*3)+j*3 + 0] = static_cast<unsigned char>(r[i*width+j]);

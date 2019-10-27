@@ -10,11 +10,20 @@ DrawGame::DrawGame() :
 
 DrawGame::~DrawGame()
 {
+	/* VBO—Ìˆæ‚Ì‰ğ•ú */
+	vbo_manager.DisableTexBuffers(1, player->GetTexID());
+	vbo_manager.DisableTexBuffers(1, wall->GetTexID());
+	vbo_manager.DisableTexBuffers(1, stair->GetTexID());
+	vbo_manager.DisableTexBuffers(1, tyle->GetTexID());
+	for (std::vector<ObjLoader*>::iterator itr = enemy.begin(); itr != enemy.end(); ++itr) { vbo_manager.DisableTexBuffers(1, (*itr)->GetTexID()); }
+	/* ƒIƒuƒWƒFƒNƒg‚Ì‰ğ•ú */
 	if (player) delete player;
 	if (wall)   delete wall;
 	if (stair)  delete stair;
 	if (tyle)   delete tyle;
-	for (std::vector<ObjLoader*>::iterator itr = enemy.begin(); itr != enemy.end(); itr++) { delete *itr; }
+	for (std::vector<ObjLoader*>::iterator itr = enemy.begin(); itr != enemy.end(); itr++){ delete *itr; }
+	std::vector<ObjLoader*>().swap(enemy);
+	std::vector<int>().swap(enemy_id_start);
 }
 
 void DrawGame::Init()
@@ -39,7 +48,7 @@ void DrawGame::Init()
 	wall->SetTexId(vbo_manager.InitTex());   /* Wall‚ÌƒeƒNƒXƒ`ƒƒ“o˜^ */
 	stair->SetTexId(vbo_manager.InitTex());  /* Stair‚ÌƒeƒNƒXƒ`ƒƒ“o˜^ */
 	tyle->SetTexId(vbo_manager.InitTex());   /* Tyle‚ÌƒeƒNƒXƒ`ƒƒ“o˜^ */
-	for (std::vector<ObjLoader*>::iterator itr = enemy.begin(); itr != enemy.end(); itr++) { (*itr)->SetTexId(vbo_manager.InitTex()); }
+	for (std::vector<ObjLoader*>::iterator itr = enemy.begin(); itr != enemy.end(); ++itr) { (*itr)->SetTexId(vbo_manager.InitTex()); }
 
 	/* ƒ‚ƒfƒ‹î•ñ‚ğVBO‚É“o˜^ */
 	SetVBOInfo(player, player_id_start); /* VBO‚Éplayer‚ğ“o˜^ */
@@ -47,7 +56,7 @@ void DrawGame::Init()
 	SetVBOInfo(stair,  stair_id_start);  /* VBO‚Éstair‚ğ“o˜^ */
 	SetVBOInfo(tyle,   tyle_id_start);   /* VBO‚Étyle‚ğ“o˜^ */
 	int index_id = 0;
-	for (std::vector<ObjLoader*>::iterator itr = enemy.begin(); itr != enemy.end(); itr++)
+	for (std::vector<ObjLoader*>::iterator itr = enemy.begin(); itr != enemy.end(); ++itr)
 	{
 		SetVBOInfo((*itr),enemy_id_start[index_id++]);
 	}
