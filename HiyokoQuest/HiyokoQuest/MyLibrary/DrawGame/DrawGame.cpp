@@ -143,23 +143,7 @@ void DrawGame::DrawMiniMap(const MAPSET::DATA *dungeon)
 	glBegin(GL_POINTS);
 	for (int i = 0; i < height; i++)
 	{
-		for (int j = 0; j < width; j++)
-		{
-			switch (dungeon[i*width+j])
-			{
-			case MAPSET::DATA::WALL:
-				glColor4f(1.0f, 0.0f, 0.0f, 0.7f);
-				glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f); break;
-			case MAPSET::DATA::ROAD:
-				glColor4f(0.0f, 1.0f, 0.0f, 0.7f);
-				glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f); break;
-			case MAPSET::DATA::ROOM:
-				glColor4f(0.0f, 0.0f, 1.0f, 0.7f);
-				glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f); break;
-			default:
-				break;
-			}
-		}
+		for (int j = 0; j < width; j++) { DrawMiniMap2D(dungeon[i*width+j],i,j); }
 	}
 	glEnd();
 	DrawMode3D();
@@ -233,6 +217,32 @@ void DrawGame::DrawMode3D()
 	glLoadIdentity();
 	gluPerspective(30, static_cast<double>(width / height), 1.0, 100.0);
 	glMatrixMode(GL_MODELVIEW);
+}
+void DrawGame::DrawMiniMap2D(const MAPSET::DATA& data,const int &i, const int &j)
+{
+	switch (data)
+	{
+	case MAPSET::DATA::WALL:
+		glColor4f(1.0f, 0.0f, 0.0f, 0.7f);
+		glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f); break;
+	case MAPSET::DATA::ROAD:
+		glColor4f(0.0f, 1.0f, 0.0f, 0.7f);
+		glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f); break;
+	case MAPSET::DATA::ROOM:
+		glColor4f(0.0f, 0.0f, 1.0f, 0.7f);
+		glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f); break;
+	case MAPSET::DATA::PLAYER:
+		glColor4f(1.0f, 0.55f, 0.0f, 0.7f);
+		glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f); break;
+	case MAPSET::DATA::ENEMY:
+		glColor4f(0.5f, 0.0f, 0.5f, 0.7f);
+		glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f); break;
+	case MAPSET::DATA::STAIR:
+		glColor4f(1.0f, 1.0f, 0.0f, 0.7f);
+		glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f); break;
+	default:
+		break;
+	}
 }
 void DrawGame::DrawObj(ObjLoader *obj_data, const float &x, const float &z,const float &ang)
 {

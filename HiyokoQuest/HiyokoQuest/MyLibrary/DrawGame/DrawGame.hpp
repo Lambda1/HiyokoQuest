@@ -26,14 +26,14 @@ class DrawGame
 	};
 
 	/* .obj情報 */
-	const int obj_info     = 3; /* 頂点・法線・UV座標 */
+	const int obj_info = 3; /* 頂点・法線・UV座標 */
 	const int model_number = 5; /* 使用する3Dモデル数 */
 	/* 描画クリッピング範囲 */
 	const int range_x = 7, range_y = 9;
 
 	/* 画面サイズ */
 	int width, height;
-	
+
 	/* ステータスバー位置 */
 	const float up_x = -0.9f, up_y = 0.80f;
 	const float frame_size_w = 0.6f, frame_size_h = 0.12f;
@@ -47,20 +47,20 @@ class DrawGame
 	const int player_id_start = 0;
 	/* 壁 */
 	ObjLoader* wall;
-	const int wall_id_start  = player_id_start + obj_info;
+	const int wall_id_start = player_id_start + obj_info;
 	/* 階段 */
 	ObjLoader* stair;
 	const int stair_id_start = wall_id_start + obj_info;
 	/* 床 */
 	ObjLoader* tyle;
-	const int tyle_id_start  = stair_id_start + obj_info;
+	const int tyle_id_start = stair_id_start + obj_info;
 	/* 敵 */
 	std::vector<ObjLoader*> enemy;
 	std::vector<int> enemy_id_start;
 
 	/* Shader関係 */
 	MyShader shader_manager;
-	inline static const std::string obj_shader_var[] = {"pos", "uv", "texture"}; /* 今回は法線情報は使わない */
+	inline static const std::string obj_shader_var[] = { "pos", "uv", "texture" }; /* 今回は法線情報は使わない */
 
 	/* VBO関係 */
 	VBOLoader vbo_manager;
@@ -75,9 +75,9 @@ class DrawGame
 private:
 	/* 初期化関係 */
 	/* .objロード */
-	ObjLoader* LoadObjFile(const std::string &obj_path);
+	ObjLoader* LoadObjFile(const std::string& obj_path);
 	/* VBO初期化 */
-	void SetVBOInfo(ObjLoader *obj_data, const int id_start); 	/* VBOに.objファイルを追加 */
+	void SetVBOInfo(ObjLoader* obj_data, const int id_start); 	/* VBOに.objファイルを追加 */
 
 	/* 描画関係 */
 	void DrawMode2D(); /* 並行投影 */
@@ -107,52 +107,54 @@ private:
 	{
 		return (std::to_string(floor) + std::string(" F"));
 	}
+	/* ミニマップ描画処理 */
+	void DrawMiniMap2D(const MAPSET::DATA &data,const int &i,const int &j);
 	/* .obj表示 */
-	void DrawObj(ObjLoader *obj_data, const float &x, const float &z, const float &ang); /* VBO+Shaderで.objを描画 */
+	void DrawObj(ObjLoader* obj_data, const float& x, const float& z, const float& ang); /* VBO+Shaderで.objを描画 */
 
 public:
-		DrawGame();
-		~DrawGame();
+	DrawGame();
+	~DrawGame();
 
-		void Init(); /* 初期化処理 */
+	void Init(); /* 初期化処理 */
 
-		/* カメラ処理 */
-		template<class T>
-		void CameraPos(const T& pos_x, const T& pos_y, const T& pos_z, const T& gaze_x, const T& gaze_y, const T& gaze_z)
-		{
-			glLoadIdentity();
-			gluLookAt(pos_x, pos_y, pos_z, gaze_x, gaze_y, gaze_z, 0.0, 1.0, 0.0);
-		}
-		/* 描画処理 */
-		/* 画面クリア */
-		inline void DrawInit()
-		{
-			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	/* カメラ処理 */
+	template<class T>
+	void CameraPos(const T& pos_x, const T& pos_y, const T& pos_z, const T& gaze_x, const T& gaze_y, const T& gaze_z)
+	{
+		glLoadIdentity();
+		gluLookAt(pos_x, pos_y, pos_z, gaze_x, gaze_y, gaze_z, 0.0, 1.0, 0.0);
+	}
+	/* 描画処理 */
+	/* 画面クリア */
+	inline void DrawInit()
+	{
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		}
-		/* レイヤ層によるマップ表示 */
-		void DrawMap(const unsigned char *dungeon,const int &width,const int &height); /* マップ層表示 */
-		/* 座標におけるマップ表示 (クリッピングに使用) */
-		void DrawMap(const unsigned char* dungeon, const int& width, const int& height, const int& px, const int& py);
-		/* レイヤ層によるキャラクタ表示 */
-		void DrawCharacter(const unsigned char* dungeon, const int& width, const int& height); /* キャラクター表示 */
-		/* 座標におけるキャラクタ表示 */
-		void DrawCharacter(Character* ch_data);
-		/* 座標におけるキャラクタ表示 (クリップングに使用) */
-		void DrawCharacter(Character* ch_data, const int& width, const int& height,const int& px,const int& py);
+	}
+	/* レイヤ層によるマップ表示 */
+	void DrawMap(const unsigned char* dungeon, const int& width, const int& height); /* マップ層表示 */
+	/* 座標におけるマップ表示 (クリッピングに使用) */
+	void DrawMap(const unsigned char* dungeon, const int& width, const int& height, const int& px, const int& py);
+	/* レイヤ層によるキャラクタ表示 */
+	void DrawCharacter(const unsigned char* dungeon, const int& width, const int& height); /* キャラクター表示 */
+	/* 座標におけるキャラクタ表示 */
+	void DrawCharacter(Character* ch_data);
+	/* 座標におけるキャラクタ表示 (クリップングに使用) */
+	void DrawCharacter(Character* ch_data, const int& width, const int& height, const int& px, const int& py);
 
-		/* ステータス表示 */
-		void DrawStatusBar(Character* ch_data, const int& floor);
+	/* ステータス表示 */
+	void DrawStatusBar(Character* ch_data, const int& floor);
 
-		/* ミニマップ表示 */
-		void DrawMiniMap(const MAPSET::DATA *dungeon);
+	/* ミニマップ表示 */
+	void DrawMiniMap(const MAPSET::DATA* dungeon);
 
-		/* 階層表示 */
-		bool DrawBlackScreen(const int &floor_num, const int &frame_time);
+	/* 階層表示 */
+	bool DrawBlackScreen(const int &floor_num, const int &frame_time);
 
-		/* セッタ */
-		inline void SetSize(const int& width, const int& height) { this->width = width, this->height = height; }
+	/* セッタ */
+	inline void SetSize(const int& width, const int& height) { this->width = width, this->height = height; }
 };
 
 #endif

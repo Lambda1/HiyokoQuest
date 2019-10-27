@@ -123,7 +123,7 @@ void GameMaster::CreateMap()
 	stair = new Stair;
 	int stair_pos_x, stair_pos_y;
 	game_map->GetRoomPos(&stair_pos_x, &stair_pos_y);
-	game_map->SetChara(stair_pos_y, stair_pos_x, static_cast<MAP_TYPE>(stair->GetCharaInfo())); /* マップに階段を配置 */
+	game_map->SetField(stair_pos_y, stair_pos_x, static_cast<MAP_TYPE>(stair->GetCharaInfo())); /* マップに階段を配置 */
 	stair->InitPos(static_cast<POS_TYPE>(stair_pos_x), static_cast<POS_TYPE>(stair_pos_y)); /* 階段座標を初期化 */
 	
 	/* エネミー召喚 */
