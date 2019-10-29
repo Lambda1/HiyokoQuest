@@ -55,8 +55,8 @@ void BMPLoader::InfoHdLoad(std::fstream *bmp)
 	*/
 	char data[INFO_H_SIZE];
 	bmp->read(data,sizeof(char)*INFO_H_SIZE);
-	memcpy(&width,data+4,sizeof(char)*4);
-	memcpy(&height,data+8,sizeof(char)*4);
+	memcpy(&width,data+static_cast<char>(4), sizeof(char)*static_cast<char>(4));
+	memcpy(&height,data+static_cast<char>(8),sizeof(char)*static_cast<char>(4));
 }
 void BMPLoader::ImageDLoad(std::fstream *bmp)
 {
@@ -80,7 +80,7 @@ void BMPLoader::ImageDLoad(std::fstream *bmp)
 		
 void BMPLoader::UseRawData()
 {
-	int index = (width * 3 + width % 4) * height; /* C26451 */
+	int index = (width * 3 + width % 4) * height + 1; /* C26451 */
 	raw_array = new unsigned char[index];
 	for(int i = 0;i < height;i++){
 		for(int j = 0;j < width;j++){

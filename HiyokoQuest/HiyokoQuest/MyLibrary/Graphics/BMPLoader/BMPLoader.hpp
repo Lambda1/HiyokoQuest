@@ -8,7 +8,8 @@
 constexpr int HEADER_SIZE = 14;
 constexpr int INFO_H_SIZE = 40;
 
-class BMPLoader{
+class BMPLoader
+{
 	int width,height;
 	unsigned char *raw_array;
 	int *r,*g,*b;
