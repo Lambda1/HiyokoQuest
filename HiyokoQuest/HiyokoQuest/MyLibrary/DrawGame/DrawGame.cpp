@@ -223,29 +223,25 @@ void DrawGame::DrawMode3D()
 }
 void DrawGame::DrawMiniMap2D(const MAPSET::DATA& data,const int &i, const int &j)
 {
+	/* ÉeÅ[ÉuÉãâªÇÃåüì¢ */
 	switch (data)
 	{
 	case MAPSET::DATA::WALL:
-		glColor4f(1.0f, 0.0f, 0.0f, 0.7f);
-		glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f); break;
+		glColor4f(1.0f, 0.0f, 0.0f, 0.7f); break;
 	case MAPSET::DATA::ROAD:
-		glColor4f(0.0f, 1.0f, 0.0f, 0.7f);
-		glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f); break;
+		glColor4f(0.0f, 1.0f, 0.0f, 0.7f); break;
 	case MAPSET::DATA::ROOM:
-		glColor4f(0.0f, 0.0f, 1.0f, 0.7f);
-		glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f); break;
+		glColor4f(0.0f, 0.0f, 1.0f, 0.7f); break;
 	case MAPSET::DATA::PLAYER:
-		glColor4f(1.0f, 0.55f, 0.0f, 0.7f);
-		glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f); break;
+		glColor4f(1.0f, 0.55f, 0.0f, 0.7f); break;
 	case MAPSET::DATA::ENEMY:
-		glColor4f(0.5f, 0.0f, 0.5f, 0.7f);
-		glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f); break;
+		glColor4f(0.5f, 0.0f, 0.5f, 0.7f); break;
 	case MAPSET::DATA::STAIR:
-		glColor4f(1.0f, 1.0f, 0.0f, 0.7f);
-		glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f); break;
+		glColor4f(1.0f, 1.0f, 0.0f, 0.7f); break;
 	default:
-		break;
+		return; break;
 	}
+	glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f);
 }
 void DrawGame::DrawObj(ObjLoader *obj_data, const float &x, const float &z,const float &ang)
 {

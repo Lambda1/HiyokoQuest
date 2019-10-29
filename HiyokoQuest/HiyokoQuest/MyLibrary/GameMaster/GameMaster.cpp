@@ -483,6 +483,7 @@ bool GameMaster::EnemyDeath(std::list<Character*>::iterator& enemy_itr)
 void GameMaster::CameraPos()
 {
 	draw_manager.CameraPos(player->GetPosPX(), 10.0f, player->GetPosPY() + 10.0f, player->GetPosPX(), 0.0f, player->GetPosPY());
+	//draw_manager.CameraPos(player->GetPosPX(),50.0f, player->GetPosPY(), player->GetPosPX(), 0.0f, (player->GetPosPY() - 0.5f)); /* 天空モード(アルファ版) */
 	//draw_manager.CameraPos(player->GetPosPX(), 1.0f, player->GetPosPY(), player->GetPosPX(), 0.9f, (player->GetPosPY()-0.5f)); /* FPSモード(アルファ版) */
 }
 void GameMaster::DrawMap()
@@ -494,7 +495,9 @@ void GameMaster::DrawMap()
 	draw_manager.DrawCharacter(player); /* 主人公表示 */
 	draw_manager.DrawCharacter(stair, width, height, static_cast<int>(player->GetPosX()), static_cast<int>(player->GetPosY()));  /* 階段表示 */
 
-	for (std::list<Character*>::iterator itr = enemy_list.begin(); itr != enemy_list.end(); itr++) {
+	/* 敵はクリッピングしない(処理が重い場合は検討) */
+	for (std::list<Character*>::iterator itr = enemy_list.begin(); itr != enemy_list.end(); itr++)
+	{
 		draw_manager.DrawCharacter((*itr), width, height, static_cast<int>((*itr)->GetPosX()), static_cast<int>((*itr)->GetPosY()));  /* 敵表示 */
 	}
 }

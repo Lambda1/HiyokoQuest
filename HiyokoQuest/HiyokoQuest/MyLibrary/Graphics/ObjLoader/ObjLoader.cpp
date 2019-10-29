@@ -85,6 +85,7 @@ ObjLoader::ObjLoader()
 
 ObjLoader::~ObjLoader()
 {
+	ReleaseVector();
 	if(vbo_id_index) delete[] vbo_id_index;
 	std::vector<double>().swap(g_ver);
 	std::vector<double>().swap(g_tex);
