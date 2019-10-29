@@ -53,7 +53,8 @@ void Weapon::CalcMoveDirect(const POS_TYPE& val)
 		break;
 	}
 }
-/* 移動アニメーション */
+
+/* 体当たり(素手)アニメーション */
 void Weapon::MoveAnimation()
 {
 	/* X軸の移動 */
@@ -71,8 +72,7 @@ void Weapon::MoveAnimation()
 		else prev_y += MOVE_RESOlUTION;
 	}
 }
-#include <iostream>
-/* 素手アニメーション */
+/* 素手アニメーション処理 */
 bool Weapon::Fist()
 {
 	/*  0フレーム目の時, 初期化 */

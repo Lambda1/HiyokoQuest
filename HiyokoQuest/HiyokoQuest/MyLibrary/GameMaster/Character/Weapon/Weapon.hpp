@@ -1,6 +1,7 @@
 #ifndef __WEAPON_HPP__
 #define __WEAPON_HPP__
 
+#include <iostream>
 #include <stack>
 
 #include "./WeaponDefine.hpp"

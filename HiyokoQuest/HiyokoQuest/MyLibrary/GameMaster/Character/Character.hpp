@@ -51,11 +51,6 @@ class Character
 		const float M_EPSILON = 0.10f; /* 移動処理閾値 */
 		const float ANG_DEG = 45.0f;
 
-		/* アニメーション処理用変数 */
-		int frame_counter; /* フレームカウンター */
-		const float attack_move = 0.3f; /* 攻撃アニメーションの移動量 */
-		std::stack<POS_TYPE> pos_stack;
-
 		Weapon m_weapon;
 
 		void CalcMoveDirect(const POS_TYPE &val);
