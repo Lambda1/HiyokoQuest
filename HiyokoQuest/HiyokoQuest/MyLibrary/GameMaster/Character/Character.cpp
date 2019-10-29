@@ -77,13 +77,16 @@ void Character::MoveAnimation()
 void Character::AttackAnimation()
 {
 	/*  0フレーム目の時, 初期化 */
+	/*
 	if (frame_counter == 0)
 	{
 		pos_stack.push(x);
 		pos_stack.push(y);
 		CalcMoveDirect(attack_move);
 	}
+	*/
 	/* 10フレーム目の時, 元の地点へ戻る */
+	/*
 	else if (frame_counter == 10)
 	{
 		y = pos_stack.top();
@@ -91,7 +94,9 @@ void Character::AttackAnimation()
 		x = pos_stack.top();
 		pos_stack.pop();
 	}
+	*/
 	/* 20フレーム目の時, 攻撃モーション終了 */
+	/*
 	else if (frame_counter > 20)
 	{
 		frame_counter = 0;
@@ -100,6 +105,10 @@ void Character::AttackAnimation()
 	}
 	MoveAnimation();
 	frame_counter++;
+	*/
+	m_weapon.SetCharaInfo(x, y, way);
+	if (m_weapon.Animation()) { turn_cost = TURN_MODE::END; }
+	m_weapon.GetCharaPos(x, y, prev_x, prev_y);
 }
 
 /* private */

@@ -7,8 +7,7 @@
 #include "..//RougeLikeMap/MapSet.hpp"
 #include "./Direction.hpp"
 
-/* キャラクタの座標型 */
-using POS_TYPE = float;
+#include "./Weapon/Weapon.hpp"
 
 /* 1ターン内の処理ステップ */
 enum class TURN_MODE : int
@@ -56,6 +55,8 @@ class Character
 		int frame_counter; /* フレームカウンター */
 		const float attack_move = 0.3f; /* 攻撃アニメーションの移動量 */
 		std::stack<POS_TYPE> pos_stack;
+
+		Weapon m_weapon;
 
 		void CalcMoveDirect(const POS_TYPE &val);
 	public:

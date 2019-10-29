@@ -2,6 +2,7 @@
 #define __PLAYER_HPP__
 
 #include "../Character.hpp"
+#include "..//Weapon/Weapon.hpp"
 
 class Player : public Character
 {

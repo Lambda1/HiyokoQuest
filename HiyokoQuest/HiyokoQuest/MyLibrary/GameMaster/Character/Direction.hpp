@@ -4,6 +4,9 @@
 /* キャラクターの移動方向 */
 /* GameKey.hppと対応させる */
 
+/* キャラクタの座標型 */
+using POS_TYPE = float;
+
 enum class DIRECTION : unsigned char
 {
 	EAST  = 0x04, /* 右 */
