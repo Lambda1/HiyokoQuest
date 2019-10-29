@@ -186,7 +186,7 @@ void GameMaster::PlayerTurn()
 				if (CharacterMove(player, static_cast<DIRECTION>(key_pos & BUTTON_MASK::CURSOR))) { player->SetTurnMode(TURN_MODE::MOVE); }
 			}
 			/* プレイヤー攻撃処理 (ABXY入力有り) */
-			if (((key_pos & BUTTON_MASK::ABXY) == BUTTON_MASK::ATTACK)) {
+			else if (((key_pos & BUTTON_MASK::ABXY) == BUTTON_MASK::ATTACK)) {
 				if (CharacterAttack(player)) { player->SetTurnMode(TURN_MODE::ATTACK); }
 			}
 		}
