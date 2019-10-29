@@ -11,6 +11,9 @@ Character::Character() :
 	death(false), is_friend(false), is_attack(false), attacked_ch(MAPSET::DATA::NONE),
 	prev_x(x), prev_y(y)
 {
+	/* 座標・方向のアドレスを武器クラスに知らせる */
+	m_weapon.SetCharaInfoPtr(&x, &y, &way);
+	m_weapon.SetCharaPrevPtr(&prev_x,&prev_y);
 }
 
 Character::~Character()
@@ -75,9 +78,7 @@ void Character::MoveAnimation()
 /* 攻撃アニメーション */
 void Character::AttackAnimation()
 {
-	m_weapon.SetCharaInfo(x, y, way);
 	if (m_weapon.Animation()) { turn_cost = TURN_MODE::END; }
-	m_weapon.GetCharaPos(x, y, prev_x, prev_y);
 }
 
 /* private */

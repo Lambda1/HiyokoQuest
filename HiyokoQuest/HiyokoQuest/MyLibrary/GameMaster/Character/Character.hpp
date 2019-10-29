@@ -31,6 +31,9 @@ class Character
 		/* キャラの向いている方向 */
 		DIRECTION way;
 
+		/* 武器管理 */
+		Weapon m_weapon;
+
 		/* 消費系ステータス */
 		int hp, mp;
 		/* 標準ステータス */
@@ -46,12 +49,10 @@ class Character
 		MAPSET::DATA attacked_ch; /* 最後に攻撃されたキャラ */
 
 		/* 移動処理用変数 */
-		POS_TYPE prev_x, prev_y; /* 前回の座標 */
+		POS_TYPE prev_x, prev_y; /* 前回の座標 (アニメーションはこちらの座標を参照) */
 		const float MOVE_RESOlUTION = 0.050f; /* 移動分解能 */
 		const float M_EPSILON = 0.10f; /* 移動処理閾値 */
 		const float ANG_DEG = 45.0f;
-
-		Weapon m_weapon;
 
 		void CalcMoveDirect(const POS_TYPE &val);
 	public:
