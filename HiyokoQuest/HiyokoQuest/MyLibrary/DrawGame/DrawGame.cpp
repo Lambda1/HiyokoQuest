@@ -10,12 +10,6 @@ DrawGame::DrawGame() :
 
 DrawGame::~DrawGame()
 {
-	/* VBO領域の解放 */
-	vbo_manager.DisableTexBuffers(1, player->GetTexID());
-	vbo_manager.DisableTexBuffers(1, wall->GetTexID());
-	vbo_manager.DisableTexBuffers(1, stair->GetTexID());
-	vbo_manager.DisableTexBuffers(1, tyle->GetTexID());
-	for (std::vector<ObjLoader*>::iterator itr = enemy.begin(); itr != enemy.end(); ++itr) { vbo_manager.DisableTexBuffers(1, (*itr)->GetTexID()); }
 	/* オブジェクトの解放 */
 	if (player) delete player;
 	if (wall)   delete wall;
