@@ -6,6 +6,7 @@ DrawGame::DrawGame() :
 	wall(nullptr), stair(nullptr), tyle(nullptr),
 	frame_counter(0), is_frame_counter(false)
 {
+	InitMiniMapColor();
 }
 
 DrawGame::~DrawGame()
@@ -224,6 +225,7 @@ void DrawGame::DrawMode3D()
 void DrawGame::DrawMiniMap2D(const MAPSET::DATA& data,const int &i, const int &j)
 {
 	/* テーブル化の検討 */
+	/*
 	switch (data)
 	{
 	case MAPSET::DATA::WALL:
@@ -241,7 +243,12 @@ void DrawGame::DrawMiniMap2D(const MAPSET::DATA& data,const int &i, const int &j
 	default:
 		return; break;
 	}
-	glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f);
+	*/
+	if (manage_mini_map_color.find(data) != manage_mini_map_color.end())
+	{
+		glColor4fv(manage_mini_map_color[data]);
+		glVertex3f(j * (1.0f / width), (height - i) * (1.0f / height), 0.0f);
+	}
 }
 void DrawGame::DrawObj(ObjLoader *obj_data, const float &x, const float &z,const float &ang)
 {
@@ -286,4 +293,14 @@ void DrawGame::DrawObj(ObjLoader *obj_data, const float &x, const float &z,const
 	/* End */
 
 	delete[] value;
+}
+/* ミニマップのカラーテーブル初期化 */
+void DrawGame::InitMiniMapColor()
+{
+	manage_mini_map_color.emplace(MAPSET::DATA::WALL,   MiniMapColor::CL_TABLE[static_cast<int>(MiniMapColor::COLOR::RED)]);
+	manage_mini_map_color.emplace(MAPSET::DATA::ROAD,   MiniMapColor::CL_TABLE[static_cast<int>(MiniMapColor::COLOR::GREEN)]);
+	manage_mini_map_color.emplace(MAPSET::DATA::ROOM,   MiniMapColor::CL_TABLE[static_cast<int>(MiniMapColor::COLOR::BLUE)]);
+	manage_mini_map_color.emplace(MAPSET::DATA::PLAYER, MiniMapColor::CL_TABLE[static_cast<int>(MiniMapColor::COLOR::ORANGE)]);
+	manage_mini_map_color.emplace(MAPSET::DATA::ENEMY,  MiniMapColor::CL_TABLE[static_cast<int>(MiniMapColor::COLOR::PURPLE)]);
+	manage_mini_map_color.emplace(MAPSET::DATA::STAIR,  MiniMapColor::CL_TABLE[static_cast<int>(MiniMapColor::COLOR::YELLOW)]);
 }

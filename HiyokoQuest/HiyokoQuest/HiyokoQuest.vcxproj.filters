@@ -278,5 +278,8 @@
     <ClInclude Include="MyLibrary\GameMaster\Character\Weapon\WeaponDefine.hpp">
       <Filter>ヘッダー ファイル\GameMaster\Character\Weapon</Filter>
     </ClInclude>
+    <ClInclude Include="MyLibrary\DrawGame\MiniMapColor.hpp">
+      <Filter>ヘッダー ファイル\DrawGame</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

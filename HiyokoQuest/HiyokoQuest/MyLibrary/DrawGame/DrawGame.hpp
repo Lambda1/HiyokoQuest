@@ -13,13 +13,19 @@
 
 #include "../PrintString/PrintString.hpp"
 
+#include "./MiniMapColor.hpp"
+
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
 #include <string>
+#include <map>
+#include <utility>
+#include <functional>
 
 class DrawGame
 {
+	/* 定義 */
 	enum class ENEMY_INFO : int
 	{
 		ENEMY,
@@ -40,6 +46,8 @@ class DrawGame
 	const float wide_length = 0.15f;
 	/* ステータス文字相対位置 */
 	const float st_up_x = up_x + 0.01f, st_up_y = up_y + 0.03f;
+	/* ミニマップ描画用map */
+	std::map <MAPSET::DATA, const GLfloat*> manage_mini_map_color;
 
 	/* 3Dモデル 関係 */
 	/* 主人公 */
@@ -108,6 +116,7 @@ private:
 		return (std::to_string(floor) + std::string(" F"));
 	}
 	/* ミニマップ描画処理 */
+	void InitMiniMapColor();
 	void DrawMiniMap2D(const MAPSET::DATA &data,const int &i,const int &j);
 	/* .obj表示 */
 	void DrawObj(ObjLoader* obj_data, const float& x, const float& z, const float& ang); /* VBO+Shaderで.objを描画 */

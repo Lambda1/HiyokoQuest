@@ -151,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyLibrary\DrawGame\DrawGame.hpp" />
+    <ClInclude Include="MyLibrary\DrawGame\MiniMapColor.hpp" />
     <ClInclude Include="MyLibrary\FPS_Controller\FPS_Controller.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Character.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Direction.hpp" />
