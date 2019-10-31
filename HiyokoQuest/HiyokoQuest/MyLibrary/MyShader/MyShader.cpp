@@ -8,7 +8,8 @@ MyShader::MyShader(const std::string fname1, const std::string fname2)
 	std::string source2((std::istreambuf_iterator<char>(ifs_f)),std::istreambuf_iterator<char>());
 
 	if(glewInit() != GLEW_OK){ std::cout << "MY SHADER GLEW INIT ERROR" << std::endl; exit(1); }
-
+	source1.push_back('\0');
+	source2.push_back('\0');
 	VCompile(source1);
 	FCompile(source2);
 	Link();
@@ -16,12 +17,14 @@ MyShader::MyShader(const std::string fname1, const std::string fname2)
 	glUseProgram(gl2Program);
 	ifs_v.close();
 	ifs_f.close();
-	glDeleteShader(vertShader);
-	glDeleteShader(fragShader);
 }
 
 MyShader::~MyShader()
 {
+	glUseProgram(0);
+	glDeleteShader(compiled);
+	glDeleteShader(linked);
+	glDeleteProgram(gl2Program);
 }
 
 bool MyShader::Set(const std::string fname1,const std::string fname2)
@@ -32,19 +35,23 @@ bool MyShader::Set(const std::string fname1,const std::string fname2)
 	std::string source2((std::istreambuf_iterator<char>(ifs_f)),std::istreambuf_iterator<char>());
 
 	if(glewInit() != GLEW_OK){ std::cout << "MY SHADER GLEW INIT ERROR" << std::endl; exit(1); }
-
+	source1.push_back('\0');
+	source2.push_back('\0');
 	if(!VCompile(source1)){ exit(EXIT_FAILURE); }
 	if(!FCompile(source2)){ exit(EXIT_FAILURE); }
 	Link();
 
 	glUseProgram(gl2Program);
 
+	ifs_v.close();
+	ifs_f.close();
+
 	return true;
 }
 
 bool MyShader::VCompile(std::string &source)
 {
-	const GLchar *s_ptr = static_cast<const GLchar *>(source.c_str());
+	const GLchar *s_ptr = reinterpret_cast<const GLchar *>(source.c_str());
 	GLint s_length = static_cast<GLint>(source.length());
 
 	vertShader = glCreateShader(GL_VERTEX_SHADER);
@@ -65,8 +72,8 @@ bool MyShader::VCompile(std::string &source)
 
 bool MyShader::FCompile(std::string &source)
 {
-	const GLchar *s_ptr = static_cast<const GLchar *>(source.c_str());
-	GLint s_length = static_cast<GLint>(source.length());
+	const GLchar *s_ptr = reinterpret_cast<const GLchar *>(source.c_str());
+	const GLint s_length = static_cast<GLint>(source.length());
 
 	fragShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragShader,1,&s_ptr,&s_length);

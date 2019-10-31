@@ -272,6 +272,9 @@ void DrawGame::DrawObj(ObjLoader *obj_data, const float &x, const float &z,const
 	glPopMatrix();
 	/* End */
 
+	vbo_manager.DisableBindBuffer(obj_data->GetUVID());
+	vbo_manager.DisableBindBuffer(obj_data->GetVertexID());
+
 	delete[] value;
 }
 /* ミニマップのカラーテーブル初期化 */

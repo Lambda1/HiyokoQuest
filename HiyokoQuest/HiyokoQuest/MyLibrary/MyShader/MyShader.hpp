@@ -1,6 +1,6 @@
 #ifndef __MY_SHADER_HPP__
 #define __MY_SHADER_HPP__
-
+// ri-ku
 #include <iostream>
 #include <string>
 #include <fstream>

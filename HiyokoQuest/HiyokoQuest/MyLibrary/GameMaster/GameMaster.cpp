@@ -67,33 +67,7 @@ void GameMaster::KeyInput(const bool* key_on,const bool* key_prev)
 /* ターン統括処理 */
 void GameMaster::TurnProcess()
 {
-	switch (game_step)
-	{
-	case GAME_STEP::INIT:
-		(this->*manage_turn_process[game_step])(); break;
-	case GAME_STEP::CREATE_MAP:
-		CreateMap(); break;
-	case GAME_STEP::DISPLAY_INFO:
-		DispInfo(); break;
-	case GAME_STEP::TURN_START:
-		TurnStart(); break;
-	case GAME_STEP::PLAYER_TURN:
-		PlayerTurn(); break;
-	case GAME_STEP::ITEM_TURN:
-		ItemTurn();   break;
-	case GAME_STEP::ENEMY_TURN:
-		EnemyTurn(); break;
-	case GAME_STEP::STATUS_TURN:
-		StatusTurn(); break;
-	case GAME_STEP::TURN_END:
-		TurnEnd(); break;
-	case GAME_STEP::STAIR_TURN:
-		StairTurn(); break;
-	case GAME_STEP::GAME_END:
-		GameEnd(); break;
-	default:
-		break;
-	}
+	if (manage_turn_process.find(game_step) != manage_turn_process.end()) { (this->*manage_turn_process[game_step])(); }
 }
 /* 初期化処理 */
 void GameMaster::Init()
@@ -514,9 +488,19 @@ void GameMaster::DrawAll()
 	DrawStatus(); /* ステータス描画 */
 	draw_manager.DrawMiniMap(reinterpret_cast<MAPSET::DATA*>(game_map->GetMiniMap())); /* ミニマップ描画 */
 }
-
 /* テーブル管理 */
+/* ターン処理の初期化 */
 void GameMaster::InitTurnProcessMap()
 {
 	manage_turn_process.emplace(GAME_STEP::INIT, &GameMaster::Init);
+	manage_turn_process.emplace(GAME_STEP::CREATE_MAP, &GameMaster::CreateMap);
+	manage_turn_process.emplace(GAME_STEP::DISPLAY_INFO, &GameMaster::DispInfo);
+	manage_turn_process.emplace(GAME_STEP::TURN_START, &GameMaster::TurnStart);
+	manage_turn_process.emplace(GAME_STEP::PLAYER_TURN, &GameMaster::PlayerTurn);
+	manage_turn_process.emplace(GAME_STEP::STAIR_TURN, &GameMaster::StairTurn);
+	manage_turn_process.emplace(GAME_STEP::ITEM_TURN, &GameMaster::ItemTurn);
+	manage_turn_process.emplace(GAME_STEP::ENEMY_TURN, &GameMaster::EnemyTurn);
+	manage_turn_process.emplace(GAME_STEP::STATUS_TURN, &GameMaster::StatusTurn);
+	manage_turn_process.emplace(GAME_STEP::TURN_END, &GameMaster::TurnEnd);
+	manage_turn_process.emplace(GAME_STEP::GAME_END, &GameMaster::GameEnd);
 }
