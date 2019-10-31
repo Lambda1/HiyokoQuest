@@ -7,6 +7,8 @@
 #include <iostream>
 #include <ctime>
 #include <list>
+#include <map>
+#include <functional>
 
 #include "./RougeLikeMap/RougeLikeMap.hpp"
 #include "./RougeLikeMap/MapSet.hpp"
@@ -68,6 +70,9 @@ class GameMaster
 	DrawGame draw_manager; /* 描画管理 */
 	const float BASE_FPS = 60.0f; /* 基礎フレーム(1秒) */
 
+	/* テーブル管理 */
+	std::map<GAME_STEP, void(GameMaster::*)()> manage_turn_process; /* ターン処理 */
+
 private:
 	/* ターン処理 */
 	void TurnProcess(); /* ターン統括処理 */
@@ -105,6 +110,9 @@ private:
 	void DrawMap();    /* マップ描画 */
 	void DrawStatus(); /* ステータス描画 */
 	void DrawAll();
+
+	/* テーブル管理 */
+	void InitTurnProcessMap();
 
 public:
 		GameMaster();

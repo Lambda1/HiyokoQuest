@@ -8,6 +8,7 @@ GameMaster::GameMaster() :
 	game_map(nullptr) , floor_number(0), turn_number(0), room_number(0),
 	player(nullptr), stair(nullptr)
 {
+	InitTurnProcessMap();
 }
 GameMaster::~GameMaster()
 {
@@ -69,7 +70,7 @@ void GameMaster::TurnProcess()
 	switch (game_step)
 	{
 	case GAME_STEP::INIT:
-		Init(); break;
+		(this->*manage_turn_process[game_step])(); break;
 	case GAME_STEP::CREATE_MAP:
 		CreateMap(); break;
 	case GAME_STEP::DISPLAY_INFO:
@@ -512,4 +513,10 @@ void GameMaster::DrawAll()
 	DrawMap();    /* マップ描画 */
 	DrawStatus(); /* ステータス描画 */
 	draw_manager.DrawMiniMap(reinterpret_cast<MAPSET::DATA*>(game_map->GetMiniMap())); /* ミニマップ描画 */
+}
+
+/* テーブル管理 */
+void GameMaster::InitTurnProcessMap()
+{
+	manage_turn_process.emplace(GAME_STEP::INIT, &GameMaster::Init);
 }
