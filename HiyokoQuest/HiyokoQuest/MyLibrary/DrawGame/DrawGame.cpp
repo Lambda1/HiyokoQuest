@@ -110,6 +110,7 @@ void DrawGame::DrawCharacter(const unsigned char* dungeon, const int& width, con
 /* 座標版 */
 void DrawGame::DrawCharacter(Character* ch_data)
 {
+	/*
 	switch (ch_data->GetCharaInfo())
 	{
 	case MAPSET::DATA::PLAYER:
@@ -120,6 +121,15 @@ void DrawGame::DrawCharacter(Character* ch_data)
 		DrawObj(enemy[ch_data->GetTransEnemyID()], ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle()); break;
 	default:
 		break;
+	}
+	*/
+	if (manage_draw_obj.find(ch_data->GetCharaInfo()) != manage_draw_obj.end())
+	{
+		DrawObj(manage_draw_obj[ch_data->GetCharaInfo()], ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle());
+	}
+	else if(manage_draw_obj.find(ch_data->GetEnemyID()) != manage_draw_obj.end())
+	{
+		DrawObj(manage_draw_obj[ch_data->GetEnemyID()], ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle());
 	}
 }
 /* クリッピング */
