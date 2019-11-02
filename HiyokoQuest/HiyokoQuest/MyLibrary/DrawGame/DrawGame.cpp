@@ -53,10 +53,7 @@ void DrawGame::Init()
 	SetVBOInfo(stair,  stair_id_start);  /* VBOにstairを登録 */
 	SetVBOInfo(tyle,   tyle_id_start);   /* VBOにtyleを登録 */
 	int index_id = 0;
-	for (std::vector<ObjLoader*>::iterator itr = enemy.begin(); itr != enemy.end(); ++itr)
-	{
-		SetVBOInfo((*itr),enemy_id_start[index_id++]);
-	}
+	for (std::vector<ObjLoader*>::iterator itr = enemy.begin(); itr != enemy.end(); ++itr) { SetVBOInfo((*itr),enemy_id_start[index_id++]); }
 
 	/* シェーダ処理の初期化 */
 	shader_manager.UseProgram();
@@ -84,18 +81,10 @@ void DrawGame::DrawMap(const unsigned char* dungeon, const int& width, const int
 	int range_h = ((sy + range_y * 2) < height ? (sy + range_y * 2) : height);
 
 	for (int i = sy; i < range_h; i++)
-		for (int j = sx; j < range_w; j++) {
-			switch (dungeon[i * width + j])
-			{
-			case static_cast<unsigned char>(MAPSET::DATA::ROOM) :
-				DrawObj(tyle, static_cast<float>(j), static_cast<float>(i), 0.0f);  break;
-			case static_cast<unsigned char>(MAPSET::DATA::ROAD):
-				DrawObj(tyle, static_cast<float>(j), static_cast<float>(i), 0.0f);  break;
-			case static_cast<unsigned char>(MAPSET::DATA::WALL):
-				DrawObj(wall, static_cast<float>(j), static_cast<float>(i), 0.0f);  break;
-			default:
-				break;
-			}
+		for (int j = sx; j < range_w; j++)
+		{
+			if(manage_draw_obj.find(static_cast<MAPSET::DATA>(dungeon[i * width + j])) != manage_draw_obj.end())
+				DrawObj(manage_draw_obj[static_cast<MAPSET::DATA>(dungeon[i*width+j])], static_cast<float>(j), static_cast<float>(i), 0.0f);
 		}
 }
 /* キャラクター表示 (y->z) */
@@ -110,25 +99,15 @@ void DrawGame::DrawCharacter(const unsigned char* dungeon, const int& width, con
 /* 座標版 */
 void DrawGame::DrawCharacter(Character* ch_data)
 {
-	/*
-	switch (ch_data->GetCharaInfo())
-	{
-	case MAPSET::DATA::PLAYER:
-		DrawObj(player,ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle()); break;
-	case MAPSET::DATA::STAIR:
-		DrawObj(stair, ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle()); break;
-	case MAPSET::DATA::ENEMY:
-		DrawObj(enemy[ch_data->GetTransEnemyID()], ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle()); break;
-	default:
-		break;
-	}
-	*/
 	if (manage_draw_obj.find(ch_data->GetCharaInfo()) != manage_draw_obj.end())
 	{
+		/* 敵以外の3Dモデル */
 		DrawObj(manage_draw_obj[ch_data->GetCharaInfo()], ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle());
 	}
 	else if(manage_draw_obj.find(ch_data->GetEnemyID()) != manage_draw_obj.end())
 	{
+		/* 敵の3Dモデル */
+		/* HACK: 識別IDを使用しているため,別処理 */
 		DrawObj(manage_draw_obj[ch_data->GetEnemyID()], ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle());
 	}
 }
@@ -303,10 +282,11 @@ void DrawGame::InitMiniMapColor()
 	manage_mini_map_color.emplace(MAPSET::DATA::ENEMY,  MiniMapColor::CL_TABLE[static_cast<int>(MiniMapColor::COLOR::PURPLE)]);
 	manage_mini_map_color.emplace(MAPSET::DATA::STAIR,  MiniMapColor::CL_TABLE[static_cast<int>(MiniMapColor::COLOR::YELLOW)]);
 }
-
+/* 3Dモデルのテーブル初期化 */
 void DrawGame::InitCharacterObj()
 {
 	manage_draw_obj.emplace(MAPSET::DATA::WALL,   wall);
+	manage_draw_obj.emplace(MAPSET::DATA::ROOM,   tyle);
 	manage_draw_obj.emplace(MAPSET::DATA::ROAD,   tyle);
 	manage_draw_obj.emplace(MAPSET::DATA::STAIR,  stair);
 	manage_draw_obj.emplace(MAPSET::DATA::PLAYER, player);
