@@ -1,9 +1,10 @@
 #include <string>
-#include <crtdbg.h>
 
 #include ".//MyLibrary/MyGL/MyGL.hpp"
 #include ".//MyLibrary/SceneManager/SceneManager.hpp"
 #include "./MyLibrary/FPS_Controller/FPS_Controller.hpp"
+
+#define DEBUG
 
 int main(int argc, char* argv[])
 {
@@ -30,7 +31,9 @@ int main(int argc, char* argv[])
 	{
 		opengl_manager.MainLoop(); /* OpenGLのループ処理 */
 		
+#ifdef DEBUG
 		fps_manager.FPS_Checker(); /* DEBUG: FPSチェック */
+#endif
 
 		/* FPS切替 */
 		if (opengl_manager.GetSpKeyUp() == frame_rate_key) { fps_index = (fps_index + 1) % index_size; }

@@ -6,7 +6,6 @@ DrawGame::DrawGame() :
 	wall(nullptr), stair(nullptr), tyle(nullptr),
 	frame_counter(0), is_frame_counter(false)
 {
-	InitMiniMapColor();
 }
 
 DrawGame::~DrawGame()
@@ -28,9 +27,15 @@ void DrawGame::Init()
 	wall   = LoadObjFile(FILE_PATH::ResoucePath::wall_model_path);   /* Wall */
 	stair  = LoadObjFile(FILE_PATH::ResoucePath::stair_model_path);  /* Stair */
 	tyle   = LoadObjFile(FILE_PATH::ResoucePath::tyle_model_path);   /* Tyle */
-
-	enemy.push_back(LoadObjFile(FILE_PATH::ResoucePath::enemy_model_path));
-	for(int i = 0;i < static_cast<int>(enemy.size());i++) enemy_id_start.push_back(tyle_id_start + obj_info*(i+1));
+	
+	std::cout << FILE_PATH::ResoucePath::ENEMY_MODEL_NUM << std::endl;
+	for (int i = 0; i < FILE_PATH::ResoucePath::ENEMY_MODEL_NUM; i++)
+	{
+		enemy.push_back(LoadObjFile(FILE_PATH::ResoucePath::enemy_model_path_array[i]));
+		enemy_id_start.push_back(tyle_id_start + obj_info * (i + 1));
+	}
+	//enemy.push_back(LoadObjFile(FILE_PATH::ResoucePath::enemy_model_path));
+	//for(int i = 0;i < static_cast<int>(enemy.size());i++) enemy_id_start.push_back(tyle_id_start + obj_info*(i+1));
 
 	/* Shader初期化 */
 	shader_manager.Set(FILE_PATH::ResoucePath::obj_shader_path+FILE_PATH::ResoucePath::vert_shader_suffix, FILE_PATH::ResoucePath::obj_shader_path + FILE_PATH::ResoucePath::frag_shader_suffix);
@@ -59,6 +64,10 @@ void DrawGame::Init()
 	/* シェーダ処理の初期化 */
 	shader_manager.UseProgram();
 	shader_manager.UnUseProgram();
+
+	/* テーブル登録 */
+	InitMiniMapColor();
+	InitCharacterObj();
 }
 /* マップ層描画 */
 /* レイヤ版 */
@@ -286,4 +295,18 @@ void DrawGame::InitMiniMapColor()
 	manage_mini_map_color.emplace(MAPSET::DATA::PLAYER, MiniMapColor::CL_TABLE[static_cast<int>(MiniMapColor::COLOR::ORANGE)]);
 	manage_mini_map_color.emplace(MAPSET::DATA::ENEMY,  MiniMapColor::CL_TABLE[static_cast<int>(MiniMapColor::COLOR::PURPLE)]);
 	manage_mini_map_color.emplace(MAPSET::DATA::STAIR,  MiniMapColor::CL_TABLE[static_cast<int>(MiniMapColor::COLOR::YELLOW)]);
+}
+
+void DrawGame::InitCharacterObj()
+{
+	manage_draw_obj.emplace(MAPSET::DATA::WALL,   wall);
+	manage_draw_obj.emplace(MAPSET::DATA::ROAD,   tyle);
+	manage_draw_obj.emplace(MAPSET::DATA::STAIR,  stair);
+	manage_draw_obj.emplace(MAPSET::DATA::PLAYER, player);
+	MAPSET::DATA index = MAPSET::DATA::ENEMY;
+	for (auto itr = enemy.begin(); itr != enemy.end(); ++itr)
+	{
+		manage_draw_obj.emplace(index, (*itr));
+		index = static_cast<MAPSET::DATA>(static_cast<int>(index) + 1);
+	}
 }

@@ -25,7 +25,19 @@ namespace FILE_PATH
 		inline static const std::string stair_model_path = "../ModelResources/Stair/stair"; /* ŠK’iƒ‚ƒfƒ‹ */
 		inline static const std::string tyle_model_path = "../ModelResources/Tyle/tyle";    /* °ƒ‚ƒfƒ‹ */
 
-		inline static const std::string enemy_model_path = "../ModelResources/Enemy/enemy";    /* “Gƒ‚ƒfƒ‹ */
+		inline static const std::string enemy_model_path = "../ModelResources/Enemy/enemy";    /* “G(beta)ƒ‚ƒfƒ‹ */
+
+		inline static const std::string enemy_model_path_array[] =
+		{
+			"../ModelResources/Enemy/Enemy1/enemy1" , /* “Gƒ‚ƒfƒ‹(ƒAƒqƒ‹) */
+			"../ModelResources/Enemy/Enemy2/enemy2" , /* “Gƒ‚ƒfƒ‹(‹a) */
+			"../ModelResources/Enemy/Enemy3/enemy3" , /* “Gƒ‚ƒfƒ‹(ƒrƒVƒ‡ƒbƒv) */
+			"../ModelResources/Enemy/Enemy4/enemy4" , /* “Gƒ‚ƒfƒ‹(“Ø) */
+			"../ModelResources/Enemy/Enemy5/enemy5"   /* “Gƒ‚ƒfƒ‹(‚©‚Ú‚¿‚á) */
+		};
+
+		inline static const int ENEMY_MODEL_NUM = (sizeof(enemy_model_path_array) / sizeof(enemy_model_path_array[0]));
+
 	};
 }
 

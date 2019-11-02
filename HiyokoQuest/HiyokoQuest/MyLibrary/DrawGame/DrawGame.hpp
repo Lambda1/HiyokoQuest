@@ -31,7 +31,7 @@ class DrawGame
 
 	/* .obj情報 */
 	const int obj_info = 3; /* 頂点・法線・UV座標 */
-	const int model_number = 5; /* 使用する3Dモデル数 */
+	const int model_number = 4 + 5; /* 使用する3Dモデル数 */
 	/* 描画クリッピング範囲 */
 	const int range_x = 7, range_y = 9;
 
@@ -47,7 +47,7 @@ class DrawGame
 
 	/* テーブル管理 */
 	std::map <MAPSET::DATA, const GLfloat*> manage_mini_map_color; /* ミニマップ描画 */
-	
+	std::map <MAPSET::DATA, ObjLoader*> manage_draw_obj;
 	/* 3Dモデル 関係 */
 	/* 主人公 */
 	ObjLoader* player;
@@ -115,11 +115,12 @@ private:
 		return (std::to_string(floor) + std::string(" F"));
 	}
 	/* ミニマップ描画処理 */
-	void InitMiniMapColor();
 	void DrawMiniMap2D(const MAPSET::DATA &data,const int &i,const int &j);
 	/* .obj表示 */
 	void DrawObj(ObjLoader* obj_data, const float& x, const float& z, const float& ang); /* VBO+Shaderで.objを描画 */
-
+	/* テーブル管理 */
+	void InitMiniMapColor();
+	void InitCharacterObj();
 public:
 	DrawGame();
 	~DrawGame();
