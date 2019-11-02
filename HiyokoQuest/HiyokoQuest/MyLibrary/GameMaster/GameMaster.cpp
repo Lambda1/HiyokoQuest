@@ -103,7 +103,7 @@ void GameMaster::CreateMap()
 	
 	/* エネミー召喚 */
 	for (int i = 0; i < floor_number*2; i++) {
-		Enemy *enemy_tmp = new Enemy(static_cast<float>(floor_number*0.5f));
+		Enemy *enemy_tmp = new Enemy(static_cast<float>(floor_number*0.5f),MAPSET::DATA::ENEMY1);
 		enemy_list.push_back(enemy_tmp);
 	}
 
@@ -471,10 +471,10 @@ void GameMaster::DrawMap()
 	draw_manager.DrawCharacter(player); /* 主人公表示 */
 	draw_manager.DrawCharacter(stair, width, height, static_cast<int>(player->GetPosX()), static_cast<int>(player->GetPosY()));  /* 階段表示 */
 
-	/* 敵はクリッピングしない(処理が重い場合は検討) */
+	/* 敵表示 */
 	for (std::list<Character*>::iterator itr = enemy_list.begin(); itr != enemy_list.end(); itr++)
 	{
-		draw_manager.DrawCharacter((*itr), width, height, static_cast<int>((*itr)->GetPosX()), static_cast<int>((*itr)->GetPosY()));  /* 敵表示 */
+		draw_manager.DrawCharacter((*itr), width, height, static_cast<int>((player)->GetPosX()), static_cast<int>((player)->GetPosY()));  /* 敵表示 */
 	}
 }
 void GameMaster::DrawStatus()

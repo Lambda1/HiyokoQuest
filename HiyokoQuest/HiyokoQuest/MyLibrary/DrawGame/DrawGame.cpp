@@ -27,15 +27,12 @@ void DrawGame::Init()
 	wall   = LoadObjFile(FILE_PATH::ResoucePath::wall_model_path);   /* Wall */
 	stair  = LoadObjFile(FILE_PATH::ResoucePath::stair_model_path);  /* Stair */
 	tyle   = LoadObjFile(FILE_PATH::ResoucePath::tyle_model_path);   /* Tyle */
-	
-	std::cout << FILE_PATH::ResoucePath::ENEMY_MODEL_NUM << std::endl;
+	/* “G3Dƒ‚ƒfƒ‹‚Ìƒ[ƒh */
 	for (int i = 0; i < FILE_PATH::ResoucePath::ENEMY_MODEL_NUM; i++)
 	{
 		enemy.push_back(LoadObjFile(FILE_PATH::ResoucePath::enemy_model_path_array[i]));
 		enemy_id_start.push_back(tyle_id_start + obj_info * (i + 1));
 	}
-	//enemy.push_back(LoadObjFile(FILE_PATH::ResoucePath::enemy_model_path));
-	//for(int i = 0;i < static_cast<int>(enemy.size());i++) enemy_id_start.push_back(tyle_id_start + obj_info*(i+1));
 
 	/* Shader‰Šú‰» */
 	shader_manager.Set(FILE_PATH::ResoucePath::obj_shader_path+FILE_PATH::ResoucePath::vert_shader_suffix, FILE_PATH::ResoucePath::obj_shader_path + FILE_PATH::ResoucePath::frag_shader_suffix);
@@ -120,7 +117,7 @@ void DrawGame::DrawCharacter(Character* ch_data)
 	case MAPSET::DATA::STAIR:
 		DrawObj(stair, ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle()); break;
 	case MAPSET::DATA::ENEMY:
-		DrawObj(enemy[static_cast<int>(ENEMY_INFO::ENEMY)], ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle()); break;
+		DrawObj(enemy[static_cast<int>(ENEMY_INFO::ENEMY1)], ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle()); break;
 	default:
 		break;
 	}
@@ -303,7 +300,7 @@ void DrawGame::InitCharacterObj()
 	manage_draw_obj.emplace(MAPSET::DATA::ROAD,   tyle);
 	manage_draw_obj.emplace(MAPSET::DATA::STAIR,  stair);
 	manage_draw_obj.emplace(MAPSET::DATA::PLAYER, player);
-	MAPSET::DATA index = MAPSET::DATA::ENEMY;
+	MAPSET::DATA index = MAPSET::DATA::ENEMY1;
 	for (auto itr = enemy.begin(); itr != enemy.end(); ++itr)
 	{
 		manage_draw_obj.emplace(index, (*itr));

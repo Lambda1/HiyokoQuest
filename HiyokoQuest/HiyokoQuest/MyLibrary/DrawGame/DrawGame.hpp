@@ -26,7 +26,11 @@ class DrawGame
 	/* 定義 */
 	enum class ENEMY_INFO : int
 	{
-		ENEMY,
+		ENEMY1, /* 敵 (アヒル) */
+		ENEMY2, /* 敵 (蟻) */
+		ENEMY3, /* 敵 (ビショップ) */
+		ENEMY4, /* 敵 (豚) */
+		ENEMY5, /* 敵 (かぼちゃ) */
 	};
 
 	/* .obj情報 */
@@ -48,6 +52,7 @@ class DrawGame
 	/* テーブル管理 */
 	std::map <MAPSET::DATA, const GLfloat*> manage_mini_map_color; /* ミニマップ描画 */
 	std::map <MAPSET::DATA, ObjLoader*> manage_draw_obj;
+
 	/* 3Dモデル 関係 */
 	/* 主人公 */
 	ObjLoader* player;

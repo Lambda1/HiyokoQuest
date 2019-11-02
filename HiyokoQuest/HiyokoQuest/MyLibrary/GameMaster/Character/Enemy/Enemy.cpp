@@ -1,6 +1,7 @@
 #include "./Enemy.hpp"
 
-Enemy::Enemy()
+Enemy::Enemy() :
+	enemy_type(MAPSET::DATA::ENEMY1)
 {
 	chara_state = MAPSET::DATA::ENEMY;
 
@@ -14,7 +15,8 @@ Enemy::Enemy()
 	is_friend = false;
 }
 
-Enemy::Enemy(const float &up_rate)
+Enemy::Enemy(const float &up_rate,const MAPSET::DATA &id) :
+	enemy_type(id)
 {
 	chara_state = MAPSET::DATA::ENEMY;
 
