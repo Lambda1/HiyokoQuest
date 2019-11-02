@@ -102,9 +102,11 @@ void GameMaster::CreateMap()
 	stair->InitPos(static_cast<POS_TYPE>(stair_pos_x), static_cast<POS_TYPE>(stair_pos_y)); /* 階段座標を初期化 */
 	
 	/* エネミー召喚 */
+	int random_index = 0;
 	for (int i = 0; i < floor_number*2; i++) {
-		Enemy *enemy_tmp = new Enemy(static_cast<float>(floor_number*0.5f),MAPSET::DATA::ENEMY1);
+		Enemy *enemy_tmp = new Enemy(static_cast<float>(floor_number*0.5f),static_cast<MAPSET::DATA>((int)MAPSET::DATA::ENEMY1+random_index));
 		enemy_list.push_back(enemy_tmp);
+		random_index = (random_index+1) % ((int)MAPSET::DATA::ENEMY5 - (int)MAPSET::DATA::ENEMY1);
 	}
 
 	/* アイテム生成 */

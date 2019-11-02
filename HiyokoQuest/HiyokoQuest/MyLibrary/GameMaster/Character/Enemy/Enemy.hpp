@@ -12,9 +12,6 @@ class Enemy : public Character
 		const int first_power = 2, first_defence = 1;
 		const int first_next_exp = first_level;
 
-		/* 識別ID */
-		MAPSET::DATA enemy_type;
-
 		/* 更新処理 */
 		void JudgeDeath();
 	
@@ -30,7 +27,6 @@ class Enemy : public Character
 
 		/* ゲッタ */
 		inline int GiveEXP() override { return next_level_exp; } /* 与えるEXP */
-		inline MAPSET::DATA GetEnemyID() { return enemy_type; }  /* 識別ID */
 };
 
 #endif

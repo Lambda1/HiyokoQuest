@@ -23,16 +23,6 @@
 
 class DrawGame
 {
-	/* 定義 */
-	enum class ENEMY_INFO : int
-	{
-		ENEMY1, /* 敵 (アヒル) */
-		ENEMY2, /* 敵 (蟻) */
-		ENEMY3, /* 敵 (ビショップ) */
-		ENEMY4, /* 敵 (豚) */
-		ENEMY5, /* 敵 (かぼちゃ) */
-	};
-
 	/* .obj情報 */
 	const int obj_info = 3; /* 頂点・法線・UV座標 */
 	const int model_number = 4 + 5; /* 使用する3Dモデル数 */

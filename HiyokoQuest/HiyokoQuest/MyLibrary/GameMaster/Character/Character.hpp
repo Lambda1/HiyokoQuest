@@ -42,6 +42,9 @@ class Character
 		/* 経験値 */
 		int exp, next_level_exp;
 		
+		/* 敵用の識別ID */
+		MAPSET::DATA enemy_type; /* 描画処理を統一させるため, Characterが管理する. */
+
 		/* フラグ */
 		bool death;     /* 死亡フラグ */
 		bool is_friend; /* 友好フラグ */
@@ -97,6 +100,8 @@ class Character
 		inline TURN_MODE GetTurnMode() { return turn_cost; }
 		inline DIRECTION GetDirect() { return way; }
 		inline MAPSET::DATA GetAttacked() { return attacked_ch; }
+		inline MAPSET::DATA GetEnemyID() { return enemy_type; }
+		inline int GetTransEnemyID() { return (static_cast<int>(enemy_type)-static_cast<int>(MAPSET::DATA::ENEMY1)); }  /* バイアス変換した識別ID */
 		/* 方向を角度(度)に変換 */
 		inline float GetAngle()
 		{

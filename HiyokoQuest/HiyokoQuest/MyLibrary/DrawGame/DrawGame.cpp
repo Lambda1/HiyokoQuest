@@ -117,7 +117,7 @@ void DrawGame::DrawCharacter(Character* ch_data)
 	case MAPSET::DATA::STAIR:
 		DrawObj(stair, ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle()); break;
 	case MAPSET::DATA::ENEMY:
-		DrawObj(enemy[static_cast<int>(ENEMY_INFO::ENEMY1)], ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle()); break;
+		DrawObj(enemy[ch_data->GetTransEnemyID()], ch_data->GetPosPX(), ch_data->GetPosPY(), ch_data->GetAngle()); break;
 	default:
 		break;
 	}

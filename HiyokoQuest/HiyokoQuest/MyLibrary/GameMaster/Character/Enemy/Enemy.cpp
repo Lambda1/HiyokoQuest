@@ -1,7 +1,6 @@
 #include "./Enemy.hpp"
 
-Enemy::Enemy() :
-	enemy_type(MAPSET::DATA::ENEMY1)
+Enemy::Enemy()
 {
 	chara_state = MAPSET::DATA::ENEMY;
 
@@ -12,13 +11,15 @@ Enemy::Enemy() :
 	defence = first_defence;
 	next_level_exp = first_next_exp;
 	
+	enemy_type = MAPSET::DATA::ENEMY1;
+
 	is_friend = false;
 }
 
-Enemy::Enemy(const float &up_rate,const MAPSET::DATA &id) :
-	enemy_type(id)
+Enemy::Enemy(const float &up_rate,const MAPSET::DATA &id)
 {
 	chara_state = MAPSET::DATA::ENEMY;
+	enemy_type = id;
 
 	hp = max_hp = static_cast<int>(first_hp+up_rate);
 	mp = max_mp = static_cast<int>(first_mp+up_rate);
