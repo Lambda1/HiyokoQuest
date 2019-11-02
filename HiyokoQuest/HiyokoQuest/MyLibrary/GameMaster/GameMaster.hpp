@@ -62,7 +62,7 @@ class GameMaster
 	Stair* stair;
 
 	/* エネミー処理 */
-	std::list<Character*> enemy_list;
+	std::list<Enemy*> enemy_list;
 
 	/* アイテム処理 */
 
@@ -103,7 +103,7 @@ private:
 
 	/* EnemyTurn専用処理 */
 	/* iteratorは破壊対策のため, 解放時に更新される */
-	bool EnemyDeath(std::list<Character*>::iterator &enemy_itr);
+	bool EnemyDeath(std::list<Enemy*>::iterator &enemy_itr);
 
 	/* 描画処理 */
 	void CameraPos();
