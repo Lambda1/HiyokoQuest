@@ -106,6 +106,7 @@ void GameMaster::CreateMap()
 		Enemy *enemy_tmp = new Enemy(static_cast<float>(floor_number*0.5f));
 		enemy_list.push_back(enemy_tmp);
 	}
+
 	/* アイテム生成 */
 
 	/* プレイヤー配置 */
