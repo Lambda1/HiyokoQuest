@@ -68,7 +68,7 @@ class Character
 		void InitMAX(const int max_hp,const int max_mp);
 		
 		/* 移動処理 */
-		virtual void Move(DIRECTION direct) = 0;            /* 通常移動 */
+		virtual void Move(DIRECTION direct) = 0; /* 通常移動 */
 		virtual void Teleport(const POS_TYPE x,const POS_TYPE y) = 0; /* テレポート移動 */
 		
 		/* ステータス処理 */

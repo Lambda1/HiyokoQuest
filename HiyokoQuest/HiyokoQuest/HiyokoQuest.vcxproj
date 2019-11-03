@@ -156,6 +156,7 @@
     <ClInclude Include="MyLibrary\GameMaster\Character\Character.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Direction.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Enemy\Enemy.hpp" />
+    <ClInclude Include="MyLibrary\GameMaster\Character\Enemy\EnemyAI.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Player\Player.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Stair\Stair.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Weapon\Weapon.hpp" />

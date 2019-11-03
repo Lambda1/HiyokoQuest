@@ -2,6 +2,12 @@
 #define __ENEMY_HPP__
 
 #include "../Character.hpp"
+#include "./EnemyAI.hpp"
+
+#include "..//..//RougeLikeMap/MapSet.hpp"
+#include "..//Direction.hpp"
+
+#include <map>
 
 class Enemy : public Character
 {
@@ -12,9 +18,18 @@ class Enemy : public Character
 		const int first_power = 2, first_defence = 1;
 		const int first_next_exp = first_level;
 
+		/* AIモード */
+		ENEMY_AI::MODE ai_mode;
+
+		/* テーブル管理 */
+		std::map<ENEMY_AI::MODE, DIRECTION(Enemy::*)> manage_ai_table;
+
 		/* 更新処理 */
 		void JudgeDeath();
 	
+		/* AI処理 */
+		DIRECTION Standard(const MAP_TYPE* dungeon);
+
 	public:
 		Enemy();
 		Enemy(const float& up_rate,const MAPSET::DATA &id); /* パワーアップ版 */
@@ -25,8 +40,14 @@ class Enemy : public Character
 
 		void Update() override;
 
+		/* Enemy専用 */
+		DIRECTION AI_Move(const MAP_TYPE *dungeon);
+
 		/* ゲッタ */
 		inline int GiveEXP() override { return next_level_exp; } /* 与えるEXP */
+
+		/* セッタ */
+		inline void SetAI(const ENEMY_AI::MODE mode) { ai_mode = mode; }
 };
 
 #endif

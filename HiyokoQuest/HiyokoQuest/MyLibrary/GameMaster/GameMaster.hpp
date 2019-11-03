@@ -50,7 +50,6 @@ class GameMaster
 	int random_seed, cnt_seed;     /* 乱数シード */
 
 	/* マップ処理 */
-	using MAP_TYPE = unsigned char; /* マップ型を節約 */
 	RougeLikeMap<MAP_TYPE>* game_map; /* ゲームマップ */
 	int floor_number, turn_number, room_number; /* 階層, 経過ターン, 部屋数 */
 	const int width = 70, height = 50; /* マップの広さ(固定) */

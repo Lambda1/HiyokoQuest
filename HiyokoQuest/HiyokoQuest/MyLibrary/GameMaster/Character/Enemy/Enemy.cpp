@@ -1,6 +1,7 @@
 #include "./Enemy.hpp"
 
-Enemy::Enemy()
+Enemy::Enemy() : 
+	ai_mode(ENEMY_AI::MODE::STANDARD)
 {
 	chara_state = MAPSET::DATA::ENEMY;
 
@@ -16,7 +17,8 @@ Enemy::Enemy()
 	is_friend = false;
 }
 
-Enemy::Enemy(const float &up_rate,const MAPSET::DATA &id)
+Enemy::Enemy(const float &up_rate,const MAPSET::DATA &id) :
+	ai_mode(ENEMY_AI::MODE::STANDARD)
 {
 	chara_state = MAPSET::DATA::ENEMY;
 	enemy_type = id;
@@ -34,7 +36,7 @@ Enemy::Enemy(const float &up_rate,const MAPSET::DATA &id)
 Enemy::~Enemy()
 {
 }
-
+/* override */
 void Enemy::Move(DIRECTION direct)
 {
 	/* 描画のために, 前回の座標を保存 */
@@ -53,12 +55,26 @@ void Enemy::Update()
 {
 	JudgeDeath();
 }
-
+/* AI処理 */
+DIRECTION Enemy::AI_Move(const MAP_TYPE* dungeon)
+{
+	return Standard(dungeon);
+}
 /* private */
+
 /* 更新処理 */
+/* 死亡判定 */
 void Enemy::JudgeDeath()
 {
 	if (hp <= 0) {
 		death = true;
 	}
+}
+
+/* AI処理 */
+/* 標準索敵 */
+DIRECTION Enemy::Standard(const MAP_TYPE* dungeon)
+{
+	turn_cost = TURN_MODE::MOVE;
+	return DIRECTION::EAST;
 }

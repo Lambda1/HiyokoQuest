@@ -83,8 +83,8 @@ void DrawGame::DrawMap(const unsigned char* dungeon, const int& width, const int
 	for (int i = sy; i < range_h; i++)
 		for (int j = sx; j < range_w; j++)
 		{
-			if(manage_draw_obj.find(static_cast<MAPSET::DATA>(dungeon[i * width + j])) != manage_draw_obj.end())
-				DrawObj(manage_draw_obj[static_cast<MAPSET::DATA>(dungeon[i*width+j])], static_cast<float>(j), static_cast<float>(i), 0.0f);
+			if (manage_draw_obj.find(static_cast<MAPSET::DATA>(dungeon[i * width + j])) != manage_draw_obj.end())
+				DrawObj(manage_draw_obj[static_cast<MAPSET::DATA>(dungeon[i * width + j])], static_cast<float>(j), static_cast<float>(i), 0.0f);
 		}
 }
 /* キャラクター表示 (y->z) */

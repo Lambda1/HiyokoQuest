@@ -198,6 +198,7 @@ void GameMaster::EnemyTurn()
 			if ((*itr)->GetTurnMode() == TURN_MODE::NONE)
 			{
 				/* ƒ‰ƒ“ƒ_ƒ€AI */
+				/*
 				if (GetDirectionInfo((*itr)->GetPosX(),(*itr)->GetPosY(), (*itr)->GetDirect()) == MAPSET::DATA::PLAYER || GetDirectionInfo((*itr)->GetPosX(), (*itr)->GetPosY(), (*itr)->GetDirect()) == MAPSET::DATA::ENEMY)
 				{
 					if (CharacterAttack(*itr)) { (*itr)->SetTurnMode(TURN_MODE::ATTACK); }
@@ -207,6 +208,9 @@ void GameMaster::EnemyTurn()
 					if (CharacterMove(*itr, tester)) { (*itr)->SetTurnMode(TURN_MODE::MOVE); }
 					else { (*itr)->SetTurnMode(TURN_MODE::END); }
 				}
+				*/
+				DIRECTION direct = (*itr)->AI_Move(game_map->GetALL());
+				CharacterMove(*itr,direct);
 			}
 
 			if ((*itr)->GetTurnMode() == TURN_MODE::NONE) { is_next_turn = false; }
