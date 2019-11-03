@@ -73,24 +73,22 @@ class Character
 			case DIRECTION::EAST:
 			case DIRECTION::NORTH_EAST:
 			case DIRECTION::SOUTH_EAST:
-				*x = 0, *y = -weight / 2;
+				*x = -1, *y = -weight / 2;
 				*index_x = weight, *index_y = weight / 2;
 				break;
 			case DIRECTION::WEST:
 			case DIRECTION::NORTH_WEST:
 			case DIRECTION::SOUTH_WEST:
 				*x = -weight, *y = -weight / 2;
-				*index_x = 0, * index_y = weight / 2;
+				*index_x = 2, * index_y = weight / 2;
 				break;
 			case DIRECTION::SOUTH:
-				*x = -weight / 2, *y = 0;
+				*x = -weight / 2, *y = -1;
 				*index_x = weight / 2, * index_y = weight;
 				break;
 			case DIRECTION::NORTH:
-				*x = -weight / 2, *y = -weight + 1;
-				*index_x = weight / 2, *index_y = 1;
-				break;
-			case DIRECTION::NONE:
+				*x = -weight / 2, *y = -weight;
+				*index_x = weight / 2, *index_y = 2;
 				break;
 			default:
 				break;

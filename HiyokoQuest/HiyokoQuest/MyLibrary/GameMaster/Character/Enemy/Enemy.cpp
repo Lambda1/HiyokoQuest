@@ -89,7 +89,7 @@ DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& h
 {
 	turn_cost = TURN_MODE::MOVE;
 	
-	DIRECTION candidate = DIRECTION::EAST;
+	DIRECTION candidate = DIRECTION::NONE;
 	int px = static_cast<int>(x), py = static_cast<int>(y);
 	int nx, ny;
 	int index_x,index_y;
@@ -100,11 +100,14 @@ DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& h
 		for (int j = nx; j < index_x; j++)
 		{
 			if ((px + j) < 0 || (px + j) > width - 1) continue;
+			std::cout << (int)dungeon[(py + i) * width + (px + j)];
 			if (dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROOM) || dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROAD))
 			{
 				candidate = GetVector(static_cast<POS_TYPE>(px + j), static_cast<POS_TYPE>(py + i));
 			}
 		}
+		std::cout << std::endl;
 	}
+	return DIRECTION::SOUTH;
 	return candidate;
 }
