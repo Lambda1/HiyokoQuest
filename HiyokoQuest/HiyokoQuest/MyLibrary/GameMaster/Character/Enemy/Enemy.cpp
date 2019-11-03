@@ -89,10 +89,10 @@ DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& h
 {
 	turn_cost = TURN_MODE::MOVE;
 	
-	DIRECTION candidate = DIRECTION::NONE;
+	int cand_x = 0, cand_y = 0;
 	int px = static_cast<int>(x), py = static_cast<int>(y);
-	int nx, ny;
-	int index_x,index_y;
+	int nx = 0, ny = 0;
+	int index_x = 0,index_y = 0;
 	VisualRarnge(&nx, &ny, &index_x, &index_y, static_cast<int>(visual_field));
 	for (int i = ny; i < index_y; i++)
 	{
@@ -101,13 +101,17 @@ DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& h
 		{
 			if ((px + j) < 0 || (px + j) > width - 1) continue;
 			std::cout << (int)dungeon[(py + i) * width + (px + j)];
-			if (dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROOM) || dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROAD))
+			if (dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROAD))
 			{
-				candidate = GetVector(static_cast<POS_TYPE>(px + j), static_cast<POS_TYPE>(py + i));
+				cand_x = (px + j), cand_y = (py + i);
+			}
+			else if (dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::PLAYER))
+			{
+				cand_x = (px + j), cand_y = (py + i);
+				return GetVector(static_cast<POS_TYPE>(cand_x), static_cast<POS_TYPE>(cand_y));
 			}
 		}
 		std::cout << std::endl;
 	}
-	return DIRECTION::SOUTH;
-	return candidate;
+	return DIRECTION::EAST;
 }

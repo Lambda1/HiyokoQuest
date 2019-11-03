@@ -66,8 +66,6 @@ class Character
 		/* NOTE: ‚æ‚è—Ç‚¢•û–@‚ªŒ©‚Â‚©‚ê‚Î, ‰ü‘P. */
 		void VisualRarnge(int* x, int* y,int *index_x,int *index_y,const int &weight)
 		{
-			*x = *y = 0;
-			*index_x = *index_y = 0;
 			switch (way)
 			{
 			case DIRECTION::EAST:
