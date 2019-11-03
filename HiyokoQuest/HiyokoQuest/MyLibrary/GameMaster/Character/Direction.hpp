@@ -44,23 +44,39 @@ namespace DIRECT_TABLE
 	};
 
 	/* 角度分解能 */
-	inline static constexpr POS_TYPE ANG_DEG  = 45.0f;
+	inline static constexpr POS_TYPE ANG_DEG  = 360.0f / 16.0f; /* 16分割 */
 	
 	/* 角度テーブル */
 	inline static const DIRECTION_TABLE manager_direct[] =
 	{
-		/* [-45, 45) */
-		{-ANG_DEG * 1.0f,  ANG_DEG * 1.0f, DIRECTION::EAST},
+		/* 実角度 => ゲーム角度 */
+		/* [-22.5, 0.0) => [22.5, 0.0) */
+		{-ANG_DEG * 1.0f,  ANG_DEG * 0.0f, DIRECTION::EAST},
+		/* [0.0, 22.5)  => [-22.5, 0.0) */
+		{-ANG_DEG * 1.0f,  ANG_DEG * 0.0f, DIRECTION::EAST},
 		
-		/* [45, 135) */
-		{ ANG_DEG * 1.0f,  ANG_DEG * 3.0f, DIRECTION::SOUTH},
+		/* [22.5, 67.5) => [-67.5, -22.5) */
+		{-ANG_DEG * 3.0f, -ANG_DEG * 1.0f, DIRECTION::NORTH_EAST},
+		
+		/* [67.5, 112.5) => [-112.5, -67.5) */
+		{-ANG_DEG * 5.0f, -ANG_DEG * 3.0f, DIRECTION::NORTH},
+		
+		/* [112.5, 157.5) => [-157.5, -112.5) */
+		{-ANG_DEG * 7.0f, -ANG_DEG * 5.0f, DIRECTION::NORTH_WEST},
+		
+		/* [157.5, 180) => [-180.0, -157.5) */
+		{-ANG_DEG * 8.0f, -ANG_DEG * 7.0f, DIRECTION::WEST},
+		/* [-180.0, -157.5) => [157.5, 180.0) */
+		{ ANG_DEG * 7.0f,  ANG_DEG * 8.0f, DIRECTION::WEST},
 
-		/* [-135, -45) */
-		{-ANG_DEG * 3.0f, -ANG_DEG * 1.0f, DIRECTION::NORTH},
+		/* [-157.5, -112.5) => [112.5, 157.5) */
+		{ ANG_DEG * 5.0f,  ANG_DEG * 7.0f, DIRECTION::SOUTH_WEST},
 
-		/* [-180, -135) && [135, 180) */
-		{-ANG_DEG * 4.0f, -ANG_DEG * 3.0f, DIRECTION::WEST},
-		{ ANG_DEG * 3.0f,  ANG_DEG * 4.0f, DIRECTION::WEST}
+		/* [-112.5, -67.5) => [67.5, 112.5) */
+		{ ANG_DEG * 3.0f,  ANG_DEG * 5.0f, DIRECTION::SOUTH},
+
+		/* [-67.5, -22.5) => [22.5, 67.5) */
+		{ ANG_DEG * 1.0f,  ANG_DEG * 3.0f, DIRECTION::SOUTH_EAST}
 	};
 
 	/* テーブルサイズ */

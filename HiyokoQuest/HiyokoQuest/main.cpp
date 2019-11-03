@@ -4,7 +4,7 @@
 #include ".//MyLibrary/SceneManager/SceneManager.hpp"
 #include "./MyLibrary/FPS_Controller/FPS_Controller.hpp"
 
-#define DEBUG
+#define DEBUGa
 
 int main(int argc, char* argv[])
 {

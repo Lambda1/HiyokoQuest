@@ -94,6 +94,7 @@ DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& h
 	int nx = 0, ny = 0;
 	int index_x = 0,index_y = 0;
 	VisualRarnge(&nx, &ny, &index_x, &index_y, static_cast<int>(visual_field));
+	bool test = false;
 	for (int i = ny; i < index_y; i++)
 	{
 		if ((py + i) < 0 || (py + i) > height - 1) continue;
@@ -103,15 +104,16 @@ DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& h
 			std::cout << (int)dungeon[(py + i) * width + (px + j)];
 			if (dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROAD))
 			{
+				if(!test)
 				cand_x = (px + j), cand_y = (py + i);
 			}
 			else if (dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::PLAYER))
 			{
+				test = true;
 				cand_x = (px + j), cand_y = (py + i);
-				return GetVector(static_cast<POS_TYPE>(cand_x), static_cast<POS_TYPE>(cand_y));
 			}
 		}
 		std::cout << std::endl;
 	}
-	return DIRECTION::EAST;
+	return GetVector(static_cast<POS_TYPE>(cand_x), static_cast<POS_TYPE>(cand_y));;
 }
