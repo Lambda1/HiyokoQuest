@@ -13,9 +13,9 @@ namespace ENEMY_AI
 	/* Ž‹ŠE”ÍˆÍ */
 	enum class VISUAL_SIZE : int
 	{
-		SMALL  = 4,
-		NORMAL = 6,
-		LARGE  = 11,
+		SMALL  = 6,
+		NORMAL = 20,
+		LARGE  = 30,
 
 		SIZE
 	};

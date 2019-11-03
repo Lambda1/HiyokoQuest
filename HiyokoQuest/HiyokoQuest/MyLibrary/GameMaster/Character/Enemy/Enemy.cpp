@@ -89,12 +89,15 @@ DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& h
 {
 	turn_cost = TURN_MODE::MOVE;
 	
-	DIRECTION candidate = DIRECTION::NONE;
+	DIRECTION candidate = DIRECTION::EAST;
 	int px = static_cast<int>(x), py = static_cast<int>(y);
-	for (int i = -static_cast<int>(visual_field)/2; i < static_cast<int>(visual_field) / 2; i++)
+	int nx, ny;
+	int index_x,index_y;
+	VisualRarnge(&nx, &ny, &index_x, &index_y, static_cast<int>(visual_field));
+	for (int i = ny; i < index_y; i++)
 	{
 		if ((py + i) < 0 || (py + i) > height - 1) continue;
-		for (int j = -1; j < static_cast<int>(visual_field); j++)
+		for (int j = nx; j < index_x; j++)
 		{
 			if ((px + j) < 0 || (px + j) > width - 1) continue;
 			if (dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROOM) || dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROAD))
@@ -103,6 +106,5 @@ DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& h
 			}
 		}
 	}
-
 	return candidate;
 }
