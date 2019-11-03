@@ -4,6 +4,8 @@
 #include <iostream>
 #include <stack>
 
+#include "..//..//Mathematics/MyMath/MyMath.hpp"
+
 #include "..//RougeLikeMap/MapSet.hpp"
 #include "./Direction.hpp"
 
@@ -58,6 +60,7 @@ class Character
 		const float ANG_DEG = 45.0f;
 
 		void CalcMoveDirect(const POS_TYPE &val);
+		DIRECTION GetVector(const POS_TYPE& px, const POS_TYPE& py); /* (x,y)‚©‚çŒ©‚½(px,py)‚Ì•ûŒüŽæ“¾ */
 	public:
 		Character();
 		virtual ~Character();

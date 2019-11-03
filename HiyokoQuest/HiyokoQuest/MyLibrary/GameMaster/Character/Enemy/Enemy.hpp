@@ -21,14 +21,27 @@ class Enemy : public Character
 		/* AIモード */
 		ENEMY_AI::MODE ai_mode;
 
+		/* 視界範囲 */
+		ENEMY_AI::VISUAL_SIZE visual_field;
+
 		/* テーブル管理 */
-		std::map<ENEMY_AI::MODE, DIRECTION(Enemy::*)> manage_ai_table;
+		std::map<ENEMY_AI::MODE, DIRECTION(Enemy::*)(const MAP_TYPE*,const int &,const int &)> manage_ai_table;
+
+		/* テーブル生成 */
+		/* AIテーブル初期化 */
+		/* NOTE: 敵ごとにテーブルを生成するため, inline化 */
+		inline void InitTableAI()
+		{
+			manage_ai_table.emplace(ENEMY_AI::MODE::STANDARD, &Enemy::Standard);
+			manage_ai_table.emplace(ENEMY_AI::MODE::BERSERK,  &Enemy::Berserk);
+		}
 
 		/* 更新処理 */
 		void JudgeDeath();
 	
 		/* AI処理 */
-		DIRECTION Standard(const MAP_TYPE* dungeon);
+		DIRECTION Standard(const MAP_TYPE* dungeon, const int& width, const int& height);
+		DIRECTION Berserk(const MAP_TYPE* dungeon, const int& width, const int& height);
 
 	public:
 		Enemy();
@@ -41,7 +54,7 @@ class Enemy : public Character
 		void Update() override;
 
 		/* Enemy専用 */
-		DIRECTION AI_Move(const MAP_TYPE *dungeon);
+		DIRECTION AI_Move(const MAP_TYPE *dungeon,const int &width,const int &height);
 
 		/* ゲッタ */
 		inline int GiveEXP() override { return next_level_exp; } /* 与えるEXP */

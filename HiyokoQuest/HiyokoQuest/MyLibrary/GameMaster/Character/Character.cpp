@@ -107,3 +107,17 @@ void Character::CalcMoveDirect(const POS_TYPE& val)
 		break;
 	}
 }
+/* À•WŠÔ‚Ì•ûŒüæ“¾ */
+DIRECTION Character::GetVector(const POS_TYPE& px, const POS_TYPE& py)
+{
+	int ang = static_cast<int>(my_math::Math::Angle<POS_TYPE>(x,y,px,py) * 180.0 / my_math::Math::PI);
+	for (int i = 0; i < DIRECT_TABLE::table_size; i++)
+	{
+		if (DIRECT_TABLE::manager_direct[i].m_ang1 <= ang && ang <= DIRECT_TABLE::manager_direct[i].m_ang2)
+		{
+			return DIRECT_TABLE::manager_direct[i].m_direct;
+		}
+	}
+
+	return DIRECTION::NONE;
+}

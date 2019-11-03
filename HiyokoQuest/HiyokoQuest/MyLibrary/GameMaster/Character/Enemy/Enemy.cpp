@@ -1,7 +1,7 @@
 #include "./Enemy.hpp"
 
 Enemy::Enemy() : 
-	ai_mode(ENEMY_AI::MODE::STANDARD)
+	ai_mode(ENEMY_AI::MODE::STANDARD), visual_field(ENEMY_AI::VISUAL_SIZE::NORMAL)
 {
 	chara_state = MAPSET::DATA::ENEMY;
 
@@ -15,10 +15,12 @@ Enemy::Enemy() :
 	enemy_type = MAPSET::DATA::ENEMY1;
 
 	is_friend = false;
+
+	InitTableAI();
 }
 
 Enemy::Enemy(const float &up_rate,const MAPSET::DATA &id) :
-	ai_mode(ENEMY_AI::MODE::STANDARD)
+	ai_mode(ENEMY_AI::MODE::BERSERK), visual_field(ENEMY_AI::VISUAL_SIZE::NORMAL)
 {
 	chara_state = MAPSET::DATA::ENEMY;
 	enemy_type = id;
@@ -31,6 +33,8 @@ Enemy::Enemy(const float &up_rate,const MAPSET::DATA &id) :
 	next_level_exp = static_cast<int>(first_level + first_next_exp*up_rate);
 
 	is_friend = false;
+
+	InitTableAI();
 }
 
 Enemy::~Enemy()
@@ -56,9 +60,11 @@ void Enemy::Update()
 	JudgeDeath();
 }
 /* AI処理 */
-DIRECTION Enemy::AI_Move(const MAP_TYPE* dungeon)
+DIRECTION Enemy::AI_Move(const MAP_TYPE* dungeon, const int& width, const int& height)
 {
-	return Standard(dungeon);
+	if (manage_ai_table.find(ai_mode) != manage_ai_table.end())
+	{ return (this->*manage_ai_table[ai_mode])(dungeon, width, height); }
+	return DIRECTION::NONE;
 }
 /* private */
 
@@ -72,9 +78,31 @@ void Enemy::JudgeDeath()
 }
 
 /* AI処理 */
-/* 標準索敵 */
-DIRECTION Enemy::Standard(const MAP_TYPE* dungeon)
+/* 標準索敵AI */
+DIRECTION Enemy::Standard(const MAP_TYPE* dungeon, const int& width, const int& height)
 {
 	turn_cost = TURN_MODE::MOVE;
-	return DIRECTION::EAST;
+	return DIRECTION::NONE;
+}
+/* バーサーカAI */
+DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& height)
+{
+	turn_cost = TURN_MODE::MOVE;
+	
+	DIRECTION candidate = DIRECTION::NONE;
+	int px = static_cast<int>(x), py = static_cast<int>(y);
+	for (int i = -static_cast<int>(visual_field)/2; i < static_cast<int>(visual_field) / 2; i++)
+	{
+		if ((py + i) < 0 || (py + i) > height - 1) continue;
+		for (int j = -1; j < static_cast<int>(visual_field); j++)
+		{
+			if ((px + j) < 0 || (px + j) > width - 1) continue;
+			if (dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROOM) || dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROAD))
+			{
+				candidate = GetVector(static_cast<POS_TYPE>(px + j), static_cast<POS_TYPE>(py + i));
+			}
+		}
+	}
+
+	return candidate;
 }

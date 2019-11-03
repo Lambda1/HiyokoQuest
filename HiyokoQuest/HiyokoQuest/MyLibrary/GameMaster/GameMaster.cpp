@@ -209,7 +209,7 @@ void GameMaster::EnemyTurn()
 					else { (*itr)->SetTurnMode(TURN_MODE::END); }
 				}
 				*/
-				DIRECTION direct = (*itr)->AI_Move(game_map->GetALL());
+				DIRECTION direct = (*itr)->AI_Move(game_map->GetALL(),width,height);
 				CharacterMove(*itr,direct);
 			}
 
