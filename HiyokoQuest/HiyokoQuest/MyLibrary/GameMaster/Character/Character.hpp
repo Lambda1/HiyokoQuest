@@ -61,38 +61,9 @@ class Character
 
 		void CalcMoveDirect(const POS_TYPE &val);
 		DIRECTION GetVector(const POS_TYPE& px, const POS_TYPE& py); /* (x,y)から見た(px,py)の方向取得 */
-		/* 視界方向のインデックス取得 */
-		/* NOTE: テーブル化すると遅くなるので, switch文で記述. */
-		/* NOTE: より良い方法が見つかれば, 改善. */
-		void VisualRarnge(int* x, int* y,int *index_x,int *index_y,const int &weight)
-		{
-			switch (way)
-			{
-			case DIRECTION::EAST:
-			case DIRECTION::NORTH_EAST:
-			case DIRECTION::SOUTH_EAST:
-				*x = -1, *y = -weight / 2;
-				*index_x = weight, *index_y = weight / 2;
-				break;
-			case DIRECTION::WEST:
-			case DIRECTION::NORTH_WEST:
-			case DIRECTION::SOUTH_WEST:
-				*x = -weight, *y = -weight / 2;
-				*index_x = 2, * index_y = weight / 2;
-				break;
-			case DIRECTION::SOUTH:
-				*x = -weight / 2, *y = -1;
-				*index_x = weight / 2, * index_y = weight;
-				break;
-			case DIRECTION::NORTH:
-				*x = -weight / 2, *y = -weight;
-				*index_x = weight / 2, *index_y = 2;
-				break;
-			default:
-				break;
-			}
-		}
-	
+		void VisualRarnge(int* x, int* y, int* index_x, int* index_y, const int& weight); /* 視界方向のインデックス取得 */
+		MAPSET::DATA ToDirectData(const MAP_TYPE* dungeon, const DIRECTION& direct, const int &width);
+
 	public:
 		Character();
 		virtual ~Character();

@@ -121,3 +121,60 @@ DIRECTION Character::GetVector(const POS_TYPE& px, const POS_TYPE& py)
 
 	return DIRECTION::NONE;
 }
+/* 視界方向のインデックス取得 */
+/* NOTE: テーブル化すると遅くなるので, switch文で記述. */
+/* NOTE: より良い方法が見つかれば, 改善. */
+void Character::VisualRarnge(int* x, int* y, int* index_x, int* index_y, const int& weight)
+{
+	switch (way)
+	{
+	case DIRECTION::EAST:
+	case DIRECTION::NORTH_EAST:
+	case DIRECTION::SOUTH_EAST:
+		*x = -1, *y = -weight / 2;
+		*index_x = weight, * index_y = weight / 2;
+		break;
+	case DIRECTION::WEST:
+	case DIRECTION::NORTH_WEST:
+	case DIRECTION::SOUTH_WEST:
+		*x = -weight, * y = -weight / 2;
+		*index_x = 2, *index_y = weight / 2;
+		break;
+	case DIRECTION::SOUTH:
+		*x = -weight / 2, *y = -1;
+		*index_x = weight / 2, *index_y = weight;
+		break;
+	case DIRECTION::NORTH:
+		*x = -weight / 2, *y = -weight;
+		*index_x = weight / 2, *index_y = 2;
+		break;
+	default:
+		break;
+	}
+}
+MAPSET::DATA Character::ToDirectData(const MAP_TYPE* dungeon, const DIRECTION& direct,const int &width)
+{
+	POS_TYPE px = x, py = y;
+	switch (direct)
+	{
+	case DIRECTION::EAST:
+		px++; break;
+	case DIRECTION::WEST:
+		px--; break;
+	case DIRECTION::SOUTH:
+		py++; break;
+	case DIRECTION::NORTH:
+		py--; break;
+	case DIRECTION::SOUTH_EAST:
+		px++; py++; break;
+	case DIRECTION::SOUTH_WEST:
+		px--; py++; break;
+	case DIRECTION::NORTH_EAST:
+		px++; py--; break;
+	case DIRECTION::NORTH_WEST:
+		px--; py--; break;
+	default:
+		break;
+	}
+	return static_cast<MAPSET::DATA>(dungeon[static_cast<int>(py) * width + static_cast<int>(px)]);
+}

@@ -38,7 +38,7 @@ class Enemy : public Character
 
 		/* 更新処理 */
 		void JudgeDeath();
-	
+		
 		/* AI処理 */
 		DIRECTION Standard(const MAP_TYPE* dungeon, const int& width, const int& height);
 		DIRECTION Berserk(const MAP_TYPE* dungeon, const int& width, const int& height);
@@ -54,7 +54,7 @@ class Enemy : public Character
 		void Update() override;
 
 		/* Enemy専用 */
-		DIRECTION AI_Move(const MAP_TYPE *dungeon,const int &width,const int &height);
+		DIRECTION AI_Mode(const MAP_TYPE *dungeon,const int &width,const int &height);
 
 		/* ゲッタ */
 		inline int GiveEXP() override { return next_level_exp; } /* 与えるEXP */

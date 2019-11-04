@@ -20,7 +20,7 @@ Enemy::Enemy() :
 }
 
 Enemy::Enemy(const float &up_rate,const MAPSET::DATA &id) :
-	ai_mode(ENEMY_AI::MODE::BERSERK), visual_field(ENEMY_AI::VISUAL_SIZE::NORMAL)
+	ai_mode(ENEMY_AI::MODE::BERSERK), visual_field(ENEMY_AI::VISUAL_SIZE::SMALL)
 {
 	chara_state = MAPSET::DATA::ENEMY;
 	enemy_type = id;
@@ -60,11 +60,19 @@ void Enemy::Update()
 	JudgeDeath();
 }
 /* AIèàóù */
-DIRECTION Enemy::AI_Move(const MAP_TYPE* dungeon, const int& width, const int& height)
+DIRECTION Enemy::AI_Mode(const MAP_TYPE* dungeon, const int& width, const int& height)
 {
+	DIRECTION direct = way;
 	if (manage_ai_table.find(ai_mode) != manage_ai_table.end())
-	{ return (this->*manage_ai_table[ai_mode])(dungeon, width, height); }
-	return DIRECTION::NONE;
+	{
+		direct = (this->*manage_ai_table[ai_mode])(dungeon, width, height);
+		if (ToDirectData(dungeon, direct, width) == MAPSET::DATA::PLAYER)
+		{
+			turn_cost = TURN_MODE::ATTACK;
+		}
+	}
+	way = direct;
+	return direct;
 }
 /* private */
 
@@ -89,31 +97,57 @@ DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& h
 {
 	turn_cost = TURN_MODE::MOVE;
 	
-	int cand_x = 0, cand_y = 0;
+	DIRECTION candidate = DIRECTION::NONE;
 	int px = static_cast<int>(x), py = static_cast<int>(y);
 	int nx = 0, ny = 0;
 	int index_x = 0,index_y = 0;
+	POS_TYPE dest_x = static_cast<POS_TYPE>(x), dest_y = static_cast<POS_TYPE>(y);
+	
+	/* éãäEì‡ÇÃìGÇíTçı */
 	VisualRarnge(&nx, &ny, &index_x, &index_y, static_cast<int>(visual_field));
-	bool test = false;
 	for (int i = ny; i < index_y; i++)
 	{
 		if ((py + i) < 0 || (py + i) > height - 1) continue;
 		for (int j = nx; j < index_x; j++)
 		{
 			if ((px + j) < 0 || (px + j) > width - 1) continue;
-			std::cout << (int)dungeon[(py + i) * width + (px + j)];
-			if (dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROAD))
+			if (dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::PLAYER))
 			{
-				if(!test)
-				cand_x = (px + j), cand_y = (py + i);
-			}
-			else if (dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::PLAYER))
-			{
-				test = true;
-				cand_x = (px + j), cand_y = (py + i);
+				dest_x = static_cast<POS_TYPE>(px + j), dest_y = static_cast<POS_TYPE>(py + i);
+				candidate = GetVector(dest_x, dest_y);
+				break;
 			}
 		}
-		std::cout << std::endl;
+		if (candidate != DIRECTION::NONE) break;
 	}
-	return GetVector(static_cast<POS_TYPE>(cand_x), static_cast<POS_TYPE>(cand_y));;
+	/* éãäEì‡Ç…ìGÇ™Ç¢Ç»Ç¢Ç∆Ç´, ÉâÉìÉ_ÉÄà⁄ìÆ */
+	if (candidate == DIRECTION::NONE) { candidate = static_cast<DIRECTION>(1 << (rand() % 4)); }
+	
+	/* à⁄ìÆï˚å¸Ç÷êiÇﬂÇ»Ç¢Ç∆Ç´, ñ⁄ìIínÇ÷ÇÃç≈íZåoòHÇçƒåvéZ */
+	/* NOTE: ÉâÉìÉ_ÉÄà⁄ìÆéûÇ…êiÇﬂÇ»Ç¢Ç∆Ç´, âE>>â∫>ç∂>è„ÇÃíTçıèáèòÇ∆Ç»ÇÈ. */
+	if (ToDirectData(dungeon, candidate, width) == MAPSET::DATA::WALL)
+	{
+		POS_TYPE min_dist = 9999.0f;
+		for (int i = -static_cast<int>(ENEMY_AI::VISUAL_SIZE::AROUND) / 2; i <= static_cast<int>(ENEMY_AI::VISUAL_SIZE::AROUND) / 2; i++)
+		{
+			if ((py + i) < 0 || (py + i) > height - 1) continue;
+			for (int j = -static_cast<int>(ENEMY_AI::VISUAL_SIZE::AROUND) / 2; j <= static_cast<int>(ENEMY_AI::VISUAL_SIZE::AROUND) / 2; j++)
+			{
+				if ((px + j) < 0 || (px + j) > width - 1) continue;
+				if (dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROAD) || dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROOM))
+				{
+					POS_TYPE dist = my_math::Math::Distance<POS_TYPE>(dest_x,dest_y,static_cast<POS_TYPE>(px+j),static_cast<POS_TYPE>(py+i));
+					std::cout << dist << std::endl;
+					if (dist < min_dist)
+					{
+						dest_x = static_cast<POS_TYPE>(px + j), dest_y = static_cast<POS_TYPE>(py + i);
+						min_dist = dist;
+					}
+				}
+			}
+		}
+		candidate = GetVector(dest_x, dest_y);
+	}
+
+	return candidate;
 }

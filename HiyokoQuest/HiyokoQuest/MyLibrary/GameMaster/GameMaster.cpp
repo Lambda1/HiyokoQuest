@@ -106,7 +106,7 @@ void GameMaster::CreateMap()
 	for (int i = 0; i < floor_number*2; i++) {
 		Enemy *enemy_tmp = new Enemy(static_cast<float>(floor_number*0.5f),static_cast<MAPSET::DATA>((int)MAPSET::DATA::ENEMY1+random_index));
 		enemy_list.push_back(enemy_tmp);
-		random_index = (random_index+1) % ((int)MAPSET::DATA::ENEMY5 - (int)MAPSET::DATA::ENEMY1);
+		random_index = (random_index+1) % ((int)MAPSET::DATA::ENEMY5 - (int)MAPSET::DATA::ENEMY);
 	}
 
 	/* アイテム生成 */
@@ -197,20 +197,15 @@ void GameMaster::EnemyTurn()
 		{
 			if ((*itr)->GetTurnMode() == TURN_MODE::NONE)
 			{
-				/* ランダムAI */
-				/*
-				if (GetDirectionInfo((*itr)->GetPosX(),(*itr)->GetPosY(), (*itr)->GetDirect()) == MAPSET::DATA::PLAYER || GetDirectionInfo((*itr)->GetPosX(), (*itr)->GetPosY(), (*itr)->GetDirect()) == MAPSET::DATA::ENEMY)
+				DIRECTION direct = (*itr)->AI_Mode(game_map->GetALL(),width,height);
+				if ((*itr)->GetTurnMode() == TURN_MODE::MOVE)
 				{
-					if (CharacterAttack(*itr)) { (*itr)->SetTurnMode(TURN_MODE::ATTACK); }
+					CharacterMove(*itr, direct);
 				}
-				else {
-					DIRECTION tester = static_cast<DIRECTION>(1 << rand() % 4);
-					if (CharacterMove(*itr, tester)) { (*itr)->SetTurnMode(TURN_MODE::MOVE); }
-					else { (*itr)->SetTurnMode(TURN_MODE::END); }
+				else if ((*itr)->GetTurnMode() == TURN_MODE::ATTACK)
+				{
+					CharacterAttack(*itr);
 				}
-				*/
-				DIRECTION direct = (*itr)->AI_Move(game_map->GetALL(),width,height);
-				CharacterMove(*itr,direct);
 			}
 
 			if ((*itr)->GetTurnMode() == TURN_MODE::NONE) { is_next_turn = false; }
