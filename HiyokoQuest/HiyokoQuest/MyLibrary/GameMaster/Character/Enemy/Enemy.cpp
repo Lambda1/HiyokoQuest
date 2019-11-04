@@ -62,17 +62,15 @@ void Enemy::Update()
 /* AIˆ— */
 DIRECTION Enemy::AI_Mode(const MAP_TYPE* dungeon, const int& width, const int& height)
 {
-	DIRECTION direct = way;
 	if (manage_ai_table.find(ai_mode) != manage_ai_table.end())
 	{
-		direct = (this->*manage_ai_table[ai_mode])(dungeon, width, height);
-		if (ToDirectData(dungeon, direct, width) == MAPSET::DATA::PLAYER)
+		way = (this->*manage_ai_table[ai_mode])(dungeon, width, height);
+		if (ToDirectData(dungeon, way, width) == MAPSET::DATA::PLAYER)
 		{
 			turn_cost = TURN_MODE::ATTACK;
 		}
 	}
-	way = direct;
-	return direct;
+	return way;
 }
 /* private */
 
@@ -137,7 +135,6 @@ DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& h
 				if (dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROAD) || dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROOM))
 				{
 					POS_TYPE dist = my_math::Math::Distance<POS_TYPE>(dest_x,dest_y,static_cast<POS_TYPE>(px+j),static_cast<POS_TYPE>(py+i));
-					std::cout << dist << std::endl;
 					if (dist < min_dist)
 					{
 						dest_x = static_cast<POS_TYPE>(px + j), dest_y = static_cast<POS_TYPE>(py + i);
