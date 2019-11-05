@@ -141,6 +141,8 @@ public:
 	void DrawMap(const unsigned char* dungeon, const int& width, const int& height); /* マップ層表示 */
 	/* 座標におけるマップ表示 (クリッピングに使用) */
 	void DrawMap(const unsigned char* dungeon, const int& width, const int& height, const int& px, const int& py);
+	/* 座標におけるマップ表示 (クリッピング領域指定版) */
+	void DrawMap(const unsigned char* dungeon, const int& width, const int& height, const int& px, const int& py, const int &range);
 	/* レイヤ層によるキャラクタ表示 */
 	void DrawCharacter(const unsigned char* dungeon, const int& width, const int& height); /* キャラクター表示 */
 	/* 座標におけるキャラクタ表示 */

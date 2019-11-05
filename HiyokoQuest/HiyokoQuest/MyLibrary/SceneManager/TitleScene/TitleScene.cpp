@@ -3,9 +3,22 @@
 #include <iostream>
 
 TitleScene::TitleScene() :
-	key_pos(BUTTON::NONE)
+	key_pos(BUTTON::NONE),
+	demo_map(static_cast<int>(std::time(nullptr))),
+	demo_enemy(1.0f, MAPSET::DATA::PLAYER)
 {
 	scene_number = SCENE::TITLE;
+
+	/* デモマップ初期化 */
+	demo_map.Init(demo_map_width, demo_map_height, demo_map_room_num);
+	demo_map.SetBaseInfo(static_cast<MAP_TYPE>(MAPSET::DATA::NONE), static_cast<MAP_TYPE>(MAPSET::DATA::ROOM), static_cast<MAP_TYPE>(MAPSET::DATA::ROAD), static_cast<MAP_TYPE>(MAPSET::DATA::WALL));
+	demo_map.Generate();
+	/* デモキャラ初期化 */
+	int enemy_pos_x, enemy_pos_y;
+	demo_map.GetRoomPos(&enemy_pos_x, &enemy_pos_y);
+	demo_enemy.InitPos(static_cast<POS_TYPE>(enemy_pos_x), static_cast<POS_TYPE>(enemy_pos_y));
+
+	draw_manager.Init();
 }
 
 TitleScene::~TitleScene()
@@ -58,6 +71,17 @@ void TitleScene::View3D()
 }
 void TitleScene::StartMenu()
 {
+	/* ウィンドウ表示 */
+	glBegin(GL_QUADS);
+	{
+		glColor4f(0.8f, 0.8f, 0.8f, 0.8f);
+		glVertex3f(menu_locate_x * -2.0f, menu_locate_y * 0.5f, 0.1f);
+		glVertex3f(menu_locate_x *  2.5f, menu_locate_y * 0.5f, 0.1f);
+		glVertex3f(menu_locate_x *  2.5f, menu_locate_y * 2.8f, 0.1f);
+		glVertex3f(menu_locate_x * -2.0f, menu_locate_y * 2.8f, 0.1f);
+	}
+	glEnd();
+
 	/* 文字メニュー表示 */
 	opengl_string.DrawStrings("START",   menu_locate_x, menu_locate_y - menu_rate * static_cast<int>(MENU::START),   0, PS::COLOR::BLACK);
 	opengl_string.DrawStrings("AI-MODE", menu_locate_x, menu_locate_y - menu_rate * static_cast<int>(MENU::AI),      0, PS::COLOR::SILVER);
@@ -109,6 +133,10 @@ void TitleScene::DrawMenu()
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	/* デモ再生 */
+	View3D();
+	PlayDemo();
+
 	/* 2Dメニュー表示 */
 	View2D();
 	StartMenu();
@@ -118,4 +146,51 @@ void TitleScene::DrawMenu()
 
 	/* シーン遷移処理 */
 	IsSceneTrans();
+}
+/* デモ再生 */
+void TitleScene::PlayDemo()
+{
+	draw_manager.CameraPos<GLfloat>(demo_enemy.GetPosPX(), 10.0f, demo_enemy.GetPosPY() + 10.0f, demo_enemy.GetPosPX(), 0.0f, demo_enemy.GetPosPY());
+	draw_manager.DrawMap(demo_map.GetDungeon(), demo_map_width, demo_map_height, static_cast<int>(demo_enemy.GetPosX()), static_cast<int>(demo_enemy.GetPosY()));
+	if (demo_enemy.GetPosX() == demo_enemy.GetPosPX() && demo_enemy.GetPosY() == demo_enemy.GetPosPY())
+	{
+		DIRECTION direct = demo_enemy.AI_Mode(demo_map.GetDungeon(), demo_map_width, demo_map_height);
+		CharacterMove(direct);
+	}
+	else { demo_enemy.MoveAnimation(); }
+	draw_manager.DrawCharacter(&demo_enemy,demo_map_width,demo_map_height, static_cast<int>(demo_enemy.GetPosX()), static_cast<int>(demo_enemy.GetPosY()));
+}
+/* デモキャラ移動 */
+/* NOTE: GameMasterクラスより, 処理効率を向上させた(デモ特化). */
+void TitleScene::CharacterMove(const DIRECTION &direct)
+{
+	POS_TYPE pos_x = demo_enemy.GetPosX(), pos_y = demo_enemy.GetPosY();
+	CalcDirectionToPos(&pos_x, &pos_y, direct);
+	MAPSET::DATA pos_data = static_cast<MAPSET::DATA>(demo_map.GetDungeon()[static_cast<int>(pos_y) * demo_map_width + static_cast<int>(pos_x)]);
+	if (pos_data == MAPSET::DATA::ROOM || pos_data == MAPSET::DATA::ROAD) { demo_enemy.Move(direct); }
+}
+/* HACK: 同じ処理があるため, 共通化すべき. */
+void TitleScene::CalcDirectionToPos(POS_TYPE* x, POS_TYPE* y, DIRECTION direct)
+{
+	switch (direct)
+	{
+	case DIRECTION::EAST:
+		(*x)++; break;
+	case DIRECTION::WEST:
+		(*x)--; break;
+	case DIRECTION::SOUTH:
+		(*y)++; break;
+	case DIRECTION::NORTH:
+		(*y)--; break;
+	case DIRECTION::SOUTH_EAST:
+		(*x)++; (*y)++; break;
+	case DIRECTION::SOUTH_WEST:
+		(*x)--; (*y)++; break;
+	case DIRECTION::NORTH_EAST:
+		(*x)++; (*y)--; break;
+	case DIRECTION::NORTH_WEST:
+		(*x)--; (*y)--; break;
+	default:
+		break;
+	}
 }

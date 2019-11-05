@@ -87,6 +87,21 @@ void DrawGame::DrawMap(const unsigned char* dungeon, const int& width, const int
 				DrawObj(manage_draw_obj[static_cast<MAPSET::DATA>(dungeon[i * width + j])], static_cast<float>(j), static_cast<float>(i), 0.0f);
 		}
 }
+/* 座標版 (指定版) */
+void DrawGame::DrawMap(const unsigned char* dungeon, const int& width, const int& height, const int& px, const int& py,const int &range)
+{
+	int sx = ((px - range) < 0) ? 0 : px - range;
+	int sy = ((py - range) < 0) ? 0 : py - range;
+	int range_w = ((sx + range * 2) < width ? (sx + range * 2) : width);
+	int range_h = ((sy + range * 2) < height ? (sy + range * 2) : height);
+
+	for (int i = sy; i < range_h; i++)
+		for (int j = sx; j < range_w; j++)
+		{
+			if (manage_draw_obj.find(static_cast<MAPSET::DATA>(dungeon[i * width + j])) != manage_draw_obj.end())
+				DrawObj(manage_draw_obj[static_cast<MAPSET::DATA>(dungeon[i * width + j])], static_cast<float>(j), static_cast<float>(i), 0.0f);
+		}
+}
 /* キャラクター表示 (y->z) */
 /* レイヤ版 */
 void DrawGame::DrawCharacter(const unsigned char* dungeon, const int& width, const int& height)
