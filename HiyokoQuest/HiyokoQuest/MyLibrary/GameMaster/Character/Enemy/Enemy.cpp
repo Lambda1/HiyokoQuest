@@ -1,7 +1,8 @@
 #include "./Enemy.hpp"
 
 Enemy::Enemy() : 
-	ai_mode(ENEMY_AI::MODE::STANDARD), visual_field(ENEMY_AI::VISUAL_SIZE::NORMAL)
+	ai_mode(ENEMY_AI::MODE::STANDARD), visual_field(ENEMY_AI::VISUAL_SIZE::NORMAL),
+	need_research_route(true)
 {
 	chara_state = MAPSET::DATA::ENEMY;
 
@@ -15,12 +16,11 @@ Enemy::Enemy() :
 	enemy_type = MAPSET::DATA::ENEMY1;
 
 	is_friend = false;
-
-	InitTableAI();
 }
 
 Enemy::Enemy(const float &up_rate,const MAPSET::DATA &id) :
-	ai_mode(ENEMY_AI::MODE::BERSERK), visual_field(ENEMY_AI::VISUAL_SIZE::SMALL)
+	ai_mode(ENEMY_AI::MODE::BERSERK), visual_field(ENEMY_AI::VISUAL_SIZE::SMALL),
+	need_research_route(true)
 {
 	chara_state = MAPSET::DATA::ENEMY;
 	enemy_type = id;
@@ -33,8 +33,6 @@ Enemy::Enemy(const float &up_rate,const MAPSET::DATA &id) :
 	next_level_exp = static_cast<int>(first_level + first_next_exp*up_rate);
 
 	is_friend = false;
-
-	InitTableAI();
 }
 
 Enemy::~Enemy()
@@ -62,14 +60,19 @@ void Enemy::Update()
 /* AIèàóù */
 DIRECTION Enemy::AI_Mode(const MAP_TYPE* dungeon, const int& width, const int& height)
 {
-	if (manage_ai_table.find(ai_mode) != manage_ai_table.end())
+	/* EnemyAIÇÕ, å¯ó¶âªÇÃÇΩÇﬂÉeÅ[ÉuÉãâªÇµÇ»Ç¢ */
+	switch (ai_mode)
 	{
-		way = (this->*manage_ai_table[ai_mode])(dungeon, width, height);
-		if (ToDirectData(dungeon, way, width) == MAPSET::DATA::PLAYER)
-		{
-			turn_cost = TURN_MODE::ATTACK;
-		}
+	case ENEMY_AI::MODE::STANDARD:
+		way = Standard(dungeon, width, height); break;
+	case ENEMY_AI::MODE::BERSERK:
+		way = Berserk(dungeon, width, height); break;
+	case ENEMY_AI::MODE::A_STAR:
+		break;
+	default:
+		break;
 	}
+
 	return way;
 }
 /* private */
@@ -146,5 +149,23 @@ DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& h
 		candidate = GetVector(dest_x, dest_y);
 	}
 
+	if (ToDirectData(dungeon, way, width) == MAPSET::DATA::PLAYER)
+	{
+		turn_cost = TURN_MODE::ATTACK;
+	}
+
 	return candidate;
+}
+/* A-STARíTçı */
+DIRECTION Enemy::A_STAR(const MAP_TYPE* dungeon, const int& width, const int& height)
+{
+	turn_cost = TURN_MODE::MOVE;
+
+	if (need_research_route)
+	{
+		node_list[x * width + y] = ENEMY_AI::MapCell(0, 0, x, y);
+		need_research_route = false;
+	}
+
+	return DIRECTION::EAST;
 }

@@ -7,6 +7,9 @@
 #include "..//..//RougeLikeMap/MapSet.hpp"
 #include "..//Direction.hpp"
 
+#include "..//..//..//Mathematics/MyVector/MyVector.hpp"
+
+#include <vector>
 #include <map>
 
 class Enemy : public Character
@@ -18,23 +21,13 @@ class Enemy : public Character
 		const int first_power = 2, first_defence = 1;
 		const int first_next_exp = first_level;
 
-		/* AIモード */
+		/* AI処理 */
 		ENEMY_AI::MODE ai_mode;
+		bool need_research_route; /* ルート再検索フラグ */
+		std::map<int, ENEMY_AI::MapCell> node_list; /* Aスター用ノード管理 */
 
 		/* 視界範囲 */
 		ENEMY_AI::VISUAL_SIZE visual_field;
-
-		/* テーブル管理 */
-		std::map<ENEMY_AI::MODE, DIRECTION(Enemy::*)(const MAP_TYPE*,const int &,const int &)> manage_ai_table;
-
-		/* テーブル生成 */
-		/* AIテーブル初期化 */
-		/* NOTE: 敵ごとにテーブルを生成するため, inline化 */
-		inline void InitTableAI()
-		{
-			manage_ai_table.emplace(ENEMY_AI::MODE::STANDARD, &Enemy::Standard);
-			manage_ai_table.emplace(ENEMY_AI::MODE::BERSERK,  &Enemy::Berserk);
-		}
 
 		/* 更新処理 */
 		void JudgeDeath();
@@ -42,6 +35,7 @@ class Enemy : public Character
 		/* AI処理 */
 		DIRECTION Standard(const MAP_TYPE* dungeon, const int& width, const int& height);
 		DIRECTION Berserk(const MAP_TYPE* dungeon, const int& width, const int& height);
+		DIRECTION A_STAR(const MAP_TYPE* dungeon, const int& width, const int& height);
 
 	public:
 		Enemy();
