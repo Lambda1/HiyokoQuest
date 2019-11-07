@@ -15,7 +15,15 @@ DrawGame::~DrawGame()
 	if (wall)   delete wall;
 	if (stair)  delete stair;
 	if (tyle)   delete tyle;
-	for (std::vector<ObjLoader*>::iterator itr = enemy.begin(); itr != enemy.end(); itr++){ delete *itr; }
+	for (std::vector<ObjLoader*>::iterator itr = enemy.begin(); itr != enemy.end();)
+	{
+		if (*itr) {
+			delete* itr;
+			itr = enemy.erase(itr);
+			continue;
+		}
+		++itr;
+	}
 	std::vector<ObjLoader*>().swap(enemy);
 	std::vector<int>().swap(enemy_id_start);
 }

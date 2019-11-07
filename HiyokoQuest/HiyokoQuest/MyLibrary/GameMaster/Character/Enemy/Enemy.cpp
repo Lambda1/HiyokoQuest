@@ -1,6 +1,6 @@
 #include "./Enemy.hpp"
 
-Enemy::Enemy() : 
+Enemy::Enemy() :
 	ai_mode(ENEMY_AI::MODE::STANDARD), visual_field(ENEMY_AI::VISUAL_SIZE::NORMAL),
 	need_research_route(true)
 {
@@ -37,6 +37,7 @@ Enemy::Enemy(const float &up_rate,const MAPSET::DATA &id) :
 
 Enemy::~Enemy()
 {
+
 }
 /* override */
 void Enemy::Move(DIRECTION direct)
@@ -68,7 +69,7 @@ DIRECTION Enemy::AI_Mode(const MAP_TYPE* dungeon, const int& width, const int& h
 	case ENEMY_AI::MODE::BERSERK:
 		way = Berserk(dungeon, width, height); break;
 	case ENEMY_AI::MODE::A_STAR:
-		break;
+		way = A_STAR(dungeon, width, height); break;
 	default:
 		break;
 	}
@@ -149,7 +150,7 @@ DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& h
 		candidate = GetVector(dest_x, dest_y);
 	}
 
-	if (ToDirectData(dungeon, way, width) == MAPSET::DATA::PLAYER)
+	if (ToDirectData(dungeon, candidate, width) == MAPSET::DATA::PLAYER)
 	{
 		turn_cost = TURN_MODE::ATTACK;
 	}
@@ -163,9 +164,83 @@ DIRECTION Enemy::A_STAR(const MAP_TYPE* dungeon, const int& width, const int& he
 
 	if (need_research_route)
 	{
-		node_list[x * width + y] = ENEMY_AI::MapCell(0, 0, x, y);
+		std::list<ENEMY_AI::MapCell*> node_list;
+		calc_cost = [&](const int &px,const int &py)
+		{
+			int tmp_x = (target_pos.x - px);
+			int tmp_y = (target_pos.y - py);
+			return tmp_x > tmp_y ? tmp_x : tmp_y;
+		};
 		need_research_route = false;
+		const int size = width * height;
+		bool* search_map = new bool[size];
+		for (int i = 0; i < size; i++) search_map[i] = false;
+
+		int now_x = static_cast<int>(x), now_y = static_cast<int>(y);
+		const int ran_x = 3, ran_y = 3;
+		int counter = 0;
+		node_list.push_back(new ENEMY_AI::MapCell(now_x, now_y, counter++, calc_cost(now_x, now_y), nullptr));
+		auto attract_itr = node_list.begin();
+		
+		while (now_x != target_pos.x || now_y != target_pos.y)
+		{
+			for (int i = -ran_y / 2; i <= ran_y / 2; i++)
+			{
+				if ((i + now_y) < 0 || (i + now_y) > height) continue;
+				for (int j = -ran_x / 2; j <= ran_x / 2; j++)
+				{
+					if ((j + now_x) < 0 || (j + now_y) > width) continue;
+					if (search_map[(i + now_y) * width + (j + now_x)]) continue;
+					if (dungeon[(i + now_y) * width + (j + now_x)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROAD) || dungeon[(i + now_y) * width + (j + now_x)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROOM))
+					{
+						search_map[(i + now_y) * width + (j + now_x)] = true;
+						node_list.push_back(new ENEMY_AI::MapCell(now_x+j, now_y+i, counter, calc_cost(now_x, now_y), *attract_itr));
+					}
+				}
+			}
+
+			int score_min = 9999;
+			(*attract_itr)->status = ENEMY_AI::MapCell::STATUS::CLOSE;
+			for (auto itr = node_list.begin(); itr != node_list.end(); ++itr)
+			{
+				if ((*itr)->status == ENEMY_AI::MapCell::STATUS::CLOSE) continue;
+				if ((*itr)->GetScore() < score_min) {
+					attract_itr = itr;
+					score_min = (*itr)->GetScore();
+				}
+			}
+			now_x = (*attract_itr)->x, now_y = (*attract_itr)->y;
+
+			counter++;
+		}
+
+		for (ENEMY_AI::MapCell* cell = *attract_itr;cell != nullptr;cell = cell->parent)
+		{
+			route_pos.push(my_math::Vec<int>(cell->x, cell->y, 0));
+		}
+
+		delete[] search_map;
+		for (auto itr = node_list.begin(); itr != node_list.end();)
+		{
+			if (*itr)
+			{
+				delete *itr;
+				itr = node_list.erase(itr);
+				continue;
+			}
+			++itr;
+		}
 	}
 
-	return DIRECTION::EAST;
+	if (!route_pos.empty())
+	{
+		my_math::Vec<int> pos = route_pos.top();
+		route_pos.pop();
+		return GetVector(static_cast<POS_TYPE>(pos.x), static_cast<POS_TYPE>(pos.y));
+	}else
+	{
+		need_research_route = true;
+	}
+
+	return DIRECTION::NONE;
 }

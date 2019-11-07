@@ -5,7 +5,8 @@
 TitleScene::TitleScene() :
 	key_pos(BUTTON::NONE),
 	demo_map(static_cast<int>(std::time(nullptr))),
-	demo_enemy(1.0f, MAPSET::DATA::PLAYER)
+	demo_enemy(1.0f, MAPSET::DATA::PLAYER),
+	goal_x(0), goal_y(0)
 {
 	scene_number = SCENE::TITLE;
 
@@ -13,10 +14,13 @@ TitleScene::TitleScene() :
 	demo_map.Init(demo_map_width, demo_map_height, demo_map_room_num);
 	demo_map.SetBaseInfo(static_cast<MAP_TYPE>(MAPSET::DATA::NONE), static_cast<MAP_TYPE>(MAPSET::DATA::ROOM), static_cast<MAP_TYPE>(MAPSET::DATA::ROAD), static_cast<MAP_TYPE>(MAPSET::DATA::WALL));
 	demo_map.Generate();
+	demo_map.GetRoomPos(&goal_x, &goal_y);
 	/* デモキャラ初期化 */
 	int enemy_pos_x, enemy_pos_y;
 	demo_map.GetRoomPos(&enemy_pos_x, &enemy_pos_y);
 	demo_enemy.InitPos(static_cast<POS_TYPE>(enemy_pos_x), static_cast<POS_TYPE>(enemy_pos_y));
+	demo_enemy.SetAI(ENEMY_AI::MODE::A_STAR);
+	demo_enemy.SetTargetPos(goal_x,goal_y);
 
 	draw_manager.Init();
 }
@@ -159,6 +163,12 @@ void TitleScene::PlayDemo()
 	}
 	else { demo_enemy.MoveAnimation(); }
 	draw_manager.DrawCharacter(&demo_enemy,demo_map_width,demo_map_height, static_cast<int>(demo_enemy.GetPosX()), static_cast<int>(demo_enemy.GetPosY()));
+
+	if (demo_enemy.GetDirect() == DIRECTION::NONE)
+	{
+		demo_map.GetRoomPos(&goal_x, &goal_y);
+		demo_enemy.SetTargetPos(goal_x, goal_y);
+	}
 }
 /* デモキャラ移動 */
 /* NOTE: GameMasterクラスより, 処理効率を向上させた(デモ特化). */

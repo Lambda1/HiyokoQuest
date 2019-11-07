@@ -29,27 +29,30 @@ namespace ENEMY_AI
 	{
 		enum class STATUS : int { NONE, OPEN, CLOSE };
 		
+		int x, y;
 		int actual_cost;
 		int huristics_cost;
 		STATUS status;
-		int parent_x, parent_y;
+		MapCell* parent;
 
 		MapCell() : 
+		x(0), y(0),
 		actual_cost(0), huristics_cost(0), status(STATUS::NONE),
-		parent_x(0), parent_y(0)
+		parent(nullptr)
 		{
 		};
-		MapCell(int act_cost, int hur_cost, int par_x, int par_y) :
+		MapCell(const int &px, const int &py, const int& act_cost, const int& hur_cost, MapCell *cell) :
+			x(px), y(py),
 			actual_cost(act_cost), huristics_cost(hur_cost), status(STATUS::OPEN),
-			parent_x(par_x), parent_y(par_y)
+			parent(cell)
 		{
 		};
 		~MapCell()
 		{
 		};
-		inline bool operator<(const MapCell& rhs) const
+		inline int GetScore()
 		{
-			return (actual_cost > rhs.actual_cost);
+			return actual_cost + huristics_cost;
 		}
 	};
 };
