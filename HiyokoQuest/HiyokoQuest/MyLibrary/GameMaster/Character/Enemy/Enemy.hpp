@@ -25,21 +25,21 @@ private:
 
 	/* AI処理 */
 	ENEMY_AI::MODE ai_mode;
+	bool need_research_route; /* ルート再検索フラグ */
 
 	/* Aスター用 */
-	bool need_research_route; /* ルート再検索フラグ */
 	std::stack<my_math::Vec<int>> route_pos;
 
 	/* 視界範囲 */
 	ENEMY_AI::VISUAL_SIZE visual_field;
 	
-	/* 標的位置 */
+	/* 標的データ */
 	MAPSET::DATA target_id;
 
 	/* 更新処理 */
 	void JudgeDeath();
 		
-	/* AI処理 */
+	/* AIモード */
 	DIRECTION Standard(const MAP_TYPE* dungeon, const int& width, const int& height);
 	DIRECTION Berserk (const MAP_TYPE* dungeon, const int& width, const int& height);
 	DIRECTION A_STAR  (const MAP_TYPE* dungeon, const int& width, const int& height);

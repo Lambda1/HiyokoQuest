@@ -59,9 +59,9 @@ void Enemy::Update()
 	JudgeDeath();
 }
 /* AI処理 */
+/* NOTE: 効率化のため,switch文 */
 DIRECTION Enemy::AI_Mode(const MAP_TYPE* dungeon, const int& width, const int& height)
 {
-	/* EnemyAIは, 効率化のためテーブル化しない */
 	switch (ai_mode)
 	{
 	case ENEMY_AI::MODE::STANDARD:
@@ -75,9 +75,8 @@ DIRECTION Enemy::AI_Mode(const MAP_TYPE* dungeon, const int& width, const int& h
 	}
 	return way;
 }
-/* private */
 
-/* 更新処理 */
+/* private */
 /* 死亡判定 */
 void Enemy::JudgeDeath()
 {
@@ -85,7 +84,6 @@ void Enemy::JudgeDeath()
 		death = true;
 	}
 }
-
 /* AI処理 */
 /* 標準索敵AI */
 DIRECTION Enemy::Standard(const MAP_TYPE* dungeon, const int& width, const int& height)
@@ -105,7 +103,7 @@ DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& h
 	POS_TYPE dest_x = static_cast<POS_TYPE>(x), dest_y = static_cast<POS_TYPE>(y);
 	
 	/* 視界内の敵を探索 */
-	VisualRarnge(&nx, &ny, &index_x, &index_y, static_cast<int>(visual_field));
+	CommonCharacter::VisualRarnge(&nx, &ny, &index_x, &index_y, static_cast<int>(visual_field), way);
 	for (int i = ny; i < index_y; i++)
 	{
 		if ((py + i) < 0 || (py + i) > height - 1) continue;
@@ -115,7 +113,7 @@ DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& h
 			if (dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::PLAYER))
 			{
 				dest_x = static_cast<POS_TYPE>(px + j), dest_y = static_cast<POS_TYPE>(py + i);
-				candidate = GetVector(dest_x, dest_y);
+				candidate = CommonCharacter::GetVector(x, y, dest_x, dest_y);
 				break;
 			}
 		}
@@ -126,7 +124,7 @@ DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& h
 	
 	/* 移動方向へ進めないとき, 目的地への最短経路を再計算 */
 	/* NOTE: ランダム移動時に進めないとき, 右>>下>左>上の探索順序となる. */
-	if (ToDirectData(dungeon, candidate, width) == MAPSET::DATA::WALL)
+	if (CommonCharacter::ToDirectData(x, y, dungeon, candidate, width) == MAPSET::DATA::WALL)
 	{
 		POS_TYPE min_dist = 9999.0f;
 		for (int i = -static_cast<int>(ENEMY_AI::VISUAL_SIZE::AROUND) / 2; i <= static_cast<int>(ENEMY_AI::VISUAL_SIZE::AROUND) / 2; i++)
@@ -146,17 +144,14 @@ DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& h
 				}
 			}
 		}
-		candidate = GetVector(dest_x, dest_y);
+		candidate = CommonCharacter::GetVector(x, y, dest_x, dest_y);
 	}
 
-	if (ToDirectData(dungeon, candidate, width) == MAPSET::DATA::PLAYER)
-	{
-		turn_cost = TURN_MODE::ATTACK;
-	}
+	if (CommonCharacter::ToDirectData(x, y, dungeon, candidate, width) == MAPSET::DATA::PLAYER) { turn_cost = TURN_MODE::ATTACK; }
 
 	return candidate;
 }
-/* A-STAR探索 */
+/* A-STAR探索(高コスト) */
 DIRECTION Enemy::A_STAR(const MAP_TYPE* dungeon, const int& width, const int& height)
 {
 	turn_cost = TURN_MODE::MOVE;
@@ -171,8 +166,7 @@ DIRECTION Enemy::A_STAR(const MAP_TYPE* dungeon, const int& width, const int& he
 	{
 		my_math::Vec<int> pos = route_pos.top();
 		route_pos.pop();
-		return GetVector(static_cast<POS_TYPE>(pos.x), static_cast<POS_TYPE>(pos.y));
+		return CommonCharacter::GetVector(x, y, static_cast<POS_TYPE>(pos.x), static_cast<POS_TYPE>(pos.y));
 	}
-
 	return DIRECTION::NONE;
 }

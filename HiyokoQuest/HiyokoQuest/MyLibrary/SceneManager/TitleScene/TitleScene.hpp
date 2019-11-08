@@ -49,8 +49,8 @@ class TitleScene : public BaseScene
 
 	/* デモ用マップ */
 	RougeLikeMap<unsigned char> demo_map;
-	inline static constexpr int demo_map_width = 60, demo_map_height = 40;
-	inline static constexpr int demo_map_room_num = 10;
+	inline static constexpr int demo_map_width = 100, demo_map_height = 60;
+	inline static constexpr int demo_map_room_num = 20;
 	int goal_x, goal_y;
 	/* デモ用キャラクタ */
 	/* NOTE: 処理は敵キャラだが, 見た目は主人公 */

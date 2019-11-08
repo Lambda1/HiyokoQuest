@@ -136,8 +136,7 @@ void TitleScene::IsSceneTrans()
 
 void TitleScene::DrawMenu()
 {
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	draw_manager.DrawInit();
 
 	/* ÉfÉÇçƒê∂ */
 	View3D();

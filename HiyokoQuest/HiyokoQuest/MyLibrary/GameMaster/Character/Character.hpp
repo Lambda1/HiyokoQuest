@@ -60,9 +60,6 @@ class Character
 		const float ANG_DEG = 45.0f;
 
 		void CalcMoveDirect(const POS_TYPE &val);
-		DIRECTION GetVector(const POS_TYPE& px, const POS_TYPE& py); /* (x,y)から見た(px,py)の方向取得 */
-		void VisualRarnge(int* x, int* y, int* index_x, int* index_y, const int& weight); /* 視界方向のインデックス取得 */
-		MAPSET::DATA ToDirectData(const MAP_TYPE* dungeon, const DIRECTION& direct, const int &width);
 
 	public:
 		Character();
