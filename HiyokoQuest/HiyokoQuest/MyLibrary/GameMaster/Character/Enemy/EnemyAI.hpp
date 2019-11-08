@@ -31,7 +31,7 @@ namespace ENEMY_AI
 		
 		int x, y;
 		int actual_cost;
-		int huristics_cost;
+		double huristics_cost;
 		STATUS status;
 		MapCell* parent;
 
@@ -41,7 +41,7 @@ namespace ENEMY_AI
 		parent(nullptr)
 		{
 		};
-		MapCell(const int &px, const int &py, const int& act_cost, const int& hur_cost, MapCell *cell) :
+		MapCell(const int &px, const int &py, const int& act_cost, const double& hur_cost, MapCell *cell) :
 			x(px), y(py),
 			actual_cost(act_cost), huristics_cost(hur_cost), status(STATUS::OPEN),
 			parent(cell)
@@ -50,7 +50,7 @@ namespace ENEMY_AI
 		~MapCell()
 		{
 		};
-		inline int GetScore()
+		inline double GetScoreASTAR()
 		{
 			return actual_cost + huristics_cost;
 		}

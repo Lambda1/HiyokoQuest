@@ -49,7 +49,7 @@ class TitleScene : public BaseScene
 
 	/* デモ用マップ */
 	RougeLikeMap<unsigned char> demo_map;
-	inline static constexpr int demo_map_width = 50, demo_map_height = 40;
+	inline static constexpr int demo_map_width = 60, demo_map_height = 40;
 	inline static constexpr int demo_map_room_num = 10;
 	int goal_x, goal_y;
 	/* デモ用キャラクタ */

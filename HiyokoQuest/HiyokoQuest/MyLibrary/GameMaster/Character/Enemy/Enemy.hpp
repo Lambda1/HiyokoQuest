@@ -9,7 +9,8 @@
 
 #include "..//..//..//Mathematics/MyVector/MyVector.hpp"
 
-#include <functional>
+#include "..//..//..//CommonProcessing/CommonCharacter.hpp"
+
 #include <list>
 #include <stack>
 
@@ -28,21 +29,20 @@ private:
 	/* Aスター用 */
 	bool need_research_route; /* ルート再検索フラグ */
 	std::stack<my_math::Vec<int>> route_pos;
-	std::function<int(const int &,const int &)> calc_cost;
 
 	/* 視界範囲 */
 	ENEMY_AI::VISUAL_SIZE visual_field;
 	
 	/* 標的位置 */
-	my_math::Vec<int> target_pos;
+	MAPSET::DATA target_id;
 
 	/* 更新処理 */
 	void JudgeDeath();
 		
 	/* AI処理 */
 	DIRECTION Standard(const MAP_TYPE* dungeon, const int& width, const int& height);
-	DIRECTION Berserk(const MAP_TYPE* dungeon, const int& width, const int& height);
-	DIRECTION A_STAR(const MAP_TYPE* dungeon, const int& width, const int& height);
+	DIRECTION Berserk (const MAP_TYPE* dungeon, const int& width, const int& height);
+	DIRECTION A_STAR  (const MAP_TYPE* dungeon, const int& width, const int& height);
 
 	public:
 		Enemy();
@@ -62,7 +62,8 @@ private:
 
 		/* セッタ */
 		inline void SetAI(const ENEMY_AI::MODE mode) { ai_mode = mode; }
-		inline void SetTargetPos(const int x, const int y) { target_pos.Set(x,y); }
+		inline void SetSearchRouteFlag(const bool& flag) { need_research_route = flag; }
+		inline void SetTargetID(const MAPSET::DATA& target_id) { this->target_id = target_id; }
 };
 
 #endif

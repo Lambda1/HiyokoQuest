@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MyLibrary\CommonProcessing\CommonCharacter.cpp" />
     <ClCompile Include="MyLibrary\DrawGame\DrawGame.cpp" />
     <ClCompile Include="MyLibrary\GameMaster\Character\Character.cpp" />
     <ClCompile Include="MyLibrary\GameMaster\Character\Enemy\Enemy.cpp" />
@@ -150,6 +151,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MyLibrary\CommonProcessing\CommonCharacter.hpp" />
     <ClInclude Include="MyLibrary\DrawGame\DrawGame.hpp" />
     <ClInclude Include="MyLibrary\DrawGame\MiniMapColor.hpp" />
     <ClInclude Include="MyLibrary\FPS_Controller\FPS_Controller.hpp" />

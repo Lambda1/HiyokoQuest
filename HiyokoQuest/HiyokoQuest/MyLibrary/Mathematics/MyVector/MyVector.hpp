@@ -14,6 +14,11 @@ namespace my_math
 				~Vec(){}
 				inline void Set(TYPE x,TYPE y){ this->x = x, this->y = y; }
 				inline void Set(TYPE x,TYPE y,TYPE z){ this->x = x, this->y = y, this->z = z; }
+				
+				bool operator==(const Vec<TYPE>& rhs)
+				{
+					return (this->x == rhs.x) && (this->y == rhs.y) && (this->z == rhs.z);
+				}
 		};
 }
 

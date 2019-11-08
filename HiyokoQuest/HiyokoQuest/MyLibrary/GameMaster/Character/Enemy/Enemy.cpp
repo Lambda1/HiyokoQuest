@@ -2,7 +2,7 @@
 
 Enemy::Enemy() :
 	ai_mode(ENEMY_AI::MODE::STANDARD), visual_field(ENEMY_AI::VISUAL_SIZE::NORMAL),
-	need_research_route(true)
+	need_research_route(true), target_id(MAPSET::DATA::PLAYER)
 {
 	chara_state = MAPSET::DATA::ENEMY;
 
@@ -20,7 +20,7 @@ Enemy::Enemy() :
 
 Enemy::Enemy(const float &up_rate,const MAPSET::DATA &id) :
 	ai_mode(ENEMY_AI::MODE::BERSERK), visual_field(ENEMY_AI::VISUAL_SIZE::SMALL),
-	need_research_route(true)
+	need_research_route(true), target_id(MAPSET::DATA::PLAYER)
 {
 	chara_state = MAPSET::DATA::ENEMY;
 	enemy_type = id;
@@ -73,7 +73,6 @@ DIRECTION Enemy::AI_Mode(const MAP_TYPE* dungeon, const int& width, const int& h
 	default:
 		break;
 	}
-
 	return way;
 }
 /* private */
@@ -164,82 +163,15 @@ DIRECTION Enemy::A_STAR(const MAP_TYPE* dungeon, const int& width, const int& he
 
 	if (need_research_route)
 	{
-		std::list<ENEMY_AI::MapCell*> node_list;
-		calc_cost = [&](const int &px,const int &py)
-		{
-			int tmp_x = (target_pos.x - px);
-			int tmp_y = (target_pos.y - py);
-			return tmp_x > tmp_y ? tmp_x : tmp_y;
-		};
 		need_research_route = false;
-		const int size = width * height;
-		bool* search_map = new bool[size];
-		for (int i = 0; i < size; i++) search_map[i] = false;
-
-		int now_x = static_cast<int>(x), now_y = static_cast<int>(y);
-		const int ran_x = 3, ran_y = 3;
-		int counter = 0;
-		node_list.push_back(new ENEMY_AI::MapCell(now_x, now_y, counter++, calc_cost(now_x, now_y), nullptr));
-		auto attract_itr = node_list.begin();
-		
-		while (now_x != target_pos.x || now_y != target_pos.y)
-		{
-			for (int i = -ran_y / 2; i <= ran_y / 2; i++)
-			{
-				if ((i + now_y) < 0 || (i + now_y) > height) continue;
-				for (int j = -ran_x / 2; j <= ran_x / 2; j++)
-				{
-					if ((j + now_x) < 0 || (j + now_y) > width) continue;
-					if (search_map[(i + now_y) * width + (j + now_x)]) continue;
-					if (dungeon[(i + now_y) * width + (j + now_x)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROAD) || dungeon[(i + now_y) * width + (j + now_x)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROOM))
-					{
-						search_map[(i + now_y) * width + (j + now_x)] = true;
-						node_list.push_back(new ENEMY_AI::MapCell(now_x+j, now_y+i, counter, calc_cost(now_x, now_y), *attract_itr));
-					}
-				}
-			}
-
-			int score_min = 9999;
-			(*attract_itr)->status = ENEMY_AI::MapCell::STATUS::CLOSE;
-			for (auto itr = node_list.begin(); itr != node_list.end(); ++itr)
-			{
-				if ((*itr)->status == ENEMY_AI::MapCell::STATUS::CLOSE) continue;
-				if ((*itr)->GetScore() < score_min) {
-					attract_itr = itr;
-					score_min = (*itr)->GetScore();
-				}
-			}
-			now_x = (*attract_itr)->x, now_y = (*attract_itr)->y;
-
-			counter++;
-		}
-
-		for (ENEMY_AI::MapCell* cell = *attract_itr;cell != nullptr;cell = cell->parent)
-		{
-			route_pos.push(my_math::Vec<int>(cell->x, cell->y, 0));
-		}
-
-		delete[] search_map;
-		for (auto itr = node_list.begin(); itr != node_list.end();)
-		{
-			if (*itr)
-			{
-				delete *itr;
-				itr = node_list.erase(itr);
-				continue;
-			}
-			++itr;
-		}
+		my_math::Vec<int> target_pos = CommonCharacter::SearchTargetCoord(dungeon, width, height, target_id);
+		route_pos = CommonCharacter::A_STAR(dungeon,width,height,static_cast<int>(x),static_cast<int>(y),target_pos);
 	}
-
-	if (!route_pos.empty())
+	if(!route_pos.empty())
 	{
 		my_math::Vec<int> pos = route_pos.top();
 		route_pos.pop();
 		return GetVector(static_cast<POS_TYPE>(pos.x), static_cast<POS_TYPE>(pos.y));
-	}else
-	{
-		need_research_route = true;
 	}
 
 	return DIRECTION::NONE;

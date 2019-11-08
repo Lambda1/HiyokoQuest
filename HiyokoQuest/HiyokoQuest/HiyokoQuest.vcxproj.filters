@@ -133,6 +133,12 @@
     <Filter Include="ヘッダー ファイル\GameMaster\Character\Weapon">
       <UniqueIdentifier>{185c8e81-957e-4e69-9bce-4f1ee4d5d67c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\CommonProcessing">
+      <UniqueIdentifier>{a2755703-9243-4d01-bb24-48d6b6a6398c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\CommonProcessing">
+      <UniqueIdentifier>{416ae1af-7971-48c3-8d41-7b5659adf7eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -188,6 +194,9 @@
     </ClCompile>
     <ClCompile Include="MyLibrary\GameMaster\Character\Weapon\Weapon.cpp">
       <Filter>ソース ファイル\GameMaster\Character\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="MyLibrary\CommonProcessing\CommonCharacter.cpp">
+      <Filter>ソース ファイル\CommonProcessing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -283,6 +292,9 @@
     </ClInclude>
     <ClInclude Include="MyLibrary\GameMaster\Character\Enemy\EnemyAI.hpp">
       <Filter>ヘッダー ファイル\GameMaster\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="MyLibrary\CommonProcessing\CommonCharacter.hpp">
+      <Filter>ヘッダー ファイル\CommonProcessing</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

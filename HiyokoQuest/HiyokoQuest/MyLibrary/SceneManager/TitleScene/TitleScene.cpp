@@ -14,13 +14,15 @@ TitleScene::TitleScene() :
 	demo_map.Init(demo_map_width, demo_map_height, demo_map_room_num);
 	demo_map.SetBaseInfo(static_cast<MAP_TYPE>(MAPSET::DATA::NONE), static_cast<MAP_TYPE>(MAPSET::DATA::ROOM), static_cast<MAP_TYPE>(MAPSET::DATA::ROAD), static_cast<MAP_TYPE>(MAPSET::DATA::WALL));
 	demo_map.Generate();
+	demo_map.Update();
 	demo_map.GetRoomPos(&goal_x, &goal_y);
 	/* デモキャラ初期化 */
 	int enemy_pos_x, enemy_pos_y;
 	demo_map.GetRoomPos(&enemy_pos_x, &enemy_pos_y);
+	demo_map.SetField(goal_y,goal_x,static_cast<MAP_TYPE>(MAPSET::DATA::PLAYER));
 	demo_enemy.InitPos(static_cast<POS_TYPE>(enemy_pos_x), static_cast<POS_TYPE>(enemy_pos_y));
 	demo_enemy.SetAI(ENEMY_AI::MODE::A_STAR);
-	demo_enemy.SetTargetPos(goal_x,goal_y);
+	demo_enemy.SetTargetID(MAPSET::DATA::PLAYER);
 
 	draw_manager.Init();
 }
@@ -78,7 +80,7 @@ void TitleScene::StartMenu()
 	/* ウィンドウ表示 */
 	glBegin(GL_QUADS);
 	{
-		glColor4f(0.8f, 0.8f, 0.8f, 0.8f);
+		glColor4f(0.2f, 0.6f, 0.8f, 0.8f);
 		glVertex3f(menu_locate_x * -2.0f, menu_locate_y * 0.5f, 0.1f);
 		glVertex3f(menu_locate_x *  2.5f, menu_locate_y * 0.5f, 0.1f);
 		glVertex3f(menu_locate_x *  2.5f, menu_locate_y * 2.8f, 0.1f);
@@ -154,7 +156,7 @@ void TitleScene::DrawMenu()
 /* デモ再生 */
 void TitleScene::PlayDemo()
 {
-	draw_manager.CameraPos<GLfloat>(demo_enemy.GetPosPX(), 10.0f, demo_enemy.GetPosPY() + 10.0f, demo_enemy.GetPosPX(), 0.0f, demo_enemy.GetPosPY());
+	draw_manager.CameraPos<GLfloat>(demo_enemy.GetPosPX(), 15.0f, demo_enemy.GetPosPY() + 10.0f, demo_enemy.GetPosPX(), 0.0f, demo_enemy.GetPosPY());
 	draw_manager.DrawMap(demo_map.GetDungeon(), demo_map_width, demo_map_height, static_cast<int>(demo_enemy.GetPosX()), static_cast<int>(demo_enemy.GetPosY()));
 	if (demo_enemy.GetPosX() == demo_enemy.GetPosPX() && demo_enemy.GetPosY() == demo_enemy.GetPosPY())
 	{
@@ -162,13 +164,14 @@ void TitleScene::PlayDemo()
 		CharacterMove(direct);
 	}
 	else { demo_enemy.MoveAnimation(); }
-	draw_manager.DrawCharacter(&demo_enemy,demo_map_width,demo_map_height, static_cast<int>(demo_enemy.GetPosX()), static_cast<int>(demo_enemy.GetPosY()));
-
 	if (demo_enemy.GetDirect() == DIRECTION::NONE)
 	{
+		demo_map.SetField(goal_y,goal_x,static_cast<MAP_TYPE>(MAPSET::DATA::ROOM));
 		demo_map.GetRoomPos(&goal_x, &goal_y);
-		demo_enemy.SetTargetPos(goal_x, goal_y);
+		demo_map.SetField(goal_y, goal_x, static_cast<MAP_TYPE>(MAPSET::DATA::PLAYER));
+		demo_enemy.SetSearchRouteFlag(true);
 	}
+	draw_manager.DrawCharacter(&demo_enemy, demo_map_width, demo_map_height, static_cast<int>(demo_enemy.GetPosX()), static_cast<int>(demo_enemy.GetPosY()));
 }
 /* デモキャラ移動 */
 /* NOTE: GameMasterクラスより, 処理効率を向上させた(デモ特化). */
