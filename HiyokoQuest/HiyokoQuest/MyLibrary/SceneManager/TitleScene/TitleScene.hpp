@@ -49,8 +49,8 @@ class TitleScene : public BaseScene
 
 	/* デモ用マップ */
 	RougeLikeMap<unsigned char> demo_map;
-	inline static constexpr int demo_map_width = 100, demo_map_height = 60;
-	inline static constexpr int demo_map_room_num = 20;
+	inline static constexpr int demo_map_width = 60, demo_map_height = 50;
+	inline static constexpr int demo_map_room_num = 10;
 	int goal_x, goal_y;
 	/* デモ用キャラクタ */
 	/* NOTE: 処理は敵キャラだが, 見た目は主人公 */
@@ -63,6 +63,42 @@ class TitleScene : public BaseScene
 	void View3D();       /* 透視投影モード */
 	void StartMenu();    /* スタートメニュー表示 */
 	void IsSceneTrans(); /* シーン遷移判定 */
+
+	inline void DrawMenuWindow()
+	{
+		glBegin(GL_QUADS);
+		{
+			glColor4f(0.2f, 0.6f, 0.8f, 0.8f);
+			glVertex3f(menu_locate_x * -2.0f, menu_locate_y * 0.5f, 0.1f);
+			glVertex3f(menu_locate_x * 2.5f, menu_locate_y * 0.5f, 0.1f);
+			glVertex3f(menu_locate_x * 2.5f, menu_locate_y * 2.8f, 0.1f);
+			glVertex3f(menu_locate_x * -2.0f, menu_locate_y * 2.8f, 0.1f);
+		}
+		glEnd();
+	}
+	inline void DrawMenuString()
+	{
+		opengl_string.DrawStrings("START", menu_locate_x, menu_locate_y - menu_rate * static_cast<int>(MENU::START), 0, PS::COLOR::BLACK);
+		opengl_string.DrawStrings("AI-MODE", menu_locate_x, menu_locate_y - menu_rate * static_cast<int>(MENU::AI), 0, PS::COLOR::SILVER);
+		opengl_string.DrawStrings("NETWORK", menu_locate_x, menu_locate_y - menu_rate * static_cast<int>(MENU::NETWORK), 0, PS::COLOR::SILVER);
+		opengl_string.DrawStrings("QUIT", menu_locate_x, menu_locate_y - menu_rate * static_cast<int>(MENU::QUIT), 0, PS::COLOR::BLACK);
+	}
+	inline void DrawCursor()
+	{
+		glPushMatrix();
+		{
+			glColor3f(1.0f, 0.0f, 0.0f);
+			glTranslatef(menu_locate_x * bias_rate, (menu_locate_y + bias_y) - cursor_location * bias_size, 0);
+			glBegin(GL_TRIANGLES);
+			{
+				glVertex2f(tri_size, tri_size);
+				glVertex2f(tri_size, -tri_size);
+				glVertex2f(tri_size * 2, (tri_size - tri_size) / 2);
+			}
+			glEnd();
+		}
+		glPopMatrix();
+	}
 
 	/* デモ用処理 */
 	void PlayDemo(); /* デモ再生 */

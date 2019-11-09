@@ -4,7 +4,7 @@
 
 TitleScene::TitleScene() :
 	key_pos(BUTTON::NONE),
-	demo_map(static_cast<int>(std::time(nullptr))),
+	demo_map(10),//static_cast<int>(std::time(nullptr))),
 	demo_enemy(1.0f, MAPSET::DATA::PLAYER),
 	goal_x(0), goal_y(0)
 {
@@ -78,40 +78,17 @@ void TitleScene::View3D()
 void TitleScene::StartMenu()
 {
 	/* ウィンドウ表示 */
-	glBegin(GL_QUADS);
-	{
-		glColor4f(0.2f, 0.6f, 0.8f, 0.8f);
-		glVertex3f(menu_locate_x * -2.0f, menu_locate_y * 0.5f, 0.1f);
-		glVertex3f(menu_locate_x *  2.5f, menu_locate_y * 0.5f, 0.1f);
-		glVertex3f(menu_locate_x *  2.5f, menu_locate_y * 2.8f, 0.1f);
-		glVertex3f(menu_locate_x * -2.0f, menu_locate_y * 2.8f, 0.1f);
-	}
-	glEnd();
+	DrawMenuWindow();
 
 	/* 文字メニュー表示 */
-	opengl_string.DrawStrings("START",   menu_locate_x, menu_locate_y - menu_rate * static_cast<int>(MENU::START),   0, PS::COLOR::BLACK);
-	opengl_string.DrawStrings("AI-MODE", menu_locate_x, menu_locate_y - menu_rate * static_cast<int>(MENU::AI),      0, PS::COLOR::SILVER);
-	opengl_string.DrawStrings("NETWORK", menu_locate_x, menu_locate_y - menu_rate * static_cast<int>(MENU::NETWORK), 0, PS::COLOR::SILVER);
-	opengl_string.DrawStrings("QUIT",    menu_locate_x, menu_locate_y - menu_rate * static_cast<int>(MENU::QUIT),    0, PS::COLOR::BLACK);
+	DrawMenuString();
 
 	/* キー入力によるカーソル位置算出 */
 	if (key_pos == BUTTON::DOWN) { cursor_location = (cursor_location + 1) % static_cast<int>(MENU::SIZE); }
 	else if (key_pos == BUTTON::UP) { cursor_location = (cursor_location + static_cast<int>(MENU::SIZE) - 1) % static_cast<int>(MENU::SIZE); }
 
 	/* カーソル表示 */
-	glPushMatrix();
-	{
-		glColor3f(1.0f, 0.0f, 0.0f);
-		glTranslatef(menu_locate_x*bias_rate, (menu_locate_y+bias_y)-cursor_location*bias_size, 0);
-		glBegin(GL_TRIANGLES);
-		{
-			glVertex2f(tri_size, tri_size);
-			glVertex2f(tri_size, -tri_size);
-			glVertex2f(tri_size * 2, (tri_size - tri_size) / 2);
-		}
-		glEnd();
-	}
-	glPopMatrix();
+	DrawCursor();
 }
 
 void TitleScene::IsSceneTrans()
@@ -156,7 +133,7 @@ void TitleScene::DrawMenu()
 void TitleScene::PlayDemo()
 {
 	draw_manager.CameraPos<GLfloat>(demo_enemy.GetPosPX(), 15.0f, demo_enemy.GetPosPY() + 10.0f, demo_enemy.GetPosPX(), 0.0f, demo_enemy.GetPosPY());
-	draw_manager.DrawMap(demo_map.GetDungeon(), demo_map_width, demo_map_height, static_cast<int>(demo_enemy.GetPosX()), static_cast<int>(demo_enemy.GetPosY()));
+	draw_manager.DrawMap(demo_map.GetALL(), demo_map_width, demo_map_height, static_cast<int>(demo_enemy.GetPosX()), static_cast<int>(demo_enemy.GetPosY()));
 	if (demo_enemy.GetPosX() == demo_enemy.GetPosPX() && demo_enemy.GetPosY() == demo_enemy.GetPosPY())
 	{
 		DIRECTION direct = demo_enemy.AI_Mode(demo_map.GetDungeon(), demo_map_width, demo_map_height);
