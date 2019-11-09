@@ -6,6 +6,34 @@ CommonCharacter::CommonCharacter()
 CommonCharacter::~CommonCharacter()
 {
 }
+
+POS_TYPE CommonCharacter::TransAngle(const DIRECTION& way)
+{
+	POS_TYPE ang = 0.0f;
+	switch (way)
+	{
+	case DIRECTION::SOUTH:
+		ang = DIRECT_TABLE::ANG_DEG_8 * 0.0f; break;
+	case DIRECTION::SOUTH_EAST:
+		ang = DIRECT_TABLE::ANG_DEG_8 * 1.0f; break;
+	case DIRECTION::EAST:
+		ang = DIRECT_TABLE::ANG_DEG_8 * 2.0f; break;
+	case DIRECTION::NORTH_EAST:
+		ang = DIRECT_TABLE::ANG_DEG_8 * 3.0f; break;
+	case DIRECTION::NORTH:
+		ang = DIRECT_TABLE::ANG_DEG_8 * 4.0f; break;
+	case DIRECTION::NORTH_WEST:
+		ang = DIRECT_TABLE::ANG_DEG_8 * 5.0f; break;
+	case DIRECTION::WEST:
+		ang = DIRECT_TABLE::ANG_DEG_8 * 6.0f; break;
+	case DIRECTION::SOUTH_WEST:
+		ang = DIRECT_TABLE::ANG_DEG_8 * 7.0f; break;
+	default:
+		break;
+	}
+	return ang;
+}
+
 MAPSET::DATA CommonCharacter::ToDirectData(POS_TYPE px, POS_TYPE py, const MAP_TYPE* dungeon, const DIRECTION& direct, const int& width)
 {
 	switch (direct)
@@ -133,6 +161,11 @@ std::stack<my_math::Vec<int>> CommonCharacter::A_STAR(const MAP_TYPE* dungeon, c
 		now_x = (attract_p)->x, now_y = (attract_p)->y;
 		counter++;
 	}
+
+	/* íTçıë≈ÇøêÿÇËÇÃèÍçá, åªéûì_Ç≈ÇÃç≈ìKâÇíTçı */
+	if (counter >= CENSORING_COST) { attract_p = SearchMinHuristicCost(node_list); }
+
+	/* stackÇ…íTçıåoòHÇpush */
 	std::stack<my_math::Vec<int>> route_pos;
 	for (ENEMY_AI::MapCell* cell = attract_p; cell->parent != nullptr; cell = cell->parent) { route_pos.push(my_math::Vec<int>(cell->x, cell->y, 0)); }
 

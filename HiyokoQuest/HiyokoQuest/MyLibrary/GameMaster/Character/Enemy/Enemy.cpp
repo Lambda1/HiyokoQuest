@@ -19,7 +19,7 @@ Enemy::Enemy() :
 }
 
 Enemy::Enemy(const float &up_rate,const MAPSET::DATA &id) :
-	ai_mode(ENEMY_AI::MODE::BERSERK), visual_field(ENEMY_AI::VISUAL_SIZE::SMALL),
+	ai_mode(ENEMY_AI::MODE::A_STAR), visual_field(ENEMY_AI::VISUAL_SIZE::SMALL),
 	need_research_route(true), target_id(MAPSET::DATA::PLAYER)
 {
 	chara_state = MAPSET::DATA::ENEMY;
@@ -62,18 +62,30 @@ void Enemy::Update()
 /* NOTE: Œø—¦‰»‚Ì‚½‚ß,switch•¶ */
 DIRECTION Enemy::AI_Mode(const MAP_TYPE* dungeon, const int& width, const int& height)
 {
+	DIRECTION candidate = DIRECTION::NONE;
 	switch (ai_mode)
 	{
 	case ENEMY_AI::MODE::STANDARD:
-		way = Standard(dungeon, width, height); break;
+		candidate = Standard(dungeon, width, height); break;
 	case ENEMY_AI::MODE::BERSERK:
-		way = Berserk(dungeon, width, height); break;
+		candidate = Berserk(dungeon, width, height); break;
 	case ENEMY_AI::MODE::A_STAR:
-		way = A_STAR(dungeon, width, height); break;
+		candidate = A_STAR(dungeon, width, height); break;
 	default:
 		break;
 	}
-	return way;
+	if (candidate != DIRECTION::NONE) way = candidate;
+
+	/* is•ûŒü‚Étarget‚ª‚¢‚é, ˆÚ“®‚¹‚¸‚ÉUŒ‚‚·‚é. */
+	//if (isTargetToDirect(dungeon, width, way)) { turn_cost = TURN_MODE::ATTACK; }
+	DIRECTION tmp = CommonCharacter::isNeighborTarget(dungeon,width,height,my_math::Vec<int>((int)x,(int)y,0),target_id);
+	if (tmp != DIRECTION::NONE)
+	{
+		turn_cost = TURN_MODE::ATTACK;
+		way = tmp;
+	}
+	std::cout << (int)tmp << std::endl;
+	return candidate;
 }
 
 /* private */
@@ -89,21 +101,35 @@ void Enemy::JudgeDeath()
 DIRECTION Enemy::Standard(const MAP_TYPE* dungeon, const int& width, const int& height)
 {
 	turn_cost = TURN_MODE::MOVE;
-	return DIRECTION::NONE;
+
+	my_math::Vec<int> pos(static_cast<int>(x), static_cast<int>(y), 0);
+	my_math::Vec<int> start, end;
+
+	/* ‹ŠE“à‚Ìtarget‚ğ’Tõ */
+	CommonCharacter::VisualRarnge(&start.x, &start.y, &end.x, &end.y, static_cast<int>(visual_field), way);
+	my_math::Vec<int> dest = CommonCharacter::SearchTargetCoord(dungeon, start, end, pos, width, height, target_id);
+	DIRECTION candidate = CommonCharacter::GetVector<int>(pos.x, pos.y, dest.x, dest.y);
+
+	/* ‹ŠE“à‚Étarget‚ª‚¢‚È‚¢‚Æ‚«, ‰Eè’Tõ */
+	if (candidate == DIRECTION::NONE)
+	{
+
+	}
+
+	return candidate;
 }
 /* ƒo[ƒT[ƒJAI */
 DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& height)
 {
 	turn_cost = TURN_MODE::MOVE;
 	
-	DIRECTION candidate = DIRECTION::NONE;
 	my_math::Vec<int> pos(static_cast<int>(x), static_cast<int>(y), 0);
 	my_math::Vec<int> start,end;
 	
 	/* ‹ŠE“à‚Ì“G‚ğ’Tõ */
 	CommonCharacter::VisualRarnge(&start.x, &start.y, &end.x, &end.y, static_cast<int>(visual_field), way);
 	my_math::Vec<int> dest = CommonCharacter::SearchTargetCoord(dungeon,start,end,pos, width, height, target_id);
-	candidate = candidate = CommonCharacter::GetVector<int>(pos.x, pos.y, dest.x, dest.y);
+	DIRECTION candidate = CommonCharacter::GetVector<int>(pos.x, pos.y, dest.x, dest.y);
 
 	/* ‹ŠE“à‚É“G‚ª‚¢‚È‚¢‚Æ‚«, ƒ‰ƒ“ƒ_ƒ€ˆÚ“® */
 	if (candidate == DIRECTION::NONE) { candidate = static_cast<DIRECTION>(1 << (rand() % 4)); }
@@ -133,9 +159,6 @@ DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& h
 		candidate = CommonCharacter::GetVector<int>(pos.x, pos.y, dest.x, dest.y);
 	}
 
-	/* is•ûŒü‚Étarget‚ª‚¢‚é, ˆÚ“®‚¹‚¸‚ÉUŒ‚‚·‚é. */
-	if (CommonCharacter::ToDirectData(x, y, dungeon, candidate, width) == target_id) { turn_cost = TURN_MODE::ATTACK; }
-
 	return candidate;
 }
 /* A-STAR’Tõ(‚ƒRƒXƒg) */
@@ -143,17 +166,30 @@ DIRECTION Enemy::A_STAR(const MAP_TYPE* dungeon, const int& width, const int& he
 {
 	turn_cost = TURN_MODE::MOVE;
 
+	/* Œo˜H‚ÌÄŒvZ */
+	if (route_pos.empty()) need_research_route = true;
+	/* Œo˜HŒvZ */
 	if (need_research_route)
 	{
 		need_research_route = false;
 		my_math::Vec<int> target_pos = CommonCharacter::SearchTargetCoord(dungeon, width, height, target_id);
 		route_pos = CommonCharacter::A_STAR(dungeon,width,height,static_cast<int>(x),static_cast<int>(y),target_pos);
 	}
+	/* Œo˜H‚É‰ˆ‚Á‚Äi‚Ş */
 	if(!route_pos.empty())
 	{
 		my_math::Vec<int> pos = route_pos.top();
-		route_pos.pop();
-		return CommonCharacter::GetVector(x, y, static_cast<POS_TYPE>(pos.x), static_cast<POS_TYPE>(pos.y));
+		DIRECTION candidate = CommonCharacter::GetVector(x, y, static_cast<POS_TYPE>(pos.x), static_cast<POS_TYPE>(pos.y));
+		/* ˆÚ“®‰Â”\, stack‚ğpop */
+		if (CommonCharacter::ToDirectData(x, y, dungeon, candidate, width) == MAPSET::DATA::ROOM ||
+			CommonCharacter::ToDirectData(x, y, dungeon, candidate, width) == MAPSET::DATA::ROAD)
+		{
+			route_pos.pop();
+			return candidate;
+		}
+		/* ˆÚ“®•s‰Â”\, Œo˜H‚ÌÄŒvZ */
+		need_research_route = true;
 	}
+
 	return DIRECTION::NONE;
 }

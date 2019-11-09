@@ -9,6 +9,8 @@
 #include "..//RougeLikeMap/MapSet.hpp"
 #include "./Direction.hpp"
 
+#include "..//..//CommonProcessing/CommonCharacter.hpp"
+
 #include "./Weapon/Weapon.hpp"
 
 /* 1ターン内の処理ステップ */
@@ -106,32 +108,7 @@ class Character
 		inline MAPSET::DATA GetEnemyID() { return enemy_type; }
 		inline int GetTransEnemyID() { return (static_cast<int>(enemy_type)-static_cast<int>(MAPSET::DATA::ENEMY1)); }  /* バイアス変換した識別ID */
 		/* 方向を角度(度)に変換 */
-		inline float GetAngle()
-		{
-			float ang = 0.0f;
-			switch (way)
-			{
-			case DIRECTION::SOUTH:
-				ang = ANG_DEG * 0.0f; break;
-			case DIRECTION::SOUTH_EAST:
-				ang = ANG_DEG * 1.0f; break;
-			case DIRECTION::EAST:
-				ang = ANG_DEG * 2.0f; break;
-			case DIRECTION::NORTH_EAST:
-				ang = ANG_DEG * 3.0f; break;
-			case DIRECTION::NORTH:
-				ang = ANG_DEG * 4.0f; break;
-			case DIRECTION::NORTH_WEST:
-				ang = ANG_DEG * 5.0f; break;
-			case DIRECTION::WEST:
-				ang = ANG_DEG * 6.0f; break;
-			case DIRECTION::SOUTH_WEST:
-				ang = ANG_DEG * 7.0f; break;
-			default:
-				break;
-			}
-			return ang;
-		}
+		inline POS_TYPE GetAngle() { return CommonCharacter::TransAngle(way); }
 
 		/* セッタ */
 		inline void SetDirection(const DIRECTION direct) { way = direct; }

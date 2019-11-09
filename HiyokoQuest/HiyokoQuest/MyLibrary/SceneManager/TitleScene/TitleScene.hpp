@@ -51,7 +51,7 @@ class TitleScene : public BaseScene
 	RougeLikeMap<unsigned char> demo_map;
 	inline static constexpr int demo_map_width = 60, demo_map_height = 50;
 	inline static constexpr int demo_map_room_num = 10;
-	int goal_x, goal_y;
+	my_math::Vec<int> goal;
 	/* デモ用キャラクタ */
 	/* NOTE: 処理は敵キャラだが, 見た目は主人公 */
 	Enemy demo_enemy;

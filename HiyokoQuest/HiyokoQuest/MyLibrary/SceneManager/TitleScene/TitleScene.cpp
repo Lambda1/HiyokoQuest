@@ -5,8 +5,7 @@
 TitleScene::TitleScene() :
 	key_pos(BUTTON::NONE),
 	demo_map(static_cast<int>(std::time(nullptr))),
-	demo_enemy(1.0f, MAPSET::DATA::PLAYER),
-	goal_x(0), goal_y(0)
+	demo_enemy(1.0f, MAPSET::DATA::PLAYER)
 {
 	scene_number = SCENE::TITLE;
 
@@ -15,11 +14,11 @@ TitleScene::TitleScene() :
 	demo_map.SetBaseInfo(static_cast<MAP_TYPE>(MAPSET::DATA::NONE), static_cast<MAP_TYPE>(MAPSET::DATA::ROOM), static_cast<MAP_TYPE>(MAPSET::DATA::ROAD), static_cast<MAP_TYPE>(MAPSET::DATA::WALL));
 	demo_map.Generate();
 	demo_map.Update();
-	demo_map.GetRoomPos(&goal_x, &goal_y);
+	demo_map.GetRoomPos(&goal.x, &goal.y);
 	/* ÉfÉÇÉLÉÉÉâèâä˙âª */
 	int enemy_pos_x, enemy_pos_y;
 	demo_map.GetRoomPos(&enemy_pos_x, &enemy_pos_y);
-	demo_map.SetField(goal_y,goal_x,static_cast<MAP_TYPE>(MAPSET::DATA::PLAYER));
+	demo_map.SetField(goal.y,goal.x,static_cast<MAP_TYPE>(MAPSET::DATA::PLAYER));
 	demo_enemy.InitPos(static_cast<POS_TYPE>(enemy_pos_x), static_cast<POS_TYPE>(enemy_pos_y));
 	demo_enemy.SetAI(ENEMY_AI::MODE::A_STAR);
 	demo_enemy.SetTargetID(MAPSET::DATA::PLAYER);
@@ -133,7 +132,7 @@ void TitleScene::DrawMenu()
 void TitleScene::PlayDemo()
 {
 	draw_manager.CameraPos<GLfloat>(demo_enemy.GetPosPX(), 15.0f, demo_enemy.GetPosPY() + 10.0f, demo_enemy.GetPosPX(), 0.0f, demo_enemy.GetPosPY());
-	draw_manager.DrawMap(demo_map.GetALL(), demo_map_width, demo_map_height, static_cast<int>(demo_enemy.GetPosX()), static_cast<int>(demo_enemy.GetPosY()));
+	draw_manager.DrawMap(demo_map.GetDungeon(), demo_map_width, demo_map_height, static_cast<int>(demo_enemy.GetPosX()), static_cast<int>(demo_enemy.GetPosY()));
 	if (demo_enemy.GetPosX() == demo_enemy.GetPosPX() && demo_enemy.GetPosY() == demo_enemy.GetPosPY())
 	{
 		DIRECTION direct = demo_enemy.AI_Mode(demo_map.GetDungeon(), demo_map_width, demo_map_height);
@@ -142,10 +141,11 @@ void TitleScene::PlayDemo()
 	else { demo_enemy.MoveAnimation(); }
 	if (demo_enemy.GetDirect() == DIRECTION::NONE)
 	{
-		demo_map.SetField(goal_y,goal_x,static_cast<MAP_TYPE>(MAPSET::DATA::ROOM));
-		demo_map.GetRoomPos(&goal_x, &goal_y);
-		demo_map.SetField(goal_y, goal_x, static_cast<MAP_TYPE>(MAPSET::DATA::PLAYER));
+		demo_map.SetField(goal.y,goal.x,static_cast<MAP_TYPE>(MAPSET::DATA::ROOM));
+		demo_map.GetRoomPos(&goal.x, &goal.y);
+		demo_map.SetField(goal.y, goal.x, static_cast<MAP_TYPE>(MAPSET::DATA::PLAYER));
 		demo_enemy.SetSearchRouteFlag(true);
+		std::cout << std::endl << goal.x << " " << goal.y << std::endl;
 	}
 	draw_manager.DrawCharacter(&demo_enemy, demo_map_width, demo_map_height, static_cast<int>(demo_enemy.GetPosX()), static_cast<int>(demo_enemy.GetPosY()));
 }

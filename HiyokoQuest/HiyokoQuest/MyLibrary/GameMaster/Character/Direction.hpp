@@ -44,14 +44,15 @@ namespace DIRECT_TABLE
 	};
 
 	/* Šp“x•ª‰ð”\ */
-	inline static constexpr POS_TYPE ANG_DEG  = 360.0f / 16.0f; /* 16•ªŠ„ */
-	
+	inline static constexpr POS_TYPE ANG_DEG   = 360.0f / 16.0f; /* 16•ªŠ„ */
+	inline static constexpr POS_TYPE ANG_DEG_8 = 360.0f /  8.0f; /* 8•ªŠ„ */
+
 	/* Šp“xƒe[ƒuƒ‹ */
 	inline static const DIRECTION_TABLE manager_direct[] =
 	{
 		/* ŽÀŠp“x => ƒQ[ƒ€Šp“x */
-		/* [-22.5, 0.0) => [22.5, 0.0) */
-		{-ANG_DEG * 1.0f,  ANG_DEG * 0.0f, DIRECTION::EAST},
+		/* [-22.5, 0.0) => [0.0, 22.5) */
+		{ ANG_DEG * 0.0f,  ANG_DEG * 1.0f, DIRECTION::EAST},
 		/* [0.0, 22.5)  => [-22.5, 0.0) */
 		{-ANG_DEG * 1.0f,  ANG_DEG * 0.0f, DIRECTION::EAST},
 		
@@ -68,6 +69,8 @@ namespace DIRECT_TABLE
 		{-ANG_DEG * 8.0f, -ANG_DEG * 7.0f, DIRECTION::WEST},
 		/* [-180.0, -157.5) => [157.5, 180.0) */
 		{ ANG_DEG * 7.0f,  ANG_DEG * 8.0f, DIRECTION::WEST},
+		/* [-180.0, 180.0) => [180.0, 180.0) */
+		{ ANG_DEG * 8.0f,  ANG_DEG * 8.001f, DIRECTION::WEST},
 
 		/* [-157.5, -112.5) => [112.5, 157.5) */
 		{ ANG_DEG * 5.0f,  ANG_DEG * 7.0f, DIRECTION::SOUTH_WEST},

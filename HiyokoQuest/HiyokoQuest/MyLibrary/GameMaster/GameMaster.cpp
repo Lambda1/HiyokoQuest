@@ -185,7 +185,7 @@ void GameMaster::ItemTurn()
 void GameMaster::EnemyTurn()
 {
 	bool is_next_turn = true;
-
+	int index = 0;
 	/* iterator‚Ì”j‰ó‚É’ˆÓ‚·‚é‚±‚Æ */
 	for (auto itr = enemy_list.begin(); itr != enemy_list.end();)
 	{
