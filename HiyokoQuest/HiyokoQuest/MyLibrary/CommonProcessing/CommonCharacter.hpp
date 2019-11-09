@@ -48,6 +48,7 @@ public:
 	static my_math::Vec<int> SearchTargetCoord(const MAP_TYPE* dungeon, const int& width, const int& height, const MAPSET::DATA& target);
 	
 	/* A-STAR探索(高コスト) */
+	/* NOTE: PLAYERの自動化にも使用するため,共通処理とした. */
 	static std::stack<my_math::Vec<int>> A_STAR(const MAP_TYPE *dungeon, const int &width,const int &height,const int &px,const int &py, const my_math::Vec<int> &target_pos);
 };
 

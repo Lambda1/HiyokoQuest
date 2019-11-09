@@ -132,7 +132,7 @@ std::stack<my_math::Vec<int>> CommonCharacter::A_STAR(const MAP_TYPE* dungeon, c
 		counter++;
 	}
 	std::stack<my_math::Vec<int>> route_pos;
-	for (ENEMY_AI::MapCell* cell = attract_p; cell != nullptr; cell = cell->parent) { route_pos.push(my_math::Vec<int>(cell->x, cell->y, 0)); }
+	for (ENEMY_AI::MapCell* cell = attract_p; cell->parent != nullptr; cell = cell->parent) { route_pos.push(my_math::Vec<int>(cell->x, cell->y, 0)); }
 
 	for (auto itr = node_list.begin(); itr != node_list.end();)
 	{
