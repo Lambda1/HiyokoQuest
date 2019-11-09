@@ -97,28 +97,14 @@ DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& h
 	turn_cost = TURN_MODE::MOVE;
 	
 	DIRECTION candidate = DIRECTION::NONE;
-	int px = static_cast<int>(x), py = static_cast<int>(y);
-	int nx = 0, ny = 0;
-	int index_x = 0,index_y = 0;
-	POS_TYPE dest_x = static_cast<POS_TYPE>(x), dest_y = static_cast<POS_TYPE>(y);
+	my_math::Vec<int> pos(static_cast<int>(x), static_cast<int>(y), 0);
+	my_math::Vec<int> start,end;
 	
 	/* éãäEì‡ÇÃìGÇíTçı */
-	CommonCharacter::VisualRarnge(&nx, &ny, &index_x, &index_y, static_cast<int>(visual_field), way);
-	for (int i = ny; i < index_y; i++)
-	{
-		if ((py + i) < 0 || (py + i) > height - 1) continue;
-		for (int j = nx; j < index_x; j++)
-		{
-			if ((px + j) < 0 || (px + j) > width - 1) continue;
-			if (dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::PLAYER))
-			{
-				dest_x = static_cast<POS_TYPE>(px + j), dest_y = static_cast<POS_TYPE>(py + i);
-				candidate = CommonCharacter::GetVector(x, y, dest_x, dest_y);
-				break;
-			}
-		}
-		if (candidate != DIRECTION::NONE) break;
-	}
+	CommonCharacter::VisualRarnge(&start.x, &start.y, &end.x, &end.y, static_cast<int>(visual_field), way);
+	my_math::Vec<int> dest = CommonCharacter::SearchTargetCoord(dungeon,start,end,pos, width, height, target_id);
+	candidate = candidate = CommonCharacter::GetVector<int>(pos.x, pos.y, dest.x, dest.y);
+
 	/* éãäEì‡Ç…ìGÇ™Ç¢Ç»Ç¢Ç∆Ç´, ÉâÉìÉ_ÉÄà⁄ìÆ */
 	if (candidate == DIRECTION::NONE) { candidate = static_cast<DIRECTION>(1 << (rand() % 4)); }
 	
@@ -126,28 +112,29 @@ DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& h
 	/* NOTE: ÉâÉìÉ_ÉÄà⁄ìÆéûÇ…êiÇﬂÇ»Ç¢Ç∆Ç´, âE>>â∫>ç∂>è„ÇÃíTçıèáèòÇ∆Ç»ÇÈ. */
 	if (CommonCharacter::ToDirectData(x, y, dungeon, candidate, width) == MAPSET::DATA::WALL)
 	{
-		POS_TYPE min_dist = 9999.0f;
+		double min_dist = 9999.0f;
 		for (int i = -static_cast<int>(ENEMY_AI::VISUAL_SIZE::AROUND) / 2; i <= static_cast<int>(ENEMY_AI::VISUAL_SIZE::AROUND) / 2; i++)
 		{
-			if ((py + i) < 0 || (py + i) > height - 1) continue;
+			if ((pos.y + i) < 0 || (pos.y + i) > height - 1) continue;
 			for (int j = -static_cast<int>(ENEMY_AI::VISUAL_SIZE::AROUND) / 2; j <= static_cast<int>(ENEMY_AI::VISUAL_SIZE::AROUND) / 2; j++)
 			{
-				if ((px + j) < 0 || (px + j) > width - 1) continue;
-				if (dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROAD) || dungeon[(py + i) * width + (px + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROOM))
+				if ((pos.x + j) < 0 || (pos.x + j) > width - 1) continue;
+				if (dungeon[(pos.y + i) * width + (pos.x + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROAD) || dungeon[(pos.y + i) * width + (pos.x + j)] == static_cast<MAP_TYPE>(MAPSET::DATA::ROOM))
 				{
-					POS_TYPE dist = my_math::Math::Distance<POS_TYPE>(dest_x,dest_y,static_cast<POS_TYPE>(px+j),static_cast<POS_TYPE>(py+i));
+					double dist = my_math::Math::Distance<POS_TYPE>(static_cast<POS_TYPE>(dest.x),static_cast<POS_TYPE>(dest.y),static_cast<POS_TYPE>(pos.x+j),static_cast<POS_TYPE>(pos.y+i));
 					if (dist < min_dist)
 					{
-						dest_x = static_cast<POS_TYPE>(px + j), dest_y = static_cast<POS_TYPE>(py + i);
+						dest.Set(pos.x+j,pos.y+i);
 						min_dist = dist;
 					}
 				}
 			}
 		}
-		candidate = CommonCharacter::GetVector(x, y, dest_x, dest_y);
+		candidate = CommonCharacter::GetVector<int>(pos.x, pos.y, dest.x, dest.y);
 	}
 
-	if (CommonCharacter::ToDirectData(x, y, dungeon, candidate, width) == MAPSET::DATA::PLAYER) { turn_cost = TURN_MODE::ATTACK; }
+	/* êiçsï˚å¸Ç…targetÇ™Ç¢ÇÈéû, à⁄ìÆÇπÇ∏Ç…çUåÇÇ∑ÇÈ. */
+	if (CommonCharacter::ToDirectData(x, y, dungeon, candidate, width) == target_id) { turn_cost = TURN_MODE::ATTACK; }
 
 	return candidate;
 }

@@ -4,7 +4,7 @@
 
 TitleScene::TitleScene() :
 	key_pos(BUTTON::NONE),
-	demo_map(10),//static_cast<int>(std::time(nullptr))),
+	demo_map(static_cast<int>(std::time(nullptr))),
 	demo_enemy(1.0f, MAPSET::DATA::PLAYER),
 	goal_x(0), goal_y(0)
 {

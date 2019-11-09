@@ -6,20 +6,6 @@ CommonCharacter::CommonCharacter()
 CommonCharacter::~CommonCharacter()
 {
 }
-
-/* ç¿ïWä‘ÇÃï˚å¸éÊìæ */
-DIRECTION CommonCharacter::GetVector(const POS_TYPE &x,const POS_TYPE &y, const POS_TYPE& px, const POS_TYPE& py)
-{
-	int ang = static_cast<int>(my_math::Math::Angle<POS_TYPE>(x, y, px, py) * 180.0 / my_math::Math::PI);
-	for (int i = 0; i < DIRECT_TABLE::table_size; i++)
-	{
-		if (DIRECT_TABLE::manager_direct[i].m_ang1 <= ang && ang <= DIRECT_TABLE::manager_direct[i].m_ang2)
-		{
-			return DIRECT_TABLE::manager_direct[i].m_direct;
-		}
-	}
-	return DIRECTION::NONE;
-}
 MAPSET::DATA CommonCharacter::ToDirectData(POS_TYPE px, POS_TYPE py, const MAP_TYPE* dungeon, const DIRECTION& direct, const int& width)
 {
 	switch (direct)
@@ -93,6 +79,22 @@ my_math::Vec<int> CommonCharacter::SearchTargetCoord(const MAP_TYPE* dungeon, co
 		}
 	}
 	return target_pos;
+}
+my_math::Vec<int> CommonCharacter::SearchTargetCoord(const MAP_TYPE* dungeon, const my_math::Vec<int>& start, const my_math::Vec<int>& end,const my_math::Vec<int> &ch_pos,const int &width,const int &height, const MAPSET::DATA& target)
+{
+	for (int i = start.y; i < end.y; i++)
+	{
+		if ((ch_pos.y + i) < 0 || (ch_pos.y + i) > height - 1) continue;
+		for (int j = start.x; j < end.x; j++)
+		{
+			if ((ch_pos.x + j) < 0 || (ch_pos.x + j) > width - 1) continue;
+			if (dungeon[(ch_pos.y + i) * width + (ch_pos.x + j)] == static_cast<MAP_TYPE>(target))
+			{
+				return my_math::Vec<int>(ch_pos.x + j, ch_pos.y + i,0);
+			}
+		}
+	}
+	return my_math::Vec<int>(-1,-1,0);
 }
 
 /* A-STARíTçı */
