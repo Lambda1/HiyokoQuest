@@ -296,5 +296,8 @@
     <ClInclude Include="MyLibrary\CommonProcessing\CommonCharacter.hpp">
       <Filter>ヘッダー ファイル\CommonProcessing</Filter>
     </ClInclude>
+    <ClInclude Include="MyLibrary\GameMaster\Character\Enemy\EnemyGenerator.hpp">
+      <Filter>ヘッダー ファイル\GameMaster\Character\Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

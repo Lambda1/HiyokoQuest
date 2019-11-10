@@ -5,7 +5,7 @@
 TitleScene::TitleScene() :
 	key_pos(BUTTON::NONE),
 	demo_map(static_cast<int>(std::time(nullptr))),
-	demo_enemy(1.0f, MAPSET::DATA::PLAYER)
+	demo_enemy(1.0f, MAPSET::DATA::PLAYER,ENEMY_AI::MODE::A_STAR)
 {
 	scene_number = SCENE::TITLE;
 

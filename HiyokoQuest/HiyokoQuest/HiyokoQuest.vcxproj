@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -159,6 +159,7 @@
     <ClInclude Include="MyLibrary\GameMaster\Character\Direction.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Enemy\Enemy.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Enemy\EnemyAI.hpp" />
+    <ClInclude Include="MyLibrary\GameMaster\Character\Enemy\EnemyGenerator.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Player\Player.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Stair\Stair.hpp" />
     <ClInclude Include="MyLibrary\GameMaster\Character\Weapon\Weapon.hpp" />

@@ -18,8 +18,8 @@ Enemy::Enemy() :
 	is_friend = false;
 }
 
-Enemy::Enemy(const float &up_rate,const MAPSET::DATA &id) :
-	ai_mode(ENEMY_AI::MODE::STANDARD), visual_field(ENEMY_AI::VISUAL_SIZE::SMALL),
+Enemy::Enemy(const float &up_rate,const MAPSET::DATA &id,const ENEMY_AI::MODE& mode) :
+	ai_mode(mode), visual_field(ENEMY_AI::VISUAL_SIZE::SMALL),
 	need_research_route(true), target_id(MAPSET::DATA::PLAYER)
 {
 	chara_state = MAPSET::DATA::ENEMY;

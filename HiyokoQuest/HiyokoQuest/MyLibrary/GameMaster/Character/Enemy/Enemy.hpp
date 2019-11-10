@@ -56,7 +56,7 @@ private:
 
 	public:
 		Enemy();
-		Enemy(const float& up_rate,const MAPSET::DATA &id); /* パワーアップ版 */
+		Enemy(const float& up_rate,const MAPSET::DATA &id,const ENEMY_AI::MODE &mode);
 		~Enemy();
 
 		void Move(DIRECTION direct) override;

@@ -4,7 +4,7 @@ GameMaster::GameMaster() :
 	game_step(GAME_STEP::INIT),
 	game_over_flag(false),
 	key_pos(BUTTON_MASK::NONE), all_key_release(false),
-	random_seed(static_cast<int>(std::time(nullptr))), cnt_seed(0),
+	random_seed(static_cast<int>(std::time(nullptr))), cnt_seed(0), mt_rnd(random_seed),
 	game_map(nullptr) , floor_number(0), turn_number(0), room_number(0),
 	player(nullptr), stair(nullptr)
 {
@@ -63,6 +63,51 @@ void GameMaster::KeyInput(const bool* key_on,const bool* key_prev)
 }
 
 /* private */
+/* ダンジョン生成処理 */
+void GameMaster::InitDungeon()
+{
+	std::uniform_int_distribution<int> dist(3, room_number);
+	game_map = new RougeLikeMap<MAP_TYPE>(random_seed + cnt_seed);
+	game_map->Init(width, height, dist(mt_rnd));
+	game_map->SetBaseInfo(static_cast<MAP_TYPE>(MAPSET::DATA::NONE), static_cast<MAP_TYPE>(MAPSET::DATA::ROOM), static_cast<MAP_TYPE>(MAPSET::DATA::ROAD), static_cast<MAP_TYPE>(MAPSET::DATA::WALL));
+	game_map->Generate();
+}
+/* ENEMY生成処理 */
+void GameMaster::InitEnemy()
+{
+	std::uniform_int_distribution<int> dist(1, floor_number*4);
+	const int enemy_num = dist(mt_rnd);
+	for (int i = 0; i < enemy_num; i++)
+	{
+		Enemy* enemy_tmp = EnemyGenerate();
+		enemy_list.push_back(enemy_tmp);
+	}
+	for (auto itr = enemy_list.begin(); itr != enemy_list.end(); itr++)
+	{
+		int enemy_pos_x, enemy_pos_y;
+		game_map->GetRoomPos(&enemy_pos_x, &enemy_pos_y);
+		game_map->SetChara(enemy_pos_y, enemy_pos_x, static_cast<MAP_TYPE>((*itr)->GetCharaInfo())); /* マップに敵を配置 */
+		(*itr)->InitPos(static_cast<POS_TYPE>(enemy_pos_x), static_cast<POS_TYPE>(enemy_pos_y)); /* 敵座標を初期化 */
+	}
+}
+Enemy* GameMaster::EnemyGenerate()
+{
+	std::uniform_real_distribution<double> dist(0.0, 1.0);
+	double prob = dist(mt_rnd);
+
+	for (int i = 0; i < ENEMY_GENERATOR::size; i++)
+	{
+		if (prob < ENEMY_GENERATOR::generate_manager[i].probablity)
+		{
+			std::cout << prob << std::endl;
+			std::uniform_real_distribution<double> dist(0.8, 1.2);
+			float up_rate = static_cast<float>(ENEMY_GENERATOR::generate_manager[i].strong_rate * dist(mt_rnd));
+			return new Enemy(up_rate, ENEMY_GENERATOR::generate_manager[i].enemy_type, ENEMY_GENERATOR::generate_manager[i].mode);
+		}
+	}
+	return new Enemy(0, ENEMY_GENERATOR::generate_manager[0].enemy_type, ENEMY_GENERATOR::generate_manager[0].mode);
+}
+
 /* ゲーム処理 */
 /* ターン統括処理 */
 void GameMaster::TurnProcess()
@@ -87,27 +132,12 @@ void GameMaster::CreateMap()
 	/* 階層を進む */
 	floor_number++;
 	/* 部屋数を決定 */
-	room_number = floor_number;
+	room_number = 3 + floor_number;
 	/* 基礎情報登録 + マップ生成 */
-	game_map = new RougeLikeMap<MAP_TYPE>(random_seed+cnt_seed);
-	game_map->Init(width,height,room_number);
-	game_map->SetBaseInfo(static_cast<MAP_TYPE>(MAPSET::DATA::NONE), static_cast<MAP_TYPE>(MAPSET::DATA::ROOM), static_cast<MAP_TYPE>(MAPSET::DATA::ROAD), static_cast<MAP_TYPE>(MAPSET::DATA::WALL));
-	game_map->Generate();
+	InitDungeon();
 
-	/* 階段生成 */
-	stair = new Stair;
-	int stair_pos_x, stair_pos_y;
-	game_map->GetRoomPos(&stair_pos_x, &stair_pos_y);
-	game_map->SetField(stair_pos_y, stair_pos_x, static_cast<MAP_TYPE>(stair->GetCharaInfo())); /* マップに階段を配置 */
-	stair->InitPos(static_cast<POS_TYPE>(stair_pos_x), static_cast<POS_TYPE>(stair_pos_y)); /* 階段座標を初期化 */
-	
-	/* エネミー召喚 */
-	int random_index = 0;
-	for (int i = 0; i < floor_number*2; i++) {
-		Enemy *enemy_tmp = new Enemy(static_cast<float>(floor_number*0.5f),static_cast<MAPSET::DATA>((int)MAPSET::DATA::ENEMY1+random_index));
-		enemy_list.push_back(enemy_tmp);
-		random_index = (random_index+1) % ((int)MAPSET::DATA::ENEMY5 - (int)MAPSET::DATA::ENEMY);
-	}
+	/* エネミー召喚&配置 */
+	InitEnemy();
 
 	/* アイテム生成 */
 
@@ -117,15 +147,14 @@ void GameMaster::CreateMap()
 	game_map->SetChara(player_pos_y, player_pos_x,static_cast<MAP_TYPE>(player->GetCharaInfo())); /* マップにプレイヤーを配置 */
 	player->InitPos(static_cast<POS_TYPE>(player_pos_x), static_cast<POS_TYPE>(player_pos_y)); /* プレイヤー座標を初期化  */
 
-	/* エネミー配置 */
-	for (auto itr = enemy_list.begin(); itr != enemy_list.end(); itr++) {
-		int enemy_pos_x, enemy_pos_y;
-		game_map->GetRoomPos(&enemy_pos_x, &enemy_pos_y);
-		game_map->SetChara(enemy_pos_y, enemy_pos_x, static_cast<MAP_TYPE>((*itr)->GetCharaInfo())); /* マップに敵を配置 */
-		(*itr)->InitPos(static_cast<POS_TYPE>(enemy_pos_x), static_cast<POS_TYPE>(enemy_pos_y)); /* 敵座標を初期化 */
-	}
-
 	/* アイテム配置 */
+
+	/* 階段生成 */
+	stair = new Stair;
+	int stair_pos_x, stair_pos_y;
+	game_map->GetRoomPos(&stair_pos_x, &stair_pos_y);
+	game_map->SetField(stair_pos_y, stair_pos_x, static_cast<MAP_TYPE>(stair->GetCharaInfo())); /* マップに階段を配置 */
+	stair->InitPos(static_cast<POS_TYPE>(stair_pos_x), static_cast<POS_TYPE>(stair_pos_y)); /* 階段座標を初期化 */
 
 	/* 各レイヤを結合 */
 	game_map->Update();
@@ -280,31 +309,6 @@ void GameMaster::CalcDirectionToPos(POS_TYPE *x, POS_TYPE *y, DIRECTION direct)
 	default:
 		break;
 	}
-}
-MAPSET::DATA GameMaster::GetDirectionInfo(POS_TYPE x, POS_TYPE y,const DIRECTION direct)
-{
-	switch (direct)
-	{
-	case DIRECTION::EAST:
-		(x)++; break;
-	case DIRECTION::WEST:
-		(x)--; break;
-	case DIRECTION::SOUTH:
-		(y)++; break;
-	case DIRECTION::NORTH:
-		(y)--; break;
-	case DIRECTION::SOUTH_EAST:
-		(x)++; (y)++; break;
-	case DIRECTION::SOUTH_WEST:
-		(x)--; (y)++; break;
-	case DIRECTION::NORTH_EAST:
-		(x)++; (y)--; break;
-	case DIRECTION::NORTH_WEST:
-		(x)--; (y)--; break;
-	default:
-		break;
-	}
-	return static_cast<MAPSET::DATA>(game_map->GetALL()[static_cast<int>(y) * width + static_cast<int>(x)]);
 }
 bool GameMaster::IsPosMove(const int x, const int y)
 {

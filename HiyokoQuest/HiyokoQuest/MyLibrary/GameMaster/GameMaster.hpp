@@ -9,6 +9,7 @@
 #include <list>
 #include <map>
 #include <functional>
+#include <random>
 
 #include "./RougeLikeMap/RougeLikeMap.hpp"
 #include "./RougeLikeMap/MapSet.hpp"
@@ -17,6 +18,8 @@
 #include "./Character/Player/Player.hpp"
 #include "./Character/Stair/Stair.hpp"
 #include "./Character/Enemy/Enemy.hpp"
+
+#include "./Character/Enemy/EnemyGenerator.hpp"
 
 #include "..//DrawGame/DrawGame.hpp"
 
@@ -48,6 +51,7 @@ class GameMaster
 
 	/* 乱数処理 */
 	int random_seed, cnt_seed;     /* 乱数シード */
+	std::mt19937 mt_rnd;
 
 	/* マップ処理 */
 	RougeLikeMap<MAP_TYPE>* game_map; /* ゲームマップ */
@@ -73,6 +77,11 @@ class GameMaster
 	std::map<GAME_STEP, void(GameMaster::*)()> manage_turn_process; /* ターン処理 */
 
 private:
+	/* 生成処理 */
+	void InitDungeon();
+	void InitEnemy();
+	Enemy* EnemyGenerate();
+
 	/* ターン処理 */
 	void TurnProcess(); /* ターン統括処理 */
 	void Init();       /* 初期化 */
@@ -89,7 +98,6 @@ private:
 
 	/* キャラクター処理 */
 	void CalcDirectionToPos(POS_TYPE *x,POS_TYPE *y,DIRECTION direct); /* 進行方向の座標を取得 */
-	MAPSET::DATA GetDirectionInfo(POS_TYPE x, POS_TYPE y, const DIRECTION direct);
 	bool IsPosMove(const int x,const int y); /* 座標(x,y)地点は, 進行可能か判定 */
 	MAPSET::DATA IsPosAttack(const int& x, const int& y);
 	bool CharacterMove(Character *ch_data, const DIRECTION &direct); /* 汎用移動処理 */
