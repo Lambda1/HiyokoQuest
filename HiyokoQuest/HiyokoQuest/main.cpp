@@ -8,7 +8,7 @@
 
 int main(int argc, char* argv[])
 {
-	const std::string window_name = "Sample"; /* ウィンドウタイトル */
+	const std::string window_name = "HiyokoQuest"; /* ウィンドウタイトル */
 	const int width = 900, height = 600; /* 画面の大きさ */
 	
 	const int frame_rate_key = 1; /* F1: fps切替キー */
