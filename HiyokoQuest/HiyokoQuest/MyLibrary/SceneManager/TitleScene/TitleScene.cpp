@@ -139,13 +139,12 @@ void TitleScene::PlayDemo()
 		CharacterMove(direct);
 	}
 	else { demo_enemy.MoveAnimation(); }
-	if (demo_enemy.GetDirect() == DIRECTION::NONE)
+	if (demo_enemy.GetTurnMode() == TURN_MODE::ATTACK)
 	{
 		demo_map.SetField(goal.y,goal.x,static_cast<MAP_TYPE>(MAPSET::DATA::ROOM));
 		demo_map.GetRoomPos(&goal.x, &goal.y);
 		demo_map.SetField(goal.y, goal.x, static_cast<MAP_TYPE>(MAPSET::DATA::PLAYER));
 		demo_enemy.SetSearchRouteFlag(true);
-		std::cout << std::endl << goal.x << " " << goal.y << std::endl;
 	}
 	draw_manager.DrawCharacter(&demo_enemy, demo_map_width, demo_map_height, static_cast<int>(demo_enemy.GetPosX()), static_cast<int>(demo_enemy.GetPosY()));
 }

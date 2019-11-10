@@ -19,7 +19,7 @@ Enemy::Enemy() :
 }
 
 Enemy::Enemy(const float &up_rate,const MAPSET::DATA &id) :
-	ai_mode(ENEMY_AI::MODE::A_STAR), visual_field(ENEMY_AI::VISUAL_SIZE::SMALL),
+	ai_mode(ENEMY_AI::MODE::STANDARD), visual_field(ENEMY_AI::VISUAL_SIZE::SMALL),
 	need_research_route(true), target_id(MAPSET::DATA::PLAYER)
 {
 	chara_state = MAPSET::DATA::ENEMY;
@@ -74,18 +74,18 @@ DIRECTION Enemy::AI_Mode(const MAP_TYPE* dungeon, const int& width, const int& h
 	default:
 		break;
 	}
-	if (candidate != DIRECTION::NONE) way = candidate;
 
 	/* êiçsï˚å¸Ç…targetÇ™Ç¢ÇÈéû, à⁄ìÆÇπÇ∏Ç…çUåÇÇ∑ÇÈ. */
-	//if (isTargetToDirect(dungeon, width, way)) { turn_cost = TURN_MODE::ATTACK; }
-	DIRECTION tmp = CommonCharacter::isNeighborTarget(dungeon,width,height,my_math::Vec<int>((int)x,(int)y,0),target_id);
-	if (tmp != DIRECTION::NONE)
+	DIRECTION is_attack = CommonCharacter::isNeighborTarget(dungeon,width,height,my_math::Vec<int>((int)x,(int)y,0),target_id);
+	if (is_attack != DIRECTION::NONE)
 	{
 		turn_cost = TURN_MODE::ATTACK;
-		way = tmp;
+		candidate = is_attack;
 	}
-	std::cout << (int)tmp << std::endl;
-	return candidate;
+
+	if (candidate != DIRECTION::NONE) { way = candidate; }
+
+	return way;
 }
 
 /* private */
