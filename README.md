@@ -19,6 +19,8 @@
  Sキー: Titleに戻る  
 
 # DEMO  
+![demo](https://github.com/Lambda1/HiyokoQuest/blob/master/gif/demo.gif)  
+(速度変化は, F1キーによるものです.)
 
 # 開発環境  
 1. OS  
