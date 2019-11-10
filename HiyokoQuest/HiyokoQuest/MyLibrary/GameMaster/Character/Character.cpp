@@ -9,8 +9,10 @@ Character::Character() :
 	level(0), power(0), defence(0),
 	exp(0), next_level_exp(0),
 	enemy_type(MAPSET::DATA::NONE),
+	damaged(0),
 	death(false), is_friend(false), is_attack(false), attacked_ch(MAPSET::DATA::NONE),
-	prev_x(x), prev_y(y)
+	prev_x(x), prev_y(y),
+	frame_counter(0)
 {
 	/* 座標・方向のアドレスを武器クラスに知らせる */
 	m_weapon.SetCharaInfoPtr(&x, &y, &way);
@@ -41,12 +43,14 @@ void Character::InitMAX(const int max_hp, const int max_mp)
 /* ステータス処理 */
 void Character::Damaged(const int damaged_value)
 {
+	if(frame_counter == 0)
+		damaged += damaged_value;
 	hp -= damaged_value;
 	if (hp < 0) hp = 0;
 }
 int Character::Attack(const int damaged_side_defence)
 {
-	return ((power-damaged_side_defence) >= 0 ? (power - damaged_side_defence) : 0);
+	return ((power-damaged_side_defence) > 0 ? (power - damaged_side_defence) : 1);
 }
 void Character::UseMP(const int used_mp)
 {
@@ -80,6 +84,16 @@ void Character::MoveAnimation()
 void Character::AttackAnimation()
 {
 	if (m_weapon.Animation()) { turn_cost = TURN_MODE::END; }
+}
+/* 被ダメージアニメーション */
+void Character::DamagedAnimation()
+{
+	if (damaged != 0) { frame_counter++; }
+	if (frame_counter > DAMAGED_FRAME)
+	{
+		frame_counter = 0;
+		damaged = 0;
+	}
 }
 
 /* private */

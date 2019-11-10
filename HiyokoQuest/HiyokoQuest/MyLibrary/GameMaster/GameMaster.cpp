@@ -368,8 +368,8 @@ bool GameMaster::CharacterAttack(Character* ch_data)
 		{
 			if ((*itr)->GetPosX() == pos_x && (*itr)->GetPosY() == pos_y)
 			{
-				int damege = ch_data->Attack((*itr)->GetDefence());
-				(*itr)->Damaged(damege);
+				int damage = ch_data->Attack((*itr)->GetDefence());
+				(*itr)->Damaged(damage);
 				(*itr)->SetAttacked(ch_data->GetCharaInfo());
 				break;
 			}
@@ -487,12 +487,30 @@ void GameMaster::DrawStatus()
 {
 	draw_manager.DrawStatusBar(player, floor_number);
 }
+void GameMaster::DrawDamaged()
+{
+	if (player->GetDamaged() != 0)
+	{
+		draw_manager.DrawDamage(player, player->GetDamaged());
+		player->DamagedAnimation();
+	}
+	for (auto itr = enemy_list.begin(); itr != enemy_list.end(); itr++)
+	{
+		if ((*itr)->GetDamaged() != 0)
+		{
+			draw_manager.DrawDamage(*itr, (*itr)->GetDamaged());
+			(*itr)->DamagedAnimation();
+		}
+	}
+}
 void GameMaster::DrawAll()
 {
 	game_map->Update(); /* マップ更新 */
-	CameraPos();  /* カメラ設定 */
-	DrawMap();    /* マップ描画 */
-	DrawStatus(); /* ステータス描画 */
+	CameraPos();   /* カメラ設定 */
+	DrawMap();     /* マップ描画 */
+	DrawStatus();  /* ステータス描画 */
+	DrawDamaged(); /* 被ダメージ描画 */
+
 	draw_manager.DrawMiniMap(reinterpret_cast<MAPSET::DATA*>(game_map->GetMiniMap())); /* ミニマップ描画 */
 }
 /* テーブル管理 */

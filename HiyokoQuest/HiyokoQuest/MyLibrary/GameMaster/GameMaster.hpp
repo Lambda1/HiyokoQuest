@@ -114,8 +114,9 @@ private:
 
 	/* 描画処理 */
 	void CameraPos();
-	void DrawMap();    /* マップ描画 */
-	void DrawStatus(); /* ステータス描画 */
+	void DrawMap();     /* マップ描画 */
+	void DrawStatus();  /* ステータス描画 */
+	void DrawDamaged(); /* ダメージ描画 */
 	void DrawAll();
 
 	/* テーブル管理 */

@@ -206,6 +206,13 @@ bool DrawGame::DrawBlackScreen(const int &floor_num, const int& frame_time)
 	}
 	return false;
 }
+void DrawGame::DrawDamage(const Character* ch_dmaged, const int& damaged)
+{
+	if(ch_dmaged->GetCharaInfo() == MAPSET::DATA::PLAYER)
+		print_manager.DrawStrings(std::to_string(damaged), ch_dmaged->GetPosPX() + 0.2f, 1.0f, ch_dmaged->GetPosPY() - 0.5f, PS::COLOR::RED);
+	else
+		print_manager.DrawStrings(std::to_string(damaged), ch_dmaged->GetPosPX() + 0.2f, 1.0f, ch_dmaged->GetPosPY() - 0.5f, PS::COLOR::BLUE);
+}
 /* private */
 /* ‰Šú‰»ŠÖŒW */
 ObjLoader* DrawGame::LoadObjFile(const std::string &obj_path)

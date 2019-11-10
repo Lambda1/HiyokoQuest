@@ -49,6 +49,8 @@ class Character
 		/* 敵用の識別ID */
 		MAPSET::DATA enemy_type; /* 描画処理を統一させるため, Characterが管理する. */
 
+		int damaged; /* 被攻撃値 */
+
 		/* フラグ */
 		bool death;     /* 死亡フラグ */
 		bool is_friend; /* 友好フラグ */
@@ -57,9 +59,12 @@ class Character
 
 		/* 移動処理用変数 */
 		POS_TYPE prev_x, prev_y; /* 前回の座標 (アニメーションはこちらの座標を参照) */
-		const float MOVE_RESOlUTION = 0.050f; /* 移動分解能 */
-		const float M_EPSILON = 0.10f; /* 移動処理閾値 */
-		const float ANG_DEG = 45.0f;
+		inline static constexpr float MOVE_RESOlUTION = 0.050f; /* 移動分解能 */
+		inline static constexpr float M_EPSILON = 0.10f; /* 移動処理閾値 */
+		inline static constexpr float ANG_DEG = 45.0f;
+
+		int frame_counter; /* アニメーション経過フレーム */
+		inline static constexpr int DAMAGED_FRAME = 50;
 
 		void CalcMoveDirect(const POS_TYPE &val);
 
@@ -89,6 +94,7 @@ class Character
 		/* アニメーション */
 		void MoveAnimation();
 		void AttackAnimation();
+		void DamagedAnimation();
 
 		/* ゲッタ */
 		inline int  GetPower()   { return power; }
@@ -101,7 +107,7 @@ class Character
 		inline POS_TYPE  GetPosPX() const { return prev_x; }
 		inline POS_TYPE  GetPosPY() const { return prev_y; }
 		inline bool GetFriend()  { return is_friend; }
-		inline MAPSET::DATA GetCharaInfo() { return chara_state; }
+		inline MAPSET::DATA GetCharaInfo() const { return chara_state; }
 		inline TURN_MODE GetTurnMode() { return turn_cost; }
 		inline DIRECTION GetDirect() { return way; }
 		inline MAPSET::DATA GetAttacked() { return attacked_ch; }
@@ -109,6 +115,8 @@ class Character
 		inline int GetTransEnemyID() { return (static_cast<int>(enemy_type)-static_cast<int>(MAPSET::DATA::ENEMY1)); }  /* バイアス変換した識別ID */
 		/* 方向を角度(度)に変換 */
 		inline POS_TYPE GetAngle() { return CommonCharacter::TransAngle(way); }
+		inline int GetDamaged() { return damaged; }
+		inline int GetFrameCounter() { return frame_counter; }
 
 		/* セッタ */
 		inline void SetDirection(const DIRECTION direct) { way = direct; }

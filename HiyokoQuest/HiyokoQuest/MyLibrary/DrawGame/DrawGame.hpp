@@ -159,6 +159,9 @@ public:
 	/* 階層表示 */
 	bool DrawBlackScreen(const int &floor_num, const int &frame_time);
 
+	/* ダメージ表示 */
+	void DrawDamage(const Character *ch_damaged,const int &damage);
+
 	/* セッタ */
 	inline void SetSize(const int& width, const int& height) { this->width = width, this->height = height; }
 };
