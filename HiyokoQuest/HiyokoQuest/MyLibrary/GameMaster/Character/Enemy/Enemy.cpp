@@ -67,8 +67,6 @@ DIRECTION Enemy::AI_Mode(const MAP_TYPE* dungeon, const int& width, const int& h
 	{
 	case ENEMY_AI::MODE::STANDARD:
 		candidate = Standard(dungeon, width, height); break;
-	case ENEMY_AI::MODE::BERSERK:
-		candidate = Berserk(dungeon, width, height); break;
 	case ENEMY_AI::MODE::A_STAR:
 		candidate = A_STAR(dungeon, width, height); break;
 	default:
@@ -97,29 +95,8 @@ void Enemy::JudgeDeath()
 	}
 }
 /* AIˆ— */
-/* •W€õ“GAI */
-DIRECTION Enemy::Standard(const MAP_TYPE* dungeon, const int& width, const int& height)
-{
-	turn_cost = TURN_MODE::MOVE;
-
-	my_math::Vec<int> pos(static_cast<int>(x), static_cast<int>(y), 0);
-	my_math::Vec<int> start, end;
-
-	/* ‹ŠE“à‚Ìtarget‚ğ’Tõ */
-	CommonCharacter::VisualRarnge(&start.x, &start.y, &end.x, &end.y, static_cast<int>(visual_field), way);
-	my_math::Vec<int> dest = CommonCharacter::SearchTargetCoord(dungeon, start, end, pos, width, height, target_id);
-	DIRECTION candidate = CommonCharacter::GetVector<int>(pos.x, pos.y, dest.x, dest.y);
-
-	/* ‹ŠE“à‚Étarget‚ª‚¢‚È‚¢‚Æ‚«, ‰Eè’Tõ */
-	if (candidate == DIRECTION::NONE)
-	{
-
-	}
-
-	return candidate;
-}
 /* ƒo[ƒT[ƒJAI */
-DIRECTION Enemy::Berserk(const MAP_TYPE* dungeon, const int& width, const int& height)
+DIRECTION Enemy::Standard(const MAP_TYPE* dungeon, const int& width, const int& height)
 {
 	turn_cost = TURN_MODE::MOVE;
 	

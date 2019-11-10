@@ -99,7 +99,6 @@ Enemy* GameMaster::EnemyGenerate()
 	{
 		if (prob < ENEMY_GENERATOR::generate_manager[i].probablity)
 		{
-			std::cout << prob << std::endl;
 			std::uniform_real_distribution<double> dist(0.8, 1.2);
 			float up_rate = static_cast<float>(ENEMY_GENERATOR::generate_manager[i].strong_rate * dist(mt_rnd));
 			return new Enemy(up_rate, ENEMY_GENERATOR::generate_manager[i].enemy_type, ENEMY_GENERATOR::generate_manager[i].mode);

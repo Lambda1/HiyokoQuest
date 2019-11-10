@@ -7,7 +7,6 @@ namespace ENEMY_AI
 	enum class MODE : int
 	{
 		STANDARD, /* 標準索敵AI */
-		BERSERK,  /* バーサーカAI */
 		A_STAR,   /* A-STAR探索 */
 		SIZE
 	};

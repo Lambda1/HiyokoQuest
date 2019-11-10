@@ -41,11 +41,8 @@ private:
 		
 	/* AIモード */
 	/* 標準索敵 */
-	/* NOTE: 発見時->追跡, 未発見時->右手探索 */
-	DIRECTION Standard(const MAP_TYPE* dungeon, const int& width, const int& height);
-	/* バーサーカ*/
 	/* NOTE: 発見時->追跡, 未発見時->ランダム移動 */
-	DIRECTION Berserk (const MAP_TYPE *dungeon, const int& width, const int& height);
+	DIRECTION Standard(const MAP_TYPE *dungeon, const int& width, const int& height);
 	DIRECTION A_STAR  (const MAP_TYPE *dungeon, const int& width, const int& height);
 
 	/* 攻撃判定 */
