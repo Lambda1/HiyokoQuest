@@ -4,7 +4,7 @@
 #include ".//MyLibrary/SceneManager/SceneManager.hpp"
 #include "./MyLibrary/FPS_Controller/FPS_Controller.hpp"
 
-#define DEBUG
+#define DEBUG_NO
 
 int main(int argc, char* argv[])
 {
@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
 	const int width = 900, height = 600; /* 画面の大きさ */
 	
 	const int frame_rate_key = 1; /* F1: fps切替キー */
-	const double main_fps[] = {1000.0/60.0, 1000.0/140.0, 1000.0/1000.0}; /* fps処理 */
+	const double main_fps[] = {1000.0/60.0, 1000.0/140.0, 1000.0/200.0}; /* fps処理 */
 	const int index_size = sizeof(main_fps) / sizeof(double);
 	int fps_index = 0; /* fps選択インデックス */
 
